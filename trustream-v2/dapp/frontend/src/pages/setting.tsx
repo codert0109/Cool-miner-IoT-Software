@@ -8,6 +8,10 @@ import $ from "axios";
 import bops from "bops";
 import { recoverPersonalSignature } from "eth-sig-util";
 
+const { ethereum } = require('../global.js').getWindow();
+
+
+
 const useStyles = createStyles((theme) => ({
     progressBar: {
         '&:not(:first-of-type)': {
@@ -21,6 +25,7 @@ export default function TableReviews() {
     const { god, lang } = useStore();
 
     const signMessage = async () => {
+        console.log('global', require('../global.js'));
         const message = 'Very Message Such Wow';
         const globalAccount = (god.currentNetwork as NetworkState).account;
         // document.getElementById("messageString").innerHTML = JSON.stringify(message);
@@ -31,7 +36,7 @@ export default function TableReviews() {
             const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
             // document.getElementById("messageHex").innerHTML = JSON.stringify(msg);
             console.log('msg : ' + msg);
-            const sign = await window.ethereum.request({
+            const sign = await ethereum.request({
                 method: 'personal_sign',
                 params: [msg, from, 'Random text'],
             });
