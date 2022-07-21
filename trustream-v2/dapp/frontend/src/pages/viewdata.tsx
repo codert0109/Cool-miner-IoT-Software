@@ -5,6 +5,8 @@ import BUYELUM from "@/components/BUYELUM";
 import INFOCONTAINER from '@/components/INFOCONTAINER';
 import MyAccount from '@/components/MyAccount';
 import LogBook from '@/components/LogBook';
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const useStyles = createStyles((theme) => ({
     progressBar: {
@@ -27,66 +29,28 @@ interface TableReviewsProps {
     }[];
 }
 
-const DeviceMockData = {
-    "data": [
-        {
-            "id": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5-1657656033",
-            "address": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5",
-            "heart_rate": 71,
-            "timestamp": 1657656033,
-            "created_at": "2022-07-12T20:00:33.468Z",
-            "updated_at": "2022-07-12T20:00:33.468Z",
-            "createdAt": "2022-07-12T20:00:33.468Z",
-            "updatedAt": "2022-07-12T20:00:33.468Z"
-        },
-        {
-            "id": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5-1657656035",
-            "address": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5",
-            "heart_rate": 120,
-            "timestamp": 1657656035,
-            "created_at": "2022-07-12T20:00:35.502Z",
-            "updated_at": "2022-07-12T20:00:35.502Z",
-            "createdAt": "2022-07-12T20:00:35.502Z",
-            "updatedAt": "2022-07-12T20:00:35.502Z"
-        },
-        {
-            "id": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5-1657656037",
-            "address": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5",
-            "heart_rate": 71,
-            "timestamp": 1657656037,
-            "created_at": "2022-07-12T20:00:37.559Z",
-            "updated_at": "2022-07-12T20:00:37.559Z",
-            "createdAt": "2022-07-12T20:00:37.559Z",
-            "updatedAt": "2022-07-12T20:00:37.559Z"
-        },
-        {
-            "id": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5-1657656039",
-            "address": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5",
-            "heart_rate": 147,
-            "timestamp": 1657656039,
-            "created_at": "2022-07-12T20:00:39.702Z",
-            "updated_at": "2022-07-12T20:00:39.702Z",
-            "createdAt": "2022-07-12T20:00:39.702Z",
-            "updatedAt": "2022-07-12T20:00:39.702Z"
-        },
-        {
-            "id": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5-1657656041",
-            "address": "0xc06d73162E9BffbCfBF1DA59C511002A8F9155E5",
-            "heart_rate": 149,
-            "timestamp": 1657656041,
-            "created_at": "2022-07-12T20:00:41.728Z",
-            "updated_at": "2022-07-12T20:00:41.728Z",
-            "createdAt": "2022-07-12T20:00:41.728Z",
-            "updatedAt": "2022-07-12T20:00:41.728Z"
-        },
-    ]
-};
+// let DeviceMockData = {
+//     "data": []
+// };
 
 export default function TableReviews() {
     const { classes, theme } = useStyles();
-    const { data } = DeviceMockData;
+    // const { data } = DeviceMockData;
 
-    const rows = data.map((row) => {
+    const [tableData, setTableData] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/device_status')
+            .then((data) => {
+                console.log('data', data);
+                setTableData(data.data.data);
+            })
+            .catch((err) => {
+
+            });
+    }, []);
+
+    const rows = tableData.map((row) => {
         return (
             <tr key={row.id}>
                 <td>{row.id}</td>
