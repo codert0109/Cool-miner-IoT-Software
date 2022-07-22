@@ -30,10 +30,10 @@ async function main() {
   const init_token_supply = 10000
   const elumToken = await deployContract('ElumToken', init_token_supply)
 
-  const normal_nft_supply = 100
-  const special_nft_supply = 50
-  const normal_nft_price = 10
-  const special_nft_price = 20
+  const normal_nft_supply = 1000
+  const special_nft_supply = 1000
+  const normal_nft_price = 3
+  const special_nft_price = 5
   const nft = await deployContract(
     'NFT',
     elumToken.address,

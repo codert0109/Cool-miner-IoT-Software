@@ -4,7 +4,7 @@ import { useStore } from '@/store/index';
 import { helper } from '@/lib/helper';
 import { Box, Center, createStyles, Menu, Text } from '@mantine/core';
 import Jazzicon from '../Jazzicon';
-import { Settings, ChevronDown, Home, LayersLinked, CloudDataConnection } from 'tabler-icons-react';
+import { Settings, ChevronDown, Home, LayersLinked, CloudDataConnection, Stack2 } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -75,6 +75,11 @@ const links: Array<HeaderSearchProps> = [
     link: '/setting',
     label: 'Setting',
     icon: Settings
+  },
+  {
+    link: '/nft',
+    label: 'NFT',
+    icon: Stack2
   },
   {
     link: '/viewdata',

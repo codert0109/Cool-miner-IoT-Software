@@ -75,7 +75,7 @@ contract NFT is Ownable {
 
         require (msg.value >= bid_price, "not enough balance");
 
-        payable(address(this)).transfer(bid_price);
+        // payable(address(this)).transfer(bid_price);
 
         totalNormalSupply += _normalNFTCnt;
         totalSpecialSupply += _specialNFTCnt;
@@ -101,7 +101,7 @@ contract NFT is Ownable {
         return true;
     }
 
-    function balanceOf(address account) public virtual returns (uint256 normalNFT, uint256 specialNFT) {
+    function balanceOf(address account) public view virtual returns (uint256 normalNFT, uint256 specialNFT) {
         return (normalBalance[account], specialBalance[account]);
     }
 

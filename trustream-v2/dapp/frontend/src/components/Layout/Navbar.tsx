@@ -8,7 +8,7 @@ import {
   Stack,
   News,
   Help,
-  LayersLinked
+  Stack2
 }
   from 'tabler-icons-react';
 import { useStore } from '../../store/index';
@@ -91,8 +91,9 @@ export const NavbarSimple = observer(() => {
 
   const data = [
     { link: '/', label: t('dashboard'), icon: Home },
+    { link: '/nft', label: 'NFT', icon: Stack2 },
     { link: '/viewdata', label: 'View Data', icon: ViewIcon },
-    { link: '/stacking', label: 'Stacking', icon: Stack },
+    { link: '/stacking', label: 'NFT', icon: Stack },
     { link: '/news', label: 'News', icon: News },
     { link: '/aboutus', label: 'About US', icon: Help },
   ];
