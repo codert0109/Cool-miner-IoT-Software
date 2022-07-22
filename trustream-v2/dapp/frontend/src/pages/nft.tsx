@@ -54,6 +54,10 @@ export default function TableReviews() {
     const [normalBuyCnt, setNormalBuyCnt] = useState(0);
     const [specialBuyCnt, setSpecialBuyCnt] = useState(0);
 
+    const [normalTransferCnt, setNormalTransferCnt] = useState(0);
+    const [specialTransferCnt, setSpecialTransferCnt] = useState(0);
+    const [walletTransferArddress, setWalletAddress] = useState(0);
+
     const rows = tableData.map((row) => {
         let leftSupply = row.maxSupply - row.totalSupply;
         let supplyP = row.totalSupply * 100 / Math.max(1, row.maxSupply);
@@ -101,6 +105,71 @@ export default function TableReviews() {
     const onStatus = (info) => {
         setTableData(info.Info);
         setAccount(info.account);
+    };
+
+    const onTransferNFT = async () => {
+        let _normalCnt = parseInt(normalTransferCnt.toString());
+        let _specialCnt = parseInt(specialTransferCnt.toString());
+
+        console.log('normal', _normalCnt);
+        console.log('special', _specialCnt);
+        console.log('wallet', walletTransferArddress);
+
+        if (_normalCnt < 0 || _specialCnt < 0 || (_normalCnt + _specialCnt == 0)) {
+            Swal.fire(
+                'Error!',
+                'Transfer Number Should Be Positive.',
+                'error'
+              )
+            return;
+        }
+
+
+        if (walletTransferArddress == 0) {
+            Swal.fire(
+                'Error!',
+                'Wallet cannot be empty.',
+                'error'
+              )
+            return;
+        }
+
+        const tx = window._NFT.transferNFT(_normalCnt, _specialCnt, walletTransferArddress);
+
+        try {
+            const receipt = await tx;
+            if (receipt.status == 0) {
+                Swal.fire(
+                    'Error!',
+                    'Action failed',
+                    'error'
+                  )
+            } else {
+                await receipt.wait();
+                Swal.fire(
+                    'Awesome!',
+                    'You transfered NFTs!',
+                    'success'
+                  )
+            }
+        } catch (error) {
+            const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+            if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
+                Swal.fire(
+                    'Error!',
+                    'You rejected transaction.',
+                    'error'
+                  )
+                return;
+            } else {
+                
+                Swal.fire(
+                    'Error!',
+                    'Something went wrong.',
+                    'error'
+                  )
+            }
+        }
     };
 
     const onBuyNFT = async () => {
@@ -186,16 +255,33 @@ export default function TableReviews() {
             <SimpleGrid
                 cols={4}
                 breakpoints={[
-                    { maxWidth: 'xl', cols: 3 },
-                    { maxWidth: 'md', cols: 3 },
-                    { maxWidth: 'sm', cols: 1 },
+                    { maxWidth: 'xl', cols: 4 },
+                    { maxWidth: 'md', cols: 4 },
+                    { maxWidth: 'sm', cols: 2 },
                 ]}
                 className={classes.gridDiv}
             >
                 <FloatingLabelInput onChange={setNormalBuyCnt} label="Normal NFT" placeholder="Input an number." />
                 <FloatingLabelInput onChange={setSpecialBuyCnt} label="Special NFT" placeholder="Input an number." />
+                <div></div>
                 <Button onClick={onBuyNFT} className={classes.gridDivBtn}>
                     Buy NFT
+                </Button>
+            </SimpleGrid>
+            <SimpleGrid
+                cols={4}
+                breakpoints={[
+                    { maxWidth: 'xl', cols: 4 },
+                    { maxWidth: 'md', cols: 4 },
+                    { maxWidth: 'sm', cols: 2 },
+                ]}
+                className={classes.gridDiv}
+            >
+                <FloatingLabelInput onChange={setNormalTransferCnt} label="Normal NFT" placeholder="Input an number." />
+                <FloatingLabelInput onChange={setSpecialTransferCnt} label="Special NFT" placeholder="Input an number." />
+                <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
+                <Button onClick={onTransferNFT} className={classes.gridDivBtn}>
+                    Transfer NFT
                 </Button>
             </SimpleGrid>
         </Layout>
