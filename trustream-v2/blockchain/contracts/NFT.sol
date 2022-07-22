@@ -88,8 +88,8 @@ contract NFT is Ownable {
 
     function transferNFT(uint256 _normalNFTCnt, uint256 _specialNFTCnt, address to) public virtual returns (bool) {
         // check if it is possible to transfer
-        require (normalBalance[msg.sender] <= _normalNFTCnt, "not enough normal NFTs to transfer");
-        require (specialBalance[msg.sender] <= _specialNFTCnt, "not enough special NFTs to transfer");
+        require (_normalNFTCnt <= normalBalance[msg.sender], "not enough normal NFTs to transfer");
+        require (_specialNFTCnt <= specialBalance[msg.sender], "not enough special NFTs to transfer");
         require (to != address(0), "invalid transfer address");
 
         normalBalance[msg.sender] -= _normalNFTCnt;
