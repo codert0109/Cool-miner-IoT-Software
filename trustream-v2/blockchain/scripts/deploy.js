@@ -1,44 +1,52 @@
+const { deployContract } = require('ethereum-waffle')
+
 async function main() {
+  let ContractInfo = {}
+  async function deployContract(name) {
+    const Contract = await ethers.getContractFactory(name)
+    let params = []
+    for (let i = 1; i < arguments.length; i++) {
+      params.push(arguments[i])
+    }
+    const contract = await Contract.deploy(...params)
+    ContractInfo[name] = contract.address
+
+    console.log(
+      `${name} Contract deployed at ${contract.address}, block:${contract.deployTransaction.blockNumber}`,
+    )
+    return contract
+  }
+
   const [deployer] = await ethers.getSigners()
 
   console.log('Deploying contracts with the account:', deployer.address)
 
   let balanceRau = await deployer.getBalance()
   let balanceIOTX = balanceRau / Math.pow(10, 18)
-  console.log('Account balance:', balanceIOTX, ' IOTX')
+  console.log('Account balance before deploy:', balanceIOTX, ' IOTX')
 
-  const DevicesRegistry = await ethers.getContractFactory('DevicesRegistry')
-  const devicesRegistry = await DevicesRegistry.deploy()
-  blockNumber = devicesRegistry.deployTransaction.blockNumber
-  console.log('DevicesRegistry Contract')
-  console.log('address:', devicesRegistry.address)
-  console.log('block:', blockNumber)
-  console.log('')
+  await deployContract('DevicesRegistry')
 
   const init_token_supply = 10000
-  const ElumToken = await ethers.getContractFactory('ElumToken')
-  const elumToken = await ElumToken.deploy(init_token_supply)
-  console.log('ElumToken Contract')
-  console.log('address:', elumToken.address)
-  console.log('')
+  const elumToken = await deployContract('ElumToken', init_token_supply)
 
   const normal_nft_supply = 100
   const special_nft_supply = 50
   const normal_nft_price = 10
   const special_nft_price = 20
-  const NFT = await ethers.getContractFactory('NFT')
-  const nft = await NFT.deploy(
+  const nft = await deployContract(
+    'NFT',
     elumToken.address,
     normal_nft_supply,
     normal_nft_price,
     special_nft_supply,
     special_nft_price,
   )
-  console.log('NFT Contract')
-  console.log('address:', nft.address)
-  console.log('')
 
-  saveFrontendFiles();
+  balanceRau = await deployer.getBalance()
+  balanceIOTX = balanceRau / Math.pow(10, 18)
+  console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
+  saveFrontendFiles(ContractInfo)
 }
 
 main()
@@ -48,9 +56,9 @@ main()
     process.exit(1)
   })
 
-function saveFrontendFiles(token, presaleToken) {
+function saveFrontendFiles(ContractInfo) {
   const fs = require('fs')
-  const contractsDir = __dirname + '/../dapp/frontend/src/contracts'
+  const contractsDir = __dirname + '/../../dapp/frontend/src/contracts'
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir)
@@ -58,30 +66,20 @@ function saveFrontendFiles(token, presaleToken) {
 
   fs.writeFileSync(
     contractsDir + '/contract-address.json',
-    JSON.stringify(
-      {
-        Token: token.address,
-        PresaleToken: presaleToken.address,
-        USDC: '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
-      },
-      undefined,
-      2,
-    ),
+    JSON.stringify(ContractInfo, undefined, 2),
   )
 
-  const TokenArtifact = artifacts.readArtifactSync('Token')
+  let contractNames = Object.keys(ContractInfo)
 
-  fs.writeFileSync(
-    contractsDir + '/Token.json',
-    JSON.stringify(TokenArtifact, null, 2),
-  )
+  for (let i = 0; i < contractNames.length; i++) {
+    const contractName = contractNames[i];
+    const ContractArtifact = artifacts.readArtifactSync(contractName)
 
-  const PresaleTokenArtifact = artifacts.readArtifactSync('PresaleToken')
-
-  fs.writeFileSync(
-    contractsDir + '/PresaleToken.json',
-    JSON.stringify(PresaleTokenArtifact, null, 2),
-  )
+    fs.writeFileSync(
+      contractsDir + `/${contractName}.json`,
+      JSON.stringify(ContractArtifact, null, 2),
+    )
+  }
 
   console.log('Saving to frontend success.')
 }
