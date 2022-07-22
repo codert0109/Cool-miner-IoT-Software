@@ -51,14 +51,14 @@ export default function TableReviews() {
 
     const [isBuying, setBuyStatus] = useState(false);
 
-    const [normalBuyCnt, setNormalBuyCnt] = useState(0);
+    const [normalBuyCnt, setNormalBuyCnt] = useState(1);
     const [specialBuyCnt, setSpecialBuyCnt] = useState(0);
 
-    const [normalTransferCnt, setNormalTransferCnt] = useState(0);
+    const [normalTransferCnt, setNormalTransferCnt] = useState(1);
     const [specialTransferCnt, setSpecialTransferCnt] = useState(0);
     const [walletTransferArddress, setWalletAddress] = useState(0);
 
-    const rows = tableData.map((row) => {
+    const rows = tableData.filter((item, index) => index == 0).map((row) => {
         let leftSupply = row.maxSupply - row.totalSupply;
         let supplyP = row.totalSupply * 100 / Math.max(1, row.maxSupply);
         let leftP = 100 - supplyP;
@@ -66,7 +66,7 @@ export default function TableReviews() {
         return (
             <>
                 <tr key={row.type}>
-                    <td>{row.type}</td>
+                    <td>{row.type == 'NormalNFT' ? 'Public Pool NFT' : ''}</td>
                     <td>{row.price}</td>
                     <td>
                         {row.maxSupply ?
@@ -96,7 +96,7 @@ export default function TableReviews() {
                             : 'no supply'
                         }
                     </td>
-                    <td>{row.balance}</td>
+                    <td>{row.balance > 0 ? 'Yes' : 'No'}</td>
                 </tr>
             </>
         );
@@ -120,7 +120,7 @@ export default function TableReviews() {
                 'Error!',
                 'Transfer Number Should Be Positive.',
                 'error'
-              )
+            )
             return;
         }
 
@@ -130,7 +130,7 @@ export default function TableReviews() {
                 'Error!',
                 'Wallet cannot be empty.',
                 'error'
-              )
+            )
             return;
         }
 
@@ -143,14 +143,14 @@ export default function TableReviews() {
                     'Error!',
                     'Action failed',
                     'error'
-                  )
+                )
             } else {
                 await receipt.wait();
                 Swal.fire(
                     'Awesome!',
                     'You transfered NFTs!',
                     'success'
-                  )
+                )
             }
         } catch (error) {
             const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -159,15 +159,15 @@ export default function TableReviews() {
                     'Error!',
                     'You rejected transaction.',
                     'error'
-                  )
+                )
                 return;
             } else {
-                
+
                 Swal.fire(
                     'Error!',
                     'Something went wrong.',
                     'error'
-                  )
+                )
             }
         }
     };
@@ -208,14 +208,14 @@ export default function TableReviews() {
                     'Error!',
                     'Action failed',
                     'error'
-                  )
+                )
             } else {
                 await receipt.wait();
                 Swal.fire(
                     'Awesome!',
                     'You bought NFTs!',
                     'success'
-                  )
+                )
             }
         } catch (error) {
             const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -224,16 +224,21 @@ export default function TableReviews() {
                     'Error!',
                     'You rejected transaction.',
                     'error'
-                  )
+                )
                 return;
             } else {
                 Swal.fire(
                     'Error!',
                     'Something went wrong.',
                     'error'
-                  )
+                )
             }
         }
+    };
+
+    const hasNFT = () => {
+        // console.log('hasNFT', tableData[0] ? tableData[0].balance >= 0 : false);
+        return tableData[0] ? tableData[0].balance > 0 : false;
     };
 
     return (
@@ -246,13 +251,13 @@ export default function TableReviews() {
                             <th>Type</th>
                             <th>Price</th>
                             <th>Supply</th>
-                            <th>Balance</th>
+                            <th>Owned</th>
                         </tr>
                     </thead>
                     <tbody>{rows}</tbody>
                 </Table>
             </ScrollArea>
-            <SimpleGrid
+            {/* <SimpleGrid
                 cols={4}
                 breakpoints={[
                     { maxWidth: 'xl', cols: 4 },
@@ -261,7 +266,7 @@ export default function TableReviews() {
                 ]}
                 className={classes.gridDiv}
             >
-                <FloatingLabelInput onChange={setNormalBuyCnt} label="Normal NFT" placeholder="Input an number." />
+                <FloatingLabelInput onChange={setNormalBuyCnt} label="Public Pool NFT" placeholder="Input an number." />
                 <FloatingLabelInput onChange={setSpecialBuyCnt} label="Special NFT" placeholder="Input an number." />
                 <div></div>
                 <Button onClick={onBuyNFT} className={classes.gridDivBtn}>
@@ -277,10 +282,30 @@ export default function TableReviews() {
                 ]}
                 className={classes.gridDiv}
             >
-                <FloatingLabelInput onChange={setNormalTransferCnt} label="Normal NFT" placeholder="Input an number." />
+                <FloatingLabelInput onChange={setNormalTransferCnt} label="Public Pool NFT" placeholder="Input an number." />
                 <FloatingLabelInput onChange={setSpecialTransferCnt} label="Special NFT" placeholder="Input an number." />
                 <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
                 <Button onClick={onTransferNFT} className={classes.gridDivBtn}>
+                    Transfer NFT
+                </Button>
+            </SimpleGrid> */}
+
+
+            <SimpleGrid
+                cols={4}
+                breakpoints={[
+                    { maxWidth: 'xl', cols: 4 },
+                    { maxWidth: 'md', cols: 4 },
+                    { maxWidth: 'sm', cols: 2 },
+                ]}
+                className={classes.gridDiv}
+            >
+                <Button disabled={hasNFT()} onClick={onBuyNFT} className={classes.gridDivBtn}>
+                    Buy NFT
+                </Button>
+                <div></div>
+                <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
+                <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
                     Transfer NFT
                 </Button>
             </SimpleGrid>

@@ -119,7 +119,6 @@ export default function ({onStatus}) {
 
         // We reinitialize it whenever the user changes their account.
         ethereum.on("accountsChanged", ([newAddress]) => {
-            console.log('version', ethereum.networkVersion);
             _stopPollingData();
             // `accountsChanged` event can be triggered with an undefined newAddress.
             // This happens when the user removes the Dapp from the "Connected
