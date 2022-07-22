@@ -100,5 +100,10 @@ contract NFT is Ownable {
         
         return true;
     }
+
+    function balanceOf(address account) public virtual returns (uint256 normalNFT, uint256 specialNFT) {
+        return (normalBalance[account], specialBalance[account]);
+    }
+
     /* End User Module */
 }
