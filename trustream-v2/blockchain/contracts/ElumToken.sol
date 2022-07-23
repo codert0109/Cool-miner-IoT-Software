@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract ElumToken is ERC20 {
     constructor(uint256 initialSupply) ERC20("ElumToken", "Elum") {
-        
+        _mint(address(this), initialSupply);
     }
 }
-

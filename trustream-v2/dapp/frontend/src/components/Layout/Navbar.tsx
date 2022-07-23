@@ -8,7 +8,7 @@ import {
   Stack,
   News,
   Help,
-  LayersLinked
+  Stack2
 }
   from 'tabler-icons-react';
 import { useStore } from '../../store/index';
@@ -90,11 +90,12 @@ export const NavbarSimple = observer(() => {
   const [isview, setView] = useState(false);
 
   const data = [
-    { link: '/', label: t('dashboard'), icon: Home },
-    { link: '/viewdata', label: 'View Data', icon: ViewIcon },
-    { link: '/stacking', label: 'Stacking', icon: Stack },
-    { link: '/news', label: 'News', icon: News },
-    { link: '/aboutus', label: 'About US', icon: Help },
+    { link: '/',          label: t('dashboard'),  icon: Home,     __blank : false },
+    { link: '/nft',       label: 'NFT',           icon: Stack2,   __blank : false },
+    { link: '/viewdata',  label: 'View Data',     icon: ViewIcon, __blank : false },
+    { link: '/stacking',  label: 'NFT',           icon: Stack,    __blank : false },
+    { link: '/news',      label: 'News',          icon: News,     __blank : false },
+    { link: '/aboutus',   label: 'About US',      icon: Help,     __blank : false },
   ];
 
   const links = data.map((item) => (
@@ -103,14 +104,14 @@ export const NavbarSimple = observer(() => {
       sx={{ cursor: 'pointer' }}
       onClick={(event) => {
         if (item.link) {
-          if (item.label == 'View Data') {
-            setView(false);
-          }
-          // if (item.__blank) {
-          //   window.open(item.link, '_blank');
-          // } else {
-          //   router.push(item.link);
+          // if (item.label == 'View Data') {
+          //   setView(false);
           // }
+          if (item.__blank) {
+            window.open(item.link, '_blank');
+          } else {
+            router.push(item.link);
+          }
         }
       }}
     >
