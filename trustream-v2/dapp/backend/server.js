@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const https = require("https");
+const fs = require("fs");
 
 app.use(express.static('public'))
 
@@ -36,6 +38,21 @@ require("./app/routes/device_data.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3333;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}.`);
+// });
+
+https
+  .createServer(
+    {
+      key: fs.readFileSync("cert/server.key"),
+      cert: fs.readFileSync("cert/server.cert"),
+    },
+    app
+  )
+  .listen(3333, function () {
+    console.log(
+      "Example app listening on port 3333! Go to https://localhost:3333/"
+    );
+  });
