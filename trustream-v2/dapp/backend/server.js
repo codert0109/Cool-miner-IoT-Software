@@ -6,6 +6,16 @@ const http = require('http')
 const https = require('https')
 const fs = require('fs')
 
+function ensureSecure(req, res, next) {
+  // if (req.secure) {
+  //   // OK, continue
+  //   return next()
+  // }
+  // // handle port numbers if you need non defaults
+  // // res.redirect('https://' + req.host + req.url); // express 3.x
+  // res.redirect('https://' + req.hostname + req.url) // express 4.x
+}
+
 app.all('*', ensureSecure)
 
 app.use(express.static('public'))
@@ -61,14 +71,5 @@ https
     )
   })
 
-function ensureSecure(req, res, next) {
-  // if (req.secure) {
-  //   // OK, continue
-  //   return next()
-  // }
-  // // handle port numbers if you need non defaults
-  // // res.redirect('https://' + req.host + req.url); // express 3.x
-  // res.redirect('https://' + req.hostname + req.url) // express 4.x
-}
 
 http.createServer(app).listen(3334)
