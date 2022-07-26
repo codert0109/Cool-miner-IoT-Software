@@ -61,7 +61,8 @@ https
 /* Redirecting Function implemented*/
 
 function redirectMiddleware(req, res, next) {
-  res.redirect('https://miner.elumicate.com');
+  // res.redirect('https://miner.elumicate.com');
+  res.send('Redirecting');
 }
 
 const http_server = express();
