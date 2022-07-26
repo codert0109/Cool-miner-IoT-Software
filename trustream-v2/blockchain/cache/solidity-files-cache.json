@@ -331,8 +331,8 @@
       ]
     },
     "C:\\Users\\pioneer\\Documents\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\NFT.sol": {
-      "lastModificationDate": 1658511212593,
-      "contentHash": "0235c7620c6491e30704d2f7c8c0a82d",
+      "lastModificationDate": 1658847172331,
+      "contentHash": "0ac438549cc52d0b23f6adead834cb2a",
       "sourceName": "contracts/NFT.sol",
       "solcConfig": {
         "version": "0.8.4",

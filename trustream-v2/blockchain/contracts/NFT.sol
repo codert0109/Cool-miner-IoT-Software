@@ -17,6 +17,8 @@ contract NFT is Ownable {
     uint public totalSpecialSupply = 0;
     mapping (address => uint256) specialBalance;
 
+    mapping (address => bool) whiteLists;
+
     address private token_address;
 
     constructor(address _token_address,
@@ -63,6 +65,14 @@ contract NFT is Ownable {
         token_address = _token_address;
     }
 
+    function insertWhiteList(address addr) public virtual onlyOwner {
+        whiteLists[addr] = true;
+    }
+
+    function removeWhiteList(address addr) public virtual onlyOwner {
+        whiteLists[addr] = false;
+    }
+
     /* End OnlyOwner Module */
 
     /* Begin User Module */
@@ -105,5 +115,8 @@ contract NFT is Ownable {
         return (normalBalance[account], specialBalance[account]);
     }
 
+    function isWhiteLists(address addr) public view virtual returns (bool) {
+        return whiteLists[addr];
+    }
     /* End User Module */
 }

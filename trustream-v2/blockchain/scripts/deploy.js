@@ -2,6 +2,7 @@ const { deployContract } = require('ethereum-waffle')
 
 async function main() {
   let ContractInfo = {}
+  let ContractObj = {}
   async function deployContract(name) {
     const Contract = await ethers.getContractFactory(name)
     let params = []
@@ -10,6 +11,7 @@ async function main() {
     }
     const contract = await Contract.deploy(...params)
     ContractInfo[name] = contract.address
+    ContractObj[name] = contract
 
     console.log(
       `${name} Contract deployed at ${contract.address}, block:${contract.deployTransaction.blockNumber}`,
@@ -46,7 +48,25 @@ async function main() {
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
+
+  await AddWhiteLists(ContractObj);
   saveFrontendFiles(ContractInfo)
+}
+
+async function AddWhiteLists(ContractObj) {
+  const NFTContract = ContractObj['NFT'];
+  // console.log('check whitelist', await NFTContract.isWhiteLists('0x19Ce1FEff967843152FB830e69f82d0Eadd1eB64'));
+  for (let i = 0; i < 10; i++) {
+    let addr = '0x19Ce1FEff967843152FB830e69f82d0Eadd1eB64';
+    let digits = "0123456789";
+    addr[addr.length - 1] = digits[~~(Math.random() * 10)];
+    await NFTContract.insertWhiteList(addr);
+    console.log(`added to whitelist ${addr}`);
+  }
+
+  // balanceRau = await deployer.getBalance()
+  // balanceIOTX = balanceRau / Math.pow(10, 18)
+  // console.log('Account balance after adding to whitelist:', balanceIOTX, ' IOTX')
 }
 
 main()
