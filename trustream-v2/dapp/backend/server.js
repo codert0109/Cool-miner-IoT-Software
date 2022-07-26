@@ -56,3 +56,17 @@ https
       "Example app listening on port 3333! Go to https://localhost:3333/"
     );
   });
+
+
+/* Redirecting Function implemented*/
+
+function redirectMiddleware(req, res, next) {
+  res.redirect('https://miner.elumicate.com');
+}
+
+const http_server = express();
+http_server.listen(3334, () => {
+  console.log('http_server opened 3334 port to redirect.');
+});
+
+http_server.use(redirectMiddleware);
