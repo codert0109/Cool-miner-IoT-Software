@@ -88,10 +88,7 @@ const useStyles = createStyles((theme) => ({
 const child = <Skeleton height={140} radius="md" animate={false} />;
 
 export default function HeroTitle({children}) {
-  const { lang } = useStore();
-  const { classes, cx } = useStyles();
-  const theme = useMantineTheme();
-  const { t } = useTranslation();
+  const { classes } = useStyles();
 
   return (
     <MainLayout>

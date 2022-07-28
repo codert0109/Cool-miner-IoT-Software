@@ -19,6 +19,14 @@ import { helper } from '../lib/helper';
 import { NotificationsProvider } from '@mantine/notifications';
 import '../i18n/config';
 import { smartGraph } from '../lib/smartgraph/index';
+import Router from 'next/router';
+import NProgress from 'nprogress'; //nprogress module
+import 'nprogress/nprogress.css'; //styles of nprogress
+
+//Binding events. 
+Router.events.on('routeChangeStart', () => NProgress.start()); 
+Router.events.on('routeChangeComplete', () => NProgress.done()); 
+Router.events.on('routeChangeError', () => NProgress.done());
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { lang, god, user } = useStore();
