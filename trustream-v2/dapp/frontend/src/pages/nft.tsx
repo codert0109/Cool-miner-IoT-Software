@@ -7,7 +7,9 @@ import NFTStore from "../components/Blockchain/NFT";
 import { FloatingLabelInput } from "../components/FloatingLabelInput";
 
 import Swal from 'sweetalert2'
+import axios from "axios";
 
+import { useStore } from '@/store/index';
 
 let window = require('../global.js');
 
@@ -39,12 +41,15 @@ const useStyles = createStyles((theme) => ({
     },
     gridDivBtn: {
         marginTop: '16px'
+    },
+    marginBottom: {
+        marginBottom: '10px'
     }
 }));
 
 export default function TableReviews() {
     const { classes, theme } = useStyles();
-    // const { god, lang } = useStore();
+    const { god } = useStore();
 
     const [tableData, setTableData] = useState([]);
     const [account, setAccount] = useState(null);
@@ -249,8 +254,29 @@ export default function TableReviews() {
                 'error'
             )
         } else {
-            alert ('Working now');
-        }    
+            axios.post(`/api/claim_tokens`, { account })
+                .then((data) => {
+                    if (data.data == 'success') {
+                        setTimeout(() => {
+                            god.currentNetwork.loadBalance();
+                        }, 2000);
+                        Swal.fire(
+                            'Success!',
+                            'You got 10 IoTex coins. You can buy an NFT!',
+                            'error'
+                        )
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong!',
+                            'error'
+                        )
+                    }
+                })
+                .catch((err) => {
+                    console.error('err received', err);
+                });
+        }
     };
 
     return (

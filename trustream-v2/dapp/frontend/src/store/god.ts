@@ -25,6 +25,36 @@ export class GodStore {
     makeAutoObservable(this, {
       rootStore: false
     });
+    this.refresh();
+  }
+
+  get eth(): EthNetworkState {
+    return this.network;
+  }
+
+  get isConnect() {
+    return !!this.currentNetwork.account;
+  }
+  get currentNetwork() {
+    return this.network;
+  }
+  get currentChain(): ChainState {
+    return this.currentNetwork.currentChain;
+  }
+  get Coin() {
+    return this.currentChain.Coin;
+  }
+
+  setChain(val: number) {
+    this.currentNetwork.chain.setCurrentId(val);
+    eventBus.emit('chain.switch');
+  }
+  setShowConnecter(value: boolean) {
+    this.eth.connector.showConnector = value;
+  }
+
+  refresh() {
+    console.log('refresh called');
     rpc('query')({
       networks: {
         name: true,
@@ -69,32 +99,9 @@ export class GodStore {
             }, {})
         })
       });
+
+      console.log('this.network', this.network);
     });
-  }
-
-  get eth(): EthNetworkState {
-    return this.network;
-  }
-
-  get isConnect() {
-    return !!this.currentNetwork.account;
-  }
-  get currentNetwork() {
-    return this.network;
-  }
-  get currentChain(): ChainState {
-    return this.currentNetwork.currentChain;
-  }
-  get Coin() {
-    return this.currentChain.Coin;
-  }
-
-  setChain(val: number) {
-    this.currentNetwork.chain.setCurrentId(val);
-    eventBus.emit('chain.switch');
-  }
-  setShowConnecter(value: boolean) {
-    this.eth.connector.showConnector = value;
   }
 
   pollingData() {
