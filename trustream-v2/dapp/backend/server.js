@@ -49,6 +49,7 @@ app.get('/', (req, res) => {
 })
 
 require('./app/routes/device_data.routes')(app)
+require('./app/routes/claim_token.routes')(app)
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3333
