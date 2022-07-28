@@ -106,7 +106,7 @@ export const WalletInfo = observer(() => {
 
             style={{ display: 'flex' }}
             target="_blank"
-            href={`${god.currentChain.explorerURL}/address/${(god.currentNetwork as NetworkState).account}`}
+            href={`${god.currentChain.explorerURL.replace('testnest', 'testnet')}/address/${(god.currentNetwork as NetworkState).account}`}
           >
             <ExternalLink size="18" style={{ margin: '0px 2px' }} />
             {t('view-on-0')} {`${god.currentChain.explorerName}`}
