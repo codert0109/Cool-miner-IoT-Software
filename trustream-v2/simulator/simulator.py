@@ -31,17 +31,17 @@ class Account:
 class Message:
     def __init__(self, address: string, heartRate: int):
       self.address = "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A"
-      self.pedestrains = 7
-      self.cars = 1
-      self.bus = 12
-      self.truck = 3
-      self.Total = 23
-      self.City = 'Moncton'
-      self.Region = 'New Brunswick (NB)'
-      self.PostalCode = 'E1C'
-      self.Country = 'Canada (CA)'
-      self.Continent = 'North America (NA)'
-      self.Coordinates = '49.096 (lat) / -64.7998(long)'
+      self.pedestrains = random.randint(0, 5)
+      self.cars = random.randint(0, 5)
+      self.bus = random.randint(0, 5)
+      self.truck = random.randint(0, 5)
+      self.total = self.pedestrains + self.cars + self.bus + self.truck
+      self.city = 'Moncton'
+      self.region = 'New Brunswick (NB)'
+      self.postalcode = 'E1C'
+      self.country = 'Canada (CA)'
+      self.continent = 'North America (NA)'
+      self.coordinates = '49.096 (lat) / -64.7998(long)'
       self.timestamp = int(time.time())
 
 class Signature:

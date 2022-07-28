@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeviceDataModel = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const base_1 = __importDefault(require("./base"));
-const device_model_1 = require("./device.model");
 let DeviceDataModel = class DeviceDataModel extends base_1.default {
 };
 __decorate([
@@ -26,7 +25,6 @@ __decorate([
     __metadata("design:type", String)
 ], DeviceDataModel.prototype, "id", void 0);
 __decorate([
-    sequelize_typescript_1.ForeignKey(() => device_model_1.DeviceModel),
     sequelize_typescript_1.Column({
         allowNull: false,
         type: sequelize_typescript_1.DataType.STRING(64)
@@ -35,17 +33,76 @@ __decorate([
 ], DeviceDataModel.prototype, "address", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        allowNull: false,
-        type: sequelize_typescript_1.DataType.INTEGER()
+        allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceDataModel.prototype, "heartRate", void 0);
+], DeviceDataModel.prototype, "timestamp", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceDataModel.prototype, "timestamp", void 0);
+], DeviceDataModel.prototype, "pedestrains", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Number)
+], DeviceDataModel.prototype, "cars", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Number)
+], DeviceDataModel.prototype, "bus", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Number)
+], DeviceDataModel.prototype, "truck", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Number)
+], DeviceDataModel.prototype, "total", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", String)
+], DeviceDataModel.prototype, "city", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", String)
+], DeviceDataModel.prototype, "region", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", String)
+], DeviceDataModel.prototype, "postalcode", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", String)
+], DeviceDataModel.prototype, "country", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", String)
+], DeviceDataModel.prototype, "continent", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", String)
+], DeviceDataModel.prototype, "coordinates", void 0);
 DeviceDataModel = __decorate([
     sequelize_typescript_1.Table({
         tableName: 'device_data'

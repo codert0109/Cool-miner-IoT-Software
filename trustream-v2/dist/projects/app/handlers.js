@@ -54,20 +54,33 @@ async function onMqttData(context, topic, payload) {
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: Invalid signature. Recovered address doesn't match ${address}`);
     }
-    const device = await models_1.deviceRepository.findByPk(address);
-    if (!device) {
-        console.log(`WARNING: Dropping data message: Device ${address} is not registered`);
+    let NFTContract = context.getContract("NFT");
+    let NFTBalance = await NFTContract.methods.balanceOf(address).call();
+    let hasNFT = parseInt(NFTBalance.normalNFT) > 0;
+    if (!hasNFT) {
+        console.log('NFTBalance', NFTBalance);
+        console.log(`WARNING: Dropping data message: Device ${address} has no NFT.`);
         return null;
     }
-    console.log("Device is registered. Processing data");
+    console.log("Device has NFT. Processing data");
     console.log(`Device address: ${address}`);
-    console.log(`Heart rate: ${decodedPayload.message.heartRate}`);
+    console.log(`Message Data: ${decodedPayload.message}`);
     console.log(`Timestamp: ${decodedPayload.message.timestamp}`);
     await models_1.deviceDataRepository.upsert({
         id: address + '-' + decodedPayload.message.timestamp,
         address: address,
-        heartRate: decodedPayload.message.heartRate,
-        timestamp: decodedPayload.message.timestamp
+        timestamp: decodedPayload.message.timestamp,
+        pedestrains: decodedPayload.message.pedestrains,
+        cars: decodedPayload.message.cars,
+        bus: decodedPayload.message.bus,
+        truck: decodedPayload.message.truck,
+        total: decodedPayload.message.total,
+        city: decodedPayload.message.city,
+        region: decodedPayload.message.region,
+        postalcode: decodedPayload.message.postalcode,
+        country: decodedPayload.message.country,
+        continent: decodedPayload.message.continent,
+        coordinates: decodedPayload.message.coordinates
     });
 }
 const handlers = {

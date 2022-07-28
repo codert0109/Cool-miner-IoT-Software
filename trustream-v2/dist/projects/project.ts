@@ -48,10 +48,11 @@ abstract class Project implements ProjectContext {
       this.contractEvents = normalCe.map((v: any) => {
         const abi = require(path.join(__dirname, `../../dist/projects/${name}/abis/${v.source.abi}.json`)).abi
         const contract = new web3.eth.Contract(abi, v.source.address)
-        const events = v.eventHandlers.map((x: any) => ({
+        const events = v.eventHandlers?.map((x: any) => ({
           name: x.event,
           handler: handlers[x.handler]
         }))
+
         return {
           name: v.name,
           contract,

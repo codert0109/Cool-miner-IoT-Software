@@ -53,7 +53,7 @@ class Project {
             this.contractEvents = normalCe.map((v) => {
                 const abi = require(path_1.default.join(__dirname, `../../dist/projects/${name}/abis/${v.source.abi}.json`)).abi;
                 const contract = new web3.eth.Contract(abi, v.source.address);
-                const events = v.eventHandlers.map((x) => ({
+                const events = v.eventHandlers?.map((x) => ({
                     name: x.event,
                     handler: handlers[x.handler]
                 }));

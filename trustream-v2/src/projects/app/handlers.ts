@@ -1,13 +1,10 @@
 import _ from 'lodash'
 import { deviceDataRepository, deviceRepository } from './models'
 import { ProjectContext } from '../interface'
-import { EthHelper } from "@helpers/index"
-import {
-  ecrecover,
-  toBuffer
-} from 'ethereumjs-util'
+// import { EthHelper } from "@helpers/index"
+// import { ecrecover, toBuffer } from 'ethereumjs-util'
 var ethUtil = require('ethereumjs-util');
-import { publicKeyToAddress } from '@common/utils'
+// import { publicKeyToAddress } from '@common/utils'
 var bops = require('bops');
 import { recoverPersonalSignature } from "eth-sig-util";
 
@@ -88,23 +85,36 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     console.log(`WARNING: Dropping data message: Invalid signature. Recovered address doesn't match ${address}`)
   }
 
-  const device = await deviceRepository.findByPk(address);
+  let NFTContract : any = context.getContract("NFT");
   
-  if (!device) {
-      console.log(`WARNING: Dropping data message: Device ${address} is not registered`)
-      return null
+  let NFTBalance = await NFTContract.methods.balanceOf(address).call();
+  let hasNFT = parseInt(NFTBalance.normalNFT) > 0;
+
+  if (!hasNFT) {
+    console.log('NFTBalance', NFTBalance);
+    console.log(`WARNING: Dropping data message: Device ${address} has no NFT.`)
+    return null
   }
 
-  console.log("Device is registered. Processing data")
+  console.log("Device has NFT. Processing data")
   console.log(`Device address: ${address}`)
-  console.log(`Heart rate: ${decodedPayload.message.heartRate}`)
   console.log(`Timestamp: ${decodedPayload.message.timestamp}`)
 
   await deviceDataRepository.upsert({
     id: address + '-' + decodedPayload.message.timestamp,
     address: address,
-    heartRate: decodedPayload.message.heartRate,
-    timestamp: decodedPayload.message.timestamp
+    timestamp: decodedPayload.message.timestamp,
+    pedestrains : decodedPayload.message.pedestrains,
+    cars : decodedPayload.message.cars,
+    bus : decodedPayload.message.bus,
+    truck : decodedPayload.message.truck,
+    total : decodedPayload.message.total,
+    city : decodedPayload.message.city,
+    region : decodedPayload.message.region,  
+    postalcode : decodedPayload.message.postalcode,
+    country : decodedPayload.message.country,
+    continent : decodedPayload.message.continent,
+    coordinates : decodedPayload.message.coordinates
   })
   // Store the data and execute some contracts (eg. rewards)
 }

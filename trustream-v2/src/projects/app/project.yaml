@@ -13,6 +13,13 @@ dataSources:
     eventHandlers:
       - event: DeviceRegistered
         handler: onDeviceRegistered
+  - kind: ethereum/contract
+    name: NFT
+    source:
+      address: a6b63544177B99b05e41b88F01067ee5bba617ed
+      abi: NFT
+    eventHandlers:
+
   - kind: mqtt
     name: MQTT
     topics: /device/#
