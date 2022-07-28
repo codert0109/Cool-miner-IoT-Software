@@ -49,7 +49,7 @@ exports.findAll = (req, res) => {
 
   Device_Data.count()
     .then(cnt => {
-      Device_Data.findAll({offset, limit})
+      Device_Data.findAll({offset, limit, order: [['timestamp', 'DESC']]})
         .then(data => {
           res.send({
             offset,

@@ -36,9 +36,9 @@ export default function TableReviews() {
     const rows = tableData.map((row) => {
         return (
             <tr key={row.id}>
-                <td>{row.id}</td>
+                {/* <td>{row.id}</td> */}
+                <td>{new Date(row.timestamp * 1000).toString()}</td>
                 <td>{row.address}</td>
-                <td>{row.timestamp}</td>
                 <td>{row.pedestrains}</td>
                 <td>{row.cars}</td>
                 <td>{row.bus}</td>
@@ -60,9 +60,8 @@ export default function TableReviews() {
                 <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Address</th>
                             <th>Timestamp</th>
+                            <th>Address</th>
                             <th>Pedestrains</th>
                             <th>Cars</th>
                             <th>Bus</th>
