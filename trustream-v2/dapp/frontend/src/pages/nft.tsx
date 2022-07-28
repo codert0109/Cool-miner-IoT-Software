@@ -241,10 +241,26 @@ export default function TableReviews() {
         return tableData[0] ? tableData[0].balance > 0 : false;
     };
 
+    const onClaimTokens = () => {
+        if (hasNFT()) {
+            Swal.fire(
+                'Error!',
+                'You can not claim tokens since you already buy an NFT.',
+                'error'
+            )
+        } else {
+            alert ('Working now');
+        }    
+    };
+
     return (
         <Layout>
             <ScrollArea>
                 <NFTStore onStatus={onStatus} />
+                <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
+                    Claim Tokens
+                </Button>
+
                 <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
                     <thead>
                         <tr>
