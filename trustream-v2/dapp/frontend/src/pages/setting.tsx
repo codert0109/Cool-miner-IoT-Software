@@ -66,7 +66,8 @@ export default function TableReviews() {
         try {
             const from = globalAccount;
             const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
-            const recoveredAddr = recoverPersonalSignature({data: msg, sig: signature,});
+
+            const recoveredAddr = recoverPersonalSignature({data: msg, sig: signature});
             console.log('recoveredAddr : ' + recoveredAddr);
             // document.getElementById("recoveredAddress").innerHTML = "Recovered Address: " +
                 recoveredAddr

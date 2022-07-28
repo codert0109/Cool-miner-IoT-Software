@@ -21,16 +21,27 @@ class Account:
         data = DataFrame(msg, self.privKey)
 
         # Verify signature
-        message = encode_defunct(text=json.dumps(msg, default=vars, separators=(',', ':')))
-        signature =  base64.b64decode(data.signature)
-        recovered = w3.eth.account.recover_message(message, signature=signature.hex())
-        assert(recovered == self.ethAddress)
+        # message = encode_defunct(text=json.dumps(msg, default=vars, separators=(',', ':')))
+        # signature =  base64.b64decode(data.signature)
+        # recovered = w3.eth.account.recover_message(message, signature=signature.hex())
+        # assert(recovered == self.ethAddress)
 
         return data
         
 class Message:
     def __init__(self, address: string, heartRate: int):
-      self.heartRate = heartRate    
+      self.address = "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A"
+      self.pedestrains = 7
+      self.cars = 1
+      self.bus = 12
+      self.truck = 3
+      self.Total = 23
+      self.City = 'Moncton'
+      self.Region = 'New Brunswick (NB)'
+      self.PostalCode = 'E1C'
+      self.Country = 'Canada (CA)'
+      self.Continent = 'North America (NA)'
+      self.Coordinates = '49.096 (lat) / -64.7998(long)'
       self.timestamp = int(time.time())
 
 class Signature:
@@ -43,6 +54,8 @@ class Signature:
         signed_message = w3.eth.account.sign_message(msg, private_key=pk)
 
         self.hex = base64.b64encode(signed_message.signature).decode("utf-8")
+
+        self.hex = "0x89611b02e3c84b624eaef17c1849ddc140aa691f4f7ce2711d81684775f15c8f748856766d67dd5abf42d0eb64d8ed0c289c60df2713b177a12a137f6722cfea1c"
 
 class DataFrame:
     def __init__(self, message: Message, privKey : bytes):

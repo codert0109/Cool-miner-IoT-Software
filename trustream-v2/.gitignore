@@ -12,3 +12,4 @@ package-lock.json
 *.pem
 data/
 merkle-data/
+node_modules.zip

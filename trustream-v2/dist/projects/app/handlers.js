@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("./models");
-const ethereumjs_util_1 = require("ethereumjs-util");
 var ethUtil = require('ethereumjs-util');
-const utils_1 = require("@common/utils");
+var bops = require('bops');
+const eth_sig_util_1 = require("eth-sig-util");
 async function onDeviceRegistered(context, event) {
     if (event) {
         const { _deviceAddress } = event.returnValues;
@@ -19,6 +19,25 @@ function buf2hex(buffer) {
         .map(x => x.toString(16).padStart(2, '0'))
         .join('');
 }
+function verifyMessage(from, signature) {
+    const message = 'Very Message Such Wow';
+    try {
+        const msg = "0x86,101,114,121,32,77,101,115,115,97,103,101,32,83,117,99,104,32,87,111,119";
+        const recoveredAddr = eth_sig_util_1.recoverPersonalSignature({ data: msg, sig: signature, });
+        console.log('recoveredAddr : ' + recoveredAddr);
+        if (recoveredAddr.toLowerCase() === from.toLowerCase()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    catch (err) {
+        console.error(err);
+        return false;
+    }
+    return false;
+}
 async function onMqttData(context, topic, payload) {
     console.log("Received a message on topic: ", topic);
     const values = /^\/device\/(0x[a-fA-F0-9]{40})\/data$/.exec(topic);
@@ -30,28 +49,8 @@ async function onMqttData(context, topic, payload) {
     let decodedPayload = eval('(' + payload.toString() + ')');
     const message = JSON.stringify(decodedPayload.message);
     const signature = decodedPayload.signature;
-    console.log('workin test', message, signature);
-    const msgHex = ethUtil.bufferToHex(Buffer.from(message));
-    const msgBuffer = ethUtil.toBuffer(msgHex);
-    const hash = ethUtil.hashPersonalMessage(msgBuffer);
-    const sig = Buffer.from(signature, 'base64');
     let isValid = false;
-    for (let i = 0; i < 4; i++) {
-        const v = 27 + i;
-        try {
-            let pubkey = '04' + ethereumjs_util_1.ecrecover(hash, v, sig.slice(0, 32), sig.slice(32, 64), 0).toString('hex');
-            const recovered = utils_1.publicKeyToAddress(pubkey);
-            if (address.toLowerCase() === recovered.toLowerCase()) {
-                console.log(`Recovered address: ${recovered}`);
-                isValid = true;
-                break;
-            }
-        }
-        catch (e) {
-            console.log(`ERROR: Dropping message. ${e}`);
-            return;
-        }
-    }
+    isValid = verifyMessage(address, signature);
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: Invalid signature. Recovered address doesn't match ${address}`);
     }
