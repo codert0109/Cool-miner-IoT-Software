@@ -52,8 +52,11 @@ export default function TableReviews() {
         const url = `${publicConfig.DEVICE_URL}/set_signature`;
         const signature = await signMessage();
         const wallet = god.currentNetwork.account;
+
+        // we are currently using the same value we will change it for the future.
+        const nftID = wallet;
         verifyMessage(signature);
-        $.post(url, { signature, wallet}, {
+        $.post(url, { signature, nftID, wallet}, {
 
         });
     };
