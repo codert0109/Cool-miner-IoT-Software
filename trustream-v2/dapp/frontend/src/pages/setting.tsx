@@ -92,7 +92,7 @@ export default function TableReviews() {
         <Layout>
             <ScrollArea>
                 <Button onClick={onSendSignature} rightIcon={<Send size={18} />} sx={{ paddingRight: 12 }}>
-                    Send Signature
+                    connect to Miner
                 </Button>
             </ScrollArea>
         </Layout>
