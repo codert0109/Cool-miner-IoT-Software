@@ -10,8 +10,10 @@ import Swal from 'sweetalert2'
 import axios from "axios";
 
 import { useStore } from '@/store/index';
+import Loading from "../components/Loading";
 
 let window = require('../global.js');
+
 
 const useStyles = createStyles((theme) => ({
     progressBar: {
@@ -63,6 +65,8 @@ export default function TableReviews() {
     const [specialTransferCnt, setSpecialTransferCnt] = useState(0);
     const [walletTransferArddress, setWalletAddress] = useState(0);
 
+    const [isloading, setLoading] = useState(true);
+
     const rows = tableData.filter((item, index) => index == 0).map((row) => {
         let leftSupply = row.maxSupply - row.totalSupply;
         let supplyP = row.totalSupply * 100 / Math.max(1, row.maxSupply);
@@ -108,18 +112,15 @@ export default function TableReviews() {
     });
 
     const onStatus = (info) => {
+        // console.log('onStatus', info);
         setTableData(info.Info);
         setAccount(info.account);
+        setLoading(false);
     };
 
     const onTransferNFT = async () => {
         let _normalCnt = parseInt(normalTransferCnt.toString());
         let _specialCnt = parseInt(specialTransferCnt.toString());
-
-        console.log('normal', _normalCnt);
-        console.log('special', _specialCnt);
-        console.log('wallet', walletTransferArddress);
-
         if (_normalCnt < 0 || _specialCnt < 0 || (_normalCnt + _specialCnt == 0)) {
             Swal.fire(
                 'Error!',
@@ -205,7 +206,6 @@ export default function TableReviews() {
             from: account
         });
 
-
         try {
             const receipt = await tx;
             if (receipt.status == 0) {
@@ -242,7 +242,6 @@ export default function TableReviews() {
     };
 
     const hasNFT = () => {
-        // console.log('hasNFT', tableData[0] ? tableData[0].balance >= 0 : false);
         return tableData[0] ? tableData[0].balance > 0 : false;
     };
 
@@ -281,76 +280,46 @@ export default function TableReviews() {
 
     return (
         <Layout>
-            <ScrollArea>
-                <NFTStore onStatus={onStatus} />
-                <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
-                    Claim Tokens
-                </Button>
-
-                <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Price</th>
-                            <th>Supply</th>
-                            <th>Owned</th>
-                        </tr>
-                    </thead>
-                    <tbody>{rows}</tbody>
-                </Table>
-            </ScrollArea>
-            {/* <SimpleGrid
-                cols={4}
-                breakpoints={[
-                    { maxWidth: 'xl', cols: 4 },
-                    { maxWidth: 'md', cols: 4 },
-                    { maxWidth: 'sm', cols: 2 },
-                ]}
-                className={classes.gridDiv}
-            >
-                <FloatingLabelInput onChange={setNormalBuyCnt} label="Public Pool NFT" placeholder="Input an number." />
-                <FloatingLabelInput onChange={setSpecialBuyCnt} label="Special NFT" placeholder="Input an number." />
-                <div></div>
-                <Button onClick={onBuyNFT} className={classes.gridDivBtn}>
-                    Buy NFT
-                </Button>
-            </SimpleGrid>
-            <SimpleGrid
-                cols={4}
-                breakpoints={[
-                    { maxWidth: 'xl', cols: 4 },
-                    { maxWidth: 'md', cols: 4 },
-                    { maxWidth: 'sm', cols: 2 },
-                ]}
-                className={classes.gridDiv}
-            >
-                <FloatingLabelInput onChange={setNormalTransferCnt} label="Public Pool NFT" placeholder="Input an number." />
-                <FloatingLabelInput onChange={setSpecialTransferCnt} label="Special NFT" placeholder="Input an number." />
-                <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
-                <Button onClick={onTransferNFT} className={classes.gridDivBtn}>
-                    Transfer NFT
-                </Button>
-            </SimpleGrid> */}
-
-
-            <SimpleGrid
-                cols={4}
-                breakpoints={[
-                    { maxWidth: 'xl', cols: 4 },
-                    { maxWidth: 'md', cols: 4 },
-                    { maxWidth: 'sm', cols: 2 },
-                ]}
-                className={classes.gridDiv}
-            >
-                <Button disabled={hasNFT()} onClick={onBuyNFT} className={classes.gridDivBtn}>
-                    Buy NFT
-                </Button>
-                <div></div>
-                <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
-                <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
-                    Transfer NFT
-                </Button>
-            </SimpleGrid>
+            <NFTStore onStatus={onStatus} />
+            {isloading && <Loading />}
+            {!isloading && 
+                <>
+                    <ScrollArea>
+                        <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
+                            Claim Tokens
+                        </Button>
+                        <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Price</th>
+                                    <th>Supply</th>
+                                    <th>Owned</th>
+                                </tr>
+                            </thead>
+                            <tbody>{rows}</tbody>
+                        </Table>
+                    </ScrollArea>
+                    <SimpleGrid
+                        cols={4}
+                        breakpoints={[
+                            { maxWidth: 'xl', cols: 4 },
+                            { maxWidth: 'md', cols: 4 },
+                            { maxWidth: 'sm', cols: 2 },
+                        ]}
+                        className={classes.gridDiv}
+                    >
+                        <Button disabled={hasNFT()} onClick={onBuyNFT} className={classes.gridDivBtn}>
+                            Buy NFT
+                        </Button>
+                        <div></div>
+                        <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
+                        <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
+                            Transfer NFT
+                        </Button>
+                    </SimpleGrid>
+                </>
+            }
         </Layout>
     );
 }
