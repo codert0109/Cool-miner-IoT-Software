@@ -78,7 +78,7 @@ export default function TableReviews() {
                             <>
                                 <Group position="apart">
                                     <Text size="xs" color="teal" weight={700}>
-                                        {row.totalSupply} using
+                                        {row.totalSupply} sold
                                     </Text>
                                     <Text size="xs" color="red" weight={700}>
                                         {leftSupply} left
