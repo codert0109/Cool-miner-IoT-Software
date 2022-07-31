@@ -2,6 +2,7 @@
 
 ## Executable
 pip install pyinstaller
+
 pyinstaller --noconfirm --onedir --windowed --icon "<icon path>" --key "<key>" --debug "all" --target-architecture "<arch>" --codesign-identity "<arch identity>" --add-data "<path>;." --add-data "<path>;." --<path><folder>;<folder>/" "<main-path>"
 ## Installer
 
