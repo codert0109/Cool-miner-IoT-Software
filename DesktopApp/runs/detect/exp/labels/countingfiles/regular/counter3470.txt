@@ -1,0 +1,5 @@
+pedestrians:11
+cars:3328
+bus:11
+truck:133
+Total:3483
