@@ -1,9 +1,16 @@
 # Build the desktop app
 
 ## Executable
-pip install pyinstaller
 
+```shell
+pip install pyinstaller
+```
+
+```shell
 pyinstaller --noconfirm --onedir --windowed --icon "<icon path>" --key "<key>" --debug "all" --target-architecture "<arch>" --codesign-identity "<arch identity>" --add-data "<path>;." --add-data "<path>;." --<path><folder>;<folder>/" "<main-path>"
+```
+
+
 ## Installer
 
 1. Download and install [Inno Setup](https://www.jrsoftware.org/isinfo.php)
