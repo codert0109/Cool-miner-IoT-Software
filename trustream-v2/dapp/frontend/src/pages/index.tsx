@@ -13,10 +13,10 @@ export default function () {
       <Grid>
         <Grid.Col xs={12}>
           <Grid style={{paddingLeft : '36px'}}>
-            <Grid.Col xs={3}>{<STAKEDCLAIMED label="STACKED" />}</Grid.Col>
-            <Grid.Col xs={3}>{<STAKEDCLAIMED label="CLAIMED" />}</Grid.Col>
-            <Grid.Col xs={3}>{<EARNED label="Earned" />}</Grid.Col>
-            <Grid.Col xs={3}>{<BUYELUM label="BUY TOKENS" />}</Grid.Col>
+            <Grid.Col sm={6} md={3}>{<STAKEDCLAIMED label="STACKED" />}</Grid.Col>
+            <Grid.Col sm={6} md={3}>{<STAKEDCLAIMED label="CLAIMED" />}</Grid.Col>
+            <Grid.Col sm={6} md={3}>{<EARNED label="EARNED" />}</Grid.Col>
+            <Grid.Col sm={6} md={3}>{<BUYELUM label="BUY TOKENS" />}</Grid.Col>
           </Grid>
         </Grid.Col>
         <Grid.Col xs={12}>
