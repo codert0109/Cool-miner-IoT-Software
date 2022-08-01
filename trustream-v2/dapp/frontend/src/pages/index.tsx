@@ -5,6 +5,7 @@ import BUYELUM from "@/components/BUYELUM";
 import INFOCONTAINER from '@/components/INFOCONTAINER';
 import MyAccount from '@/components/MyAccount';
 import LogBook from '@/components/LogBook';
+import EARNED from "@/components/EARNED";
 
 export default function () {
   return (
@@ -14,7 +15,7 @@ export default function () {
           <Grid style={{paddingLeft : '36px'}}>
             <Grid.Col xs={3}>{<STAKEDCLAIMED label="STACKED" />}</Grid.Col>
             <Grid.Col xs={3}>{<STAKEDCLAIMED label="CLAIMED" />}</Grid.Col>
-            <Grid.Col xs={3}>{<BUYELUM label="Earned" />}</Grid.Col>
+            <Grid.Col xs={3}>{<EARNED label="Earned" />}</Grid.Col>
             <Grid.Col xs={3}>{<BUYELUM label="BUY TOKENS" />}</Grid.Col>
           </Grid>
         </Grid.Col>
