@@ -13,9 +13,9 @@ const useStyles = createStyles((theme) => ({
         paddingRight : '15px',
         borderRadius : '5px',
         color : 'black',
-        display: 'flex',
-        alignItems : 'center',
-        justifyContent : 'center'
+        // display: 'flex',
+        // alignItems : 'center',
+        // justifyContent : 'center'
     }
 }));
 
