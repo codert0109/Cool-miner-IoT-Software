@@ -77,6 +77,10 @@ const useStyles = createStyles((theme, _params, getRef) => {
           color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 7]
         }
       }
+    },
+
+    navbar_title : {
+      color : theme.colorScheme === 'dark' ? 'white' : 'black'
     }
   };
 });
@@ -126,14 +130,19 @@ export const NavbarSimple = observer(() => {
 
   return (
 
-    <Navbar p="md" hiddenBreakpoint="sm" hidden={!user.layout.sidebarOpen.value} width={{ sm: 200, lg: 300 }}>
+    <Navbar 
+      style={{ backgroundColor: '#00000080' }}
+      p="md" 
+      hiddenBreakpoint="sm" 
+      hidden={!user.layout.sidebarOpen.value} 
+      width={{ sm: 200, lg: 300 }}>
       <Navbar.Section grow>
         <Group className={classes.header} position="apart" align={'center'}>
           <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-            <ThemeIcon size="lg" radius="xl" variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>
+            {/* <ThemeIcon size="lg" radius="xl" variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>
               <CodeIcon />
-            </ThemeIcon>
-            <Text ml={'sm'} weight="bold" size="lg" variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>
+            </ThemeIcon> */}
+            <Text className={classes.navbar_title} weight="bold" size="lg">
               Elumicate Dapp V1
             </Text>
           </Box>

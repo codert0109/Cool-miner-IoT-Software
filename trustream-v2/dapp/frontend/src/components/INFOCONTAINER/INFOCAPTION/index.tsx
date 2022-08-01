@@ -3,13 +3,8 @@ import {createStyles} from '@mantine/core';
 const useStyles = createStyles((theme) => ({
     style : {
         width : 36,
-        borderTopWidth: '3px',
-        borderLeftWidth: '3px',
-        borderRightWidth: '0px',
-        borderBottomWidth: '0px',
-        borderStyle: 'solid',
-        borderColor: 'rgb(100, 117, 124)',
-        backgroundColor: 'rgb(42, 187, 254)',
+        border : '0px',
+        backgroundColor: '#0887BF',
         color : 'white',
         fontWeight : 'bold',
         borderTopLeftRadius : 15,

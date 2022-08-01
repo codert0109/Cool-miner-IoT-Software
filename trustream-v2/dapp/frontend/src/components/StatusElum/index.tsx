@@ -83,7 +83,7 @@ const options = {
 
 export default function () {
   return (
-    <div style={{fontFamily:'sans-serif', textAlign:'center'}}>
+    <div style={{fontFamily:'Proxima Nova', textAlign:'center'}}>
       <Line data={data} options={options} />
     </div>
   );

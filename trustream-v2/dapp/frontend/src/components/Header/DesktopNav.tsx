@@ -28,7 +28,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
       fontWeight: 500,
 
       cursor: 'pointer',
-      fontFamily: 'Inter',
+      fontFamily: 'Proxima Nova Bold',
       '&:hover': {
         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0]
       }

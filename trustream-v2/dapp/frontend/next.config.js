@@ -3,6 +3,7 @@ const nextConfig = {
     if (!isServer) {
       config.resolve.fallback.fs = false;
     }
+    config.module.rules.push({ test: /\.woff2$/, use: 'url-loader' });
     return config;
   },
   trailingSlash: true,

@@ -24,6 +24,9 @@ import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
 import Head from 'next/head'
 
+import normalFont from '../font/Proxima-Nova-Regular.woff2';
+import semiboldFont from '../font/Proxima-Nova-Semibold.woff2';
+
 //Binding events. 
 Router.events.on('routeChangeStart', () => {
   NProgress.start()
@@ -73,12 +76,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const getRouterName = (path) => {
     const links = [
-      ['nft',      'NFT - Elumicate Inc'],
+      ['nft', 'NFT - Elumicate Inc'],
       ['viewdata', 'View Mine Data - Elumicate Inc'],
-      ['setting',  'Setting - Elumicate Inc'],
+      ['setting', 'Setting - Elumicate Inc'],
     ];
     for (let i = 0; i < links.length; i++) {
-      if (path.indexOf(links[i][0]) != -1) {  
+      if (path.indexOf(links[i][0]) != -1) {
         return links[i][1];
       }
     }
@@ -101,10 +104,37 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="msapplication-TileImage" content="https://www.elumicate.com/wp-content/uploads/2022/05/cropped-Elumicate-Icon-for-Installer-270x270.png" />
       </Head>
       {/* <ColorSchemeProvider colorScheme={store.colorScheme} toggleColorScheme={user.toggleTheme}> */}
-      <MantineProvider theme={{ fontFamily: 'Oxanium, sans-serif;', colors : store.colors, colorScheme: store.colorScheme }} withGlobalStyles withNormalizeCSS>
+      <MantineProvider theme={{ fontFamily: 'Oxanium, sans-serif;', colors: store.colors, colorScheme: store.colorScheme }} withGlobalStyles withNormalizeCSS>
+        <Global
+          styles={[
+            {
+              '@font-face': {
+                fontFamily: 'Proxima Nova',
+                src: `url('${normalFont}') format("woff2")`,
+                fontWeight: 700,
+                fontStyle: 'normal',
+              },
+            },
+            {
+              '@font-face': {
+                fontFamily: 'Proxima Nova Bold',
+                src: `url('${semiboldFont}') format("woff2")`,
+                fontWeight: 700,
+                fontStyle: 'normal',
+              },
+            }
+          ]}
+        />
         <Global
           styles={(theme) => ({
-            body: {}
+            '*, *::before, *::after': {
+              boxSizing: 'border-box',
+            },
+
+            body: {
+              ...theme.fn.fontStyles(),
+              fontFamily : 'Proxima Nova Bold !important',
+            },
           })}
         />
         <NotificationsProvider>

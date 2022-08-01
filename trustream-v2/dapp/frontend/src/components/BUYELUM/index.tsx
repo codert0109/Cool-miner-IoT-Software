@@ -7,13 +7,8 @@ import classjoin from 'classnames';
 
 const useStyles = createStyles((theme) => ({
     header: {
-        backgroundColor: 'rgb(42, 187, 254)',
-        borderTopWidth: '3px',
-        borderLeftWidth: '3px',
-        borderRightWidth: '3px',
-        borderBottomWidth: '0px',
-        borderStyle: 'solid',
-        borderColor: 'rgb(100, 117, 124)',
+        backgroundColor: '#0887BF',
+        border : '0px',
         marginLeft: '10%',
         marginRight: '30%',
         borderTopLeftRadius: '20px 20px',
@@ -23,7 +18,8 @@ const useStyles = createStyles((theme) => ({
         justifyContent: 'center',
         display: 'flex',
         fontWeight: 'bold',
-        fontSize: '1.3em'
+        fontSize: '1.3em',
+        position : 'relative'
     },
     body: {
         backgroundColor: 'rgb(219, 219, 219)',
@@ -46,7 +42,7 @@ const useStyles = createStyles((theme) => ({
     button: {
         position: 'relative',
         transition: 'background-color 150ms ease',
-        backgroundColor: 'rgb(42, 187, 254)',
+        backgroundColor: '#0887BF',
     },
 
     progress: {

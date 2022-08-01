@@ -3,36 +3,31 @@ import WhiteLabel from '../WhiteLabel';
 
 const useStyles = createStyles((theme) => ({
     header : {
-        backgroundColor : 'rgb(42, 187, 254)',
-        borderTopWidth: '3px',
-        borderLeftWidth : '3px',
-        borderRightWidth : '3px',
-        borderBottomWidth : '0px',
-        borderStyle : 'solid',
-        borderColor : 'rgb(100, 117, 124)',
-        marginLeft: '10%',
-        marginRight: '10%',
-        borderTopLeftRadius : '20px 20px',
-        borderTopRightRadius : '20px 20px',
+        backgroundColor : '#0887BF',
+        border : '0px',
+        borderRadius : '6px',
         color: 'white',
         alignItems: 'center',
         justifyContent: 'center',
         display : 'flex',
         fontWeight : 'bold',
-        fontSize : '1.3em'
+        // fontSize : '1.3em',
+        zIndex : 100,
+        position : 'relative',
+        height : '42px'
     },
     body : {
-        backgroundColor : 'rgb(219, 219, 219)',
-        borderWidth: '5px',
-        borderStyle : 'solid',
-        borderColor : 'rgb(100, 117, 124)',
+        marginTop : '-8px',
+        backgroundColor : 'black',
+        borderWidth: '0px',
         color: 'black',
         alignItems: 'center',
         justifyContent: 'center',
         display : 'flex',
         flexDirection:'column',
         padding : '10px',
-        borderRadius : '20px'
+        paddingTop : '18px',
+        borderRadius : '6px'
     },
     secondMargin : {
         marginTop : '5px'
