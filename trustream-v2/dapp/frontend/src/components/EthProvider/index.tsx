@@ -33,6 +33,8 @@ export const ETHProvider = observer(({ children }) => {
         color: 'red'
       });
     }
+
+    console.log('working now...');
     if (chainId) {
       if (god.currentNetwork.allowChains.includes(chainId)) {
         god.setChain(chainId);
@@ -65,6 +67,16 @@ export const ETHProvider = observer(({ children }) => {
     eventBus.addListener('wallet.logout', store.logout);
     return () => {
       eventBus.removeListener('wallet.logout', store.logout);
+    };
+  }, []);
+
+  const onChainSwitch = () => {
+    god.updateTicker.setValue(god.updateTicker.value + 1);
+  }
+  useEffect(() => {
+    eventBus.addListener('chain.switch', onChainSwitch);
+    return () => {
+      eventBus.removeListener('chain.switch', onChainSwitch);
     };
   }, []);
 

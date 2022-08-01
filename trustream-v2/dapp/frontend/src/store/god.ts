@@ -69,7 +69,6 @@ export class GodStore {
             }, {})
         })
       });
-      console.log('this.network', this.network);
     });
   }
 
