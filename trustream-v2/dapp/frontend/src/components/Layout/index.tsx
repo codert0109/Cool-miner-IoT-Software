@@ -12,9 +12,9 @@ import { createStyles } from '@mantine/core';
 const useStyles = createStyles((theme) => ({
   rootDiv: {
     backgroundImage: 'url("./images/background.svg")',
-    backgroundSize: '100% 100%',
+    backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    backgroundColor : 'white'
+    backgroundColor : 'rgb(120, 120, 120)'
   }
 }));
 

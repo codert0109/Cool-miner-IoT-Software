@@ -22,6 +22,7 @@ const useStyles = createStyles((theme) => ({
 
   inner: {
     position: 'relative',
+    boxShadow : '0px 0px 6px 6px #00000030'
     // paddingTop: 200,
     // paddingBottom: 120,
 

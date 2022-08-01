@@ -131,7 +131,10 @@ export const NavbarSimple = observer(() => {
   return (
 
     <Navbar 
-      style={{ backgroundColor: '#00000080' }}
+      style={{ 
+        backgroundColor: '#000000C0',
+        boxShadow : 'rgb(255 255 255 / 19%) 2px 0px 10px 0px'
+      }}
       p="md" 
       hiddenBreakpoint="sm" 
       hidden={!user.layout.sidebarOpen.value} 

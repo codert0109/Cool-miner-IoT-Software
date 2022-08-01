@@ -11,7 +11,11 @@ const useStyles = createStyles((theme) => ({
     height: 56,
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+
+  shadowStyle : {
+    boxShadow : 'rgb(255 255 255 / 19%) 0px 2px 10px 5px'
   },
 
   links: {
@@ -41,7 +45,7 @@ export const index = observer(() => {
   console.log('primaryColor', theme.primaryColor);
 
   return (
-    <Header height={56}>
+    <Header height={56} className={classes.shadowStyle}>
       <Container className={classes.ContainerStyle}>
         <div className={classes.inner}>
           {theme.colorScheme === 'dark' && <img src="/images/logo/White-Square-E-75px.png" height={36}/>}
