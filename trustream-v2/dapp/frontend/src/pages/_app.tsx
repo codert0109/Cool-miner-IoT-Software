@@ -48,6 +48,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   const store = useLocalObservable(() => ({
     get colorScheme() {
       return user.theme.value || ('dark' as ColorScheme);
+    },
+    get colors() {
+      return user.colors;
     }
   }));
 
@@ -98,7 +101,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="msapplication-TileImage" content="https://www.elumicate.com/wp-content/uploads/2022/05/cropped-Elumicate-Icon-for-Installer-270x270.png" />
       </Head>
       {/* <ColorSchemeProvider colorScheme={store.colorScheme} toggleColorScheme={user.toggleTheme}> */}
-      <MantineProvider theme={{ fontFamily: 'Oxanium, sans-serif;', colorScheme: store.colorScheme }} withGlobalStyles withNormalizeCSS>
+      <MantineProvider theme={{ fontFamily: 'Oxanium, sans-serif;', colors : store.colors, colorScheme: store.colorScheme }} withGlobalStyles withNormalizeCSS>
         <Global
           styles={(theme) => ({
             body: {}

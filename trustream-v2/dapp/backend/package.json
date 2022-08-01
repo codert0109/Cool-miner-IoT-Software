@@ -4,6 +4,7 @@
   "description": "Node.js Rest Apis with Express, Sequelize & PostgreSQL",
   "main": "server.js",
   "scripts": {
+    "debug" : "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

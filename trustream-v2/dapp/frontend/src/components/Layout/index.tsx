@@ -17,7 +17,10 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
       <AppShell
         styles={{
           main: {
-            background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0]
+            background: 'transparent'
+            // background: theme.colorScheme === 'dark' ? 'black' : 'red',
+            // black : 'red',
+            // white : 'red'
           }
         }}
         navbarOffsetBreakpoint="sm"

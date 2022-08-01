@@ -1,22 +1,11 @@
 const Web3 = require('web3');
-const HDWalletProvider = require('@truffle/hdwallet-provider');
 const { CENTRAL_WALLET } = require('../config/db.config');
-
-// Web3 - Accounts private keys
-const privateKeys = [
-    CENTRAL_WALLET.privateKey
-];
 
 // Interact with the IoTeX testnet
 const ENDPOINT= "https://babel-api.testnet.iotex.io";
-// Uncomment the line below to interact with the IoTeX mainnet
-// const ENDPOINT= "https://babel-api.mainnet.iotex.io";
-
-// Instantiate the accounts provider
-const provider = new HDWalletProvider(privateKeys, ENDPOINT, 0, 1);
 
 // Instantiate the Web3 object
-const web3 = new Web3(provider);
+const web3 = new Web3(ENDPOINT);
 
 exports.get = async (req, res) => {
   const CENTRAL_ACCOUNT = web3.eth.accounts.privateKeyToAccount(
@@ -29,13 +18,9 @@ exports.get = async (req, res) => {
 
     const chainId = await web3.eth.net.getId()
 
-    // Get the accounts
-    let accounts = await web3.eth.getAccounts()
-    // console.log(`accounts: ${JSON.stringify(accounts)}`)
-
     // Configure the transfer settings
     let txConfig = {
-      from: accounts[0],
+      from: CENTRAL_WALLET.address,
       to: receiver,
       // notice we use a slightly higher gas limit than Ethereum default
       // so we set it explicitely.
@@ -47,17 +32,13 @@ exports.get = async (req, res) => {
       chainId,
     }
 
-    // Sign the tx
-    let signedTx = await web3.eth.signTransaction(txConfig, accounts[0])
-    // console.log('Raw signed Tx: ', signedTx.raw)
+    const createTransaction = await web3.eth.accounts.signTransaction(
+        txConfig,
+        CENTRAL_WALLET.privateKey
+    );
 
-    // Calculate the expected Hash
-    const txHash = await web3.utils.sha3(signedTx.raw)
-    // console.log('Tx Hash (calculated): ', txHash)
-
-    // Send the transaction
     web3.eth
-      .sendSignedTransaction(signedTx.raw)
+      .sendSignedTransaction(createTransaction.rawTransaction)
       .on('receipt', function (receipt) {
         res.send(`success`)
         console.log(`Sending success! 10 IoTex coins to ${receiver}.`);
@@ -65,6 +46,6 @@ exports.get = async (req, res) => {
       .on('error', function (e) {
         console.log(e)
         res.send(`error`)
-      })
+      });
   }
 }

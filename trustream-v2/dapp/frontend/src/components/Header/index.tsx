@@ -27,7 +27,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   ContainerStyle : {
-    maxWidth : 'none'
+    maxWidth : 'none',
   }
 }));
 
@@ -37,6 +37,8 @@ export const index = observer(() => {
   const { classes } = useStyles();
   const { user } = useStore();
   const theme = useMantineTheme();
+
+  console.log('primaryColor', theme.primaryColor);
 
   return (
     <Header height={56}>
