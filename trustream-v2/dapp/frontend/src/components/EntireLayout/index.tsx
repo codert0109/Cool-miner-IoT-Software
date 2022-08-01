@@ -1,8 +1,14 @@
 import React from 'react';
-import { createStyles, Container, Skeleton, useMantineTheme } from '@mantine/core';
+import { createStyles, Container, Skeleton, useMantineTheme, Text } from '@mantine/core';
 import MainLayout from '@/components/Layout';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../store';
+import { BrandGoogleDrive } from 'tabler-icons-react';
+import { useEffect } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { observer, useObserver, useLocalObservable } from 'mobx-react-lite';
+import LoginMsgShow from "../LoginMsgShow";
+
 // import { LanguageSwitch } from '@/components/LanguageSwitch';
 
 const BREAKPOINT = '@media (max-width: 755px)';
@@ -82,21 +88,50 @@ const useStyles = createStyles((theme) => ({
 
   paddingLeft: {
     paddingLeft: '36px'
+  },
+
+  loginMsgDiv : {
+    width : '100%',
+    height : '100%',
+    fontSize : '2em',
+    fontWeight : 'bold',
+    textAlign: 'center'
   }
 }));
 
 const child = <Skeleton height={140} radius="md" animate={false} />;
 
-export default function HeroTitle({children}) {
+const HeroTitle = observer(({children}) => {
   const { classes } = useStyles();
+  const { god } = useStore();
+  const store = useLocalObservable(() => ({
+    showConnecter() {
+      god.setShowConnecter(true);
+    },
+    showWalletInfo() {
+      god.currentNetwork.walletInfo.visible = true;
+    },
+    currentAvatar: 1
+  }));
+
+  const login_status = useObserver(() => {
+    return (
+      <MainLayout>
+        <div className={classes.wrapper}>
+          <Container className={classes.inner}>
+            {god.currentNetwork.account ? children : <LoginMsgShow className={classes.loginMsgDiv}/>}
+          </Container>
+        </div>
+      </MainLayout>
+    );
+  });
 
   return (
-    <MainLayout>
-      <div className={classes.wrapper}>
-        <Container className={classes.inner}>
-          {children}
-        </Container>
-      </div>
-    </MainLayout>
+    <>
+       { login_status }
+    </>
   );
-}
+});
+
+HeroTitle.displayName = 'HeroTitle';
+export default HeroTitle;

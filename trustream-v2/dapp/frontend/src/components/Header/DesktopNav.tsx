@@ -220,7 +220,7 @@ const DesktopNav = observer((props) => {
   return (
     <>
       <Box style={{ display: 'flex', alignItems: 'center' }}>
-        {items}
+        {god.currentNetwork.account ? items : undefined}
         {accountView}
       </Box>
     </>

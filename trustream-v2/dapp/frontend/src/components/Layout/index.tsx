@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 
 export const MainLayout = observer(({ children }: { children?: any }) => {
   const theme = useMantineTheme();
-  const { user } = useStore();
+  const { god, user } = useStore();
 
   return (
     <SpotlightProvider actions={user.actions} searchIcon={<Search size={20} />} searchPlaceholder="Search..." shortcut="mod + k" nothingFoundMessage="Nothing found..." highlightQuery>
@@ -23,14 +23,13 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
         navbarOffsetBreakpoint="sm"
         asideOffsetBreakpoint="sm"
         fixed
-        navbar={<NavbarSimple />}
+        navbar={god.currentNetwork.account ? <NavbarSimple /> : undefined}
         footer={
           <Footer/>
         }
         header={
           <HeaderNav/>
         }
-        
       >
         {children}
       </AppShell>

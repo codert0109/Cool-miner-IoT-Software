@@ -83,6 +83,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   // use useMemo to fix issue https://github.com/vercel/next.js/issues/12010
+
+  // console.log('currentAccount', god.currentNetwork.account);
+
   return (
     <>
       <Head>
@@ -105,6 +108,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Web3ReactProvider getLibrary={getLibrary}>
             <WalletSelecter />
             <ETHProvider />
+
             {/* <Toaster /> */}
             {/* <Header /> */}
             <Component {...pageProps} />

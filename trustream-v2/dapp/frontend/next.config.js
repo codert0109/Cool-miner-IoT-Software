@@ -11,6 +11,7 @@ const nextConfig = {
       '/': { page: '/' },
       '/setting': { page: '/setting' },
       '/nft': { page: '/nft' },
+      '/login': { page: '/login' },
       '/viewdata': { page: '/viewdata' }
     }
   },
