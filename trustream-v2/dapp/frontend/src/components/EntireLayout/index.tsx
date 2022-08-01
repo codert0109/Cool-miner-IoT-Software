@@ -17,12 +17,12 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     position: 'relative',
     boxSizing: 'border-box',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+    boxShadow : '0px 0px 6px 6px #00000030'
   },
 
   inner: {
-    position: 'relative',
-    boxShadow : '0px 0px 6px 6px #00000030'
+    position: 'relative',    
     // paddingTop: 200,
     // paddingBottom: 120,
 
