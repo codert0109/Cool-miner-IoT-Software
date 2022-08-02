@@ -1,5 +1,6 @@
 import { Footer, createStyles, useMantineTheme, Container, Group, ActionIcon } from '@mantine/core';
-import { BrandTwitter, BrandYoutube, BrandInstagram } from 'tabler-icons-react';
+import { BrandTwitter, BrandLinkedin, BrandDiscord } from 'tabler-icons-react';
+
 
 const useStyles = createStyles((theme) => ({
     inner: {
@@ -43,14 +44,18 @@ export default function () {
                 </div>
 
                 <Group spacing={0} className={classes.links} position="right" noWrap>
-                    <ActionIcon size="lg">
-                        <BrandTwitter size={18} />
+                    <ActionIcon size="lg" onClick={() => open("https://twitter.com/elumicate/")}>
+                        {/* <BrandTwitter size={18} /> */}
+                        {theme.colorScheme === 'dark' &&    <img src="images/link_svgs/twitter_black_theme.svg" height="18"/>}
+                        {theme.colorScheme === 'light' &&   <img src="images/link_svgs/twitter_light_theme.svg" height="18"/>}
                     </ActionIcon>
-                    <ActionIcon size="lg">
-                        <BrandYoutube size={18} />
+                    <ActionIcon size="lg" onClick={() => open("https://www.linkedin.com/company/elumicate-inc/")}>
+                        {/* <BrandLinkedin size={18} /> */}
+                        {theme.colorScheme === 'dark' &&    <img src="images/link_svgs/linkedin_black_theme.svg" height="18"/>}
+                        {theme.colorScheme === 'light' &&   <img src="images/link_svgs/linkedin_light_theme.svg" height="18"/>}
                     </ActionIcon>
-                    <ActionIcon size="lg">
-                        <BrandInstagram size={18} />
+                    <ActionIcon size="lg" onClick={() => open("https://discord.gg/uVBdzJfPRK")}>
+                        <BrandDiscord size={18} />
                     </ActionIcon>
                 </Group>
             </Container>
