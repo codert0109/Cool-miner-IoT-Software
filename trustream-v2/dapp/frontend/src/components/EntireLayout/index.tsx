@@ -33,7 +33,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   title: {
-    fontFamily: `Proxima Nova, ${theme.fontFamily}`,
+    fontFamily: `Proxima-Nova, ${theme.fontFamily}`,
     fontSize: 62,
     fontWeight: 900,
     lineHeight: 1.1,
