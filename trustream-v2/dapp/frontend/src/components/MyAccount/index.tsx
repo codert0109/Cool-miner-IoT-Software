@@ -13,9 +13,9 @@ export default function() {
     const {classes} = useStyles();
     return (
         <Grid>
-            <Grid.Col xs={3}><BalanceComponent label="BALANCE"/></Grid.Col>
-            <Grid.Col xs={3}><MultiComponent label="MULTIPLIER"/></Grid.Col>
-            <Grid.Col xs={6}><ClaimComponent label="UNCLAIMED BALANCE"/></Grid.Col>
+            <Grid.Col md={3}><BalanceComponent label="BALANCE"/></Grid.Col>
+            <Grid.Col md={3}><MultiComponent label="MULTIPLIER"/></Grid.Col>
+            <Grid.Col md={6}><ClaimComponent label="UNCLAIMED BALANCE"/></Grid.Col>
         </Grid>
     );
 }

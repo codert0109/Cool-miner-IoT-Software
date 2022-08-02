@@ -29,7 +29,9 @@ export default function ({ label }) {
                     display: 'flex', 
                     flexDirection: 'column', 
                     justifyContent: 'space-between',
-                    alignItems : 'center' }}>
+                    alignItems : 'center',
+                    width : '100%',
+                    minHeight : '140px'}}>
                     
                     <LineInfo caption="NFT..............OK" info="X2" className="" />
                     <LineInfo caption="TOKENS......NO" info="__" className="" />

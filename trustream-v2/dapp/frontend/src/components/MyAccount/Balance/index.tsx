@@ -23,7 +23,13 @@ export default function({label}) {
     const { classes } = useStyles();
     return (
         <Box label={label}>
-            <div style={{flexGrow : 1, display: 'flex', flexDirection : 'column', justifyContent : 'space-between'}}>
+            <div style={{
+                flexGrow : 1, 
+                display: 'flex', 
+                flexDirection : 'column', 
+                justifyContent : 'space-between',
+                width : '100%',
+                minHeight : '150px'}}>
                 <span className={classes.textItem}>Elum Balance</span>
                 <WhiteLabel label="000,000,000,000" className=""/>
                 <span className={classes.textItem}>Staked Balance</span>
