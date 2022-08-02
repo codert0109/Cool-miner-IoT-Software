@@ -20,12 +20,12 @@ export default function () {
           </Grid>
         </Grid.Col>
         <Grid.Col xs={12}>
-          <INFOCONTAINER caption="My Account">
+          <INFOCONTAINER caption="MY ACCOUNT">
             <MyAccount />
           </INFOCONTAINER>
         </Grid.Col>
         <Grid.Col xs={12}>
-          <INFOCONTAINER caption="Logbook">
+          <INFOCONTAINER caption="LOGBOOK">
             <LogBook />
           </INFOCONTAINER>
         </Grid.Col>

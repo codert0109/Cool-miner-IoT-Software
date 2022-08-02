@@ -1,6 +1,11 @@
 import { createStyles } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
+    root : {
+        display : 'flex',
+        flexDirection : 'column',
+        height : '100%'
+    },
     header : {
         backgroundColor : '#0887BF',
         border : '0px',
@@ -26,7 +31,8 @@ const useStyles = createStyles((theme) => ({
         flexDirection:'column',
         padding : '10px',
         paddingTop : '18px',
-        borderRadius : '6px'
+        borderRadius : '6px',
+        flexGrow : 1
     },
     secondMargin : {
         marginTop : '5px'
@@ -36,13 +42,13 @@ const useStyles = createStyles((theme) => ({
 export default function({label, children}) {
     const { classes } = useStyles();
     return (
-        <>
+        <div className={classes.root}>
             <div className={classes.header}>
                 <div>{label}</div>
             </div>
             <div className={classes.body}>
                 {children}
             </div>
-        </>
+        </div>
     );
 }

@@ -22,10 +22,7 @@ import { smartGraph } from '../lib/smartgraph/index';
 import Router, { useRouter } from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
-import Head from 'next/head'
-
-import normalFont from '../font/Proxima-Nova-Regular.woff2';
-import semiboldFont from '../font/Proxima-Nova-Semibold.woff2';
+import Head from 'next/head';
 
 //Binding events. 
 Router.events.on('routeChangeStart', () => {
@@ -104,27 +101,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="msapplication-TileImage" content="https://www.elumicate.com/wp-content/uploads/2022/05/cropped-Elumicate-Icon-for-Installer-270x270.png" />
       </Head>
       {/* <ColorSchemeProvider colorScheme={store.colorScheme} toggleColorScheme={user.toggleTheme}> */}
-      <MantineProvider theme={{ fontFamily: 'Oxanium, sans-serif;', colors: store.colors, colorScheme: store.colorScheme }} withGlobalStyles withNormalizeCSS>
-        <Global
-          styles={[
-            {
-              '@font-face': {
-                fontFamily: 'Proxima Nova',
-                src: `url('${normalFont}') format("woff2")`,
-                fontWeight: 700,
-                fontStyle: 'normal',
-              },
-            },
-            {
-              '@font-face': {
-                fontFamily: 'Proxima Nova Bold',
-                src: `url('${semiboldFont}') format("woff2")`,
-                fontWeight: 700,
-                fontStyle: 'normal',
-              },
-            }
-          ]}
-        />
+      <MantineProvider
+        theme={{
+          fontFamily: 'Proxima-Nova-Bold, Proxima-Nova, Oxanium, sans-serif;',
+          colors: (store.colors as any),
+          colorScheme: store.colorScheme
+        }} withGlobalStyles withNormalizeCSS>
         <Global
           styles={(theme) => ({
             '*, *::before, *::after': {
@@ -133,7 +115,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
             body: {
               ...theme.fn.fontStyles(),
-              fontFamily : 'Proxima Nova Bold !important',
+              fontFamily: 'Proxima-Nova-Bold !important',
             },
           })}
         />
