@@ -104,7 +104,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     id: address + '-' + decodedPayload.message.timestamp,
     address: address,
     timestamp: decodedPayload.message.timestamp,
-    pedestrains : decodedPayload.message.pedestrains,
+    pedestrains : decodedPayload.message.pedestrians,
     cars : decodedPayload.message.cars,
     bus : decodedPayload.message.bus,
     truck : decodedPayload.message.truck,
