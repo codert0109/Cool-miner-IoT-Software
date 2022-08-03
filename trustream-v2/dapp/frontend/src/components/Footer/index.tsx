@@ -46,13 +46,13 @@ export default function () {
                 <Group spacing={0} className={classes.links} position="right" noWrap>
                     <ActionIcon size="lg" onClick={() => open("https://twitter.com/elumicate/")}>
                         {/* <BrandTwitter size={18} /> */}
-                        {theme.colorScheme === 'dark' &&    <img src="images/link_svgs/twitter_black_theme.svg" height="15"/>}
-                        {theme.colorScheme === 'light' &&   <img src="images/link_svgs/twitter_light_theme.svg" height="15"/>}
+                        {theme.colorScheme === 'dark' &&    <img src="/images/link_svgs/twitter_black_theme.svg" height="15"/>}
+                        {theme.colorScheme === 'light' &&   <img src="/images/link_svgs/twitter_light_theme.svg" height="15"/>}
                     </ActionIcon>
                     <ActionIcon size="lg" onClick={() => open("https://www.linkedin.com/company/elumicate-inc/")}>
                         {/* <BrandLinkedin size={18} /> */}
-                        {theme.colorScheme === 'dark' &&    <img src="images/link_svgs/linkedin_black_theme.svg" height="14"/>}
-                        {theme.colorScheme === 'light' &&   <img src="images/link_svgs/linkedin_light_theme.svg" height="14"/>}
+                        {theme.colorScheme === 'dark' &&    <img src="/images/link_svgs/linkedin_black_theme.svg" height="14"/>}
+                        {theme.colorScheme === 'light' &&   <img src="/images/link_svgs/linkedin_light_theme.svg" height="14"/>}
                     </ActionIcon>
                     <ActionIcon size="lg" onClick={() => open("https://discord.gg/uVBdzJfPRK")}>
                         <BrandDiscord size={18} />
