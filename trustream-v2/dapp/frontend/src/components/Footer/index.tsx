@@ -55,7 +55,9 @@ export default function () {
                         {theme.colorScheme === 'light' &&   <img src="/images/link_svgs/linkedin_light_theme.svg" height="14"/>}
                     </ActionIcon>
                     <ActionIcon size="lg" onClick={() => open("https://discord.gg/uVBdzJfPRK")}>
-                        <BrandDiscord size={18} />
+                        {/* <BrandDiscord size={18} /> */}
+                        {theme.colorScheme === 'dark' &&    <img src="/images/link_svgs/discord_black_theme.svg" height="22"/>}
+                        {theme.colorScheme === 'light' &&   <img src="/images/link_svgs/discord_light_theme.svg" height="22"/>}
                     </ActionIcon>
                 </Group>
             </Container>
