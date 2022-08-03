@@ -75,6 +75,8 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   // First, recover the address from the message signature
   const message : any = JSON.stringify(decodedPayload.message)
 
+  console.log('message', message);
+
   const signature = decodedPayload.signature
 
   let isValid: boolean = false
