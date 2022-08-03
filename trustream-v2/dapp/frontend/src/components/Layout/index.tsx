@@ -11,7 +11,7 @@ import { createStyles } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   rootDiv: {
-    backgroundImage: 'url("./images/background.svg")',
+    backgroundImage: 'url("/images/background.svg")',
     backgroundSize: 'initial',
     backgroundRepeat: 'repeat',
     backgroundColor : 'rgb(120, 120, 120)'
