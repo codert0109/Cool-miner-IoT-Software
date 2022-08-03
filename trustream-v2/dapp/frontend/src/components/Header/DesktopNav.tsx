@@ -85,11 +85,6 @@ const links: Array<HeaderSearchProps> = [
     link: '/viewdata',
     label: 'View Data',
     icon: CloudDataConnection
-  },
-  {
-    link: '/api/graphql',
-    label: 'Stacking',
-    icon: LayersLinked
   }
 ];
 

@@ -95,9 +95,8 @@ export const NavbarSimple = observer(() => {
 
   const data = [
     { link: '/',          label: t('dashboard'),  icon: Home,     __blank : false },
-    { link: '/nft',       label: 'NFT',           icon: Stack2,   __blank : false },
+    // { link: '/nft',       label: 'NFT',           icon: Stack2,   __blank : false },
     { link: '/viewdata',  label: 'View Data',     icon: ViewIcon, __blank : false },
-    { link: '/stacking',  label: 'NFT',           icon: Stack,    __blank : false },
     { link: '/news',      label: 'News',          icon: News,     __blank : false },
     { link: '/aboutus',   label: 'About US',      icon: Help,     __blank : false },
   ];
