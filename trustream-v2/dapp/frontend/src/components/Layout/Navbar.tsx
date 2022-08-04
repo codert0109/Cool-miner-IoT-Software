@@ -86,7 +86,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 export const NavbarSimple = observer(() => {
-  const { classes, cx } = useStyles();
+  const { classes, cx, theme } = useStyles();
   const { t } = useTranslation();
   const { user, god } = useStore();
   const router = useRouter();
@@ -131,7 +131,9 @@ export const NavbarSimple = observer(() => {
 
     <Navbar 
       style={{ 
-        backgroundColor: '#000000C0',
+        // backgroundColor: '#000000C0',
+        // backgroundColor: '#C7C7C7C0',
+        backgroundColor : theme.colorScheme == 'dark' ? '#000000C0' : '#C7C7C7D0',
         boxShadow : 'rgb(255 255 255 / 19%) 2px 0px 10px 0px'
       }}
       p="md" 

@@ -14,7 +14,7 @@ const useStyles = createStyles((theme) => ({
     backgroundImage: 'url("/images/background.svg")',
     backgroundSize: 'initial',
     backgroundRepeat: 'repeat',
-    backgroundColor : 'rgb(120, 120, 120)'
+    backgroundColor : (theme.colorScheme == 'dark' ? 'rgb(120, 120, 120)' : 'rgb(255, 255, 255')
   }
 }));
 
@@ -23,6 +23,19 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
   const { god, user } = useStore();
 
   console.log('rootDiv', classes.rootDiv);
+
+  let mainStyle = {};
+
+  if (theme.colorScheme == 'dark') {
+    mainStyle = {
+      backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(0,0,0,255))'
+    }
+  } else {
+    mainStyle = {
+      backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(80,80,80,255))',
+    }
+  }
+
   return (
     <SpotlightProvider
       actions={user.actions}
@@ -34,13 +47,10 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
       <div className={classes.rootDiv}>
         <AppShell
           styles={{
-            main: {
-              backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(0,0,0,255))'
-              // backgroundImage: 'url("./images/background.svg")',
-              // backgroundColor: 'white'
-              // black : 'red',
-              // white : 'red'
-            }
+            // main: {
+              // backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(0,0,0,255))'
+            // }
+            main : mainStyle
           }}
           className={classes.rootDiv}
           navbarOffsetBreakpoint="sm"
