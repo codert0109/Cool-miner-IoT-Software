@@ -7,7 +7,7 @@ const useStyles = createStyles((theme) => ({
         height : '100%'
     },
     header : {
-        backgroundColor : '#0887BF',
+        backgroundColor : (theme.colorScheme == 'dark' ? '#0887BF' : '#26BCFF'),
         border : '0px',
         borderRadius : '6px',
         color: 'white',
@@ -22,7 +22,7 @@ const useStyles = createStyles((theme) => ({
     },
     body : {
         marginTop : '-8px',
-        backgroundColor : 'black',
+        backgroundColor : theme.colorScheme === 'dark' ? 'black' : '#DBDBDB',
         borderWidth: '0px',
         color: 'black',
         alignItems: 'center',

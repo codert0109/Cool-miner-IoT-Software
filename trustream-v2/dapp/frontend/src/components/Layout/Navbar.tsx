@@ -41,7 +41,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
       alignItems: 'center',
       textDecoration: 'none',
       fontSize: theme.fontSizes.sm,
-      color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
+      color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : 'black',
       padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
       borderRadius: theme.radius.sm,
       fontWeight: 500,
@@ -133,7 +133,7 @@ export const NavbarSimple = observer(() => {
       style={{ 
         // backgroundColor: '#000000C0',
         // backgroundColor: '#C7C7C7C0',
-        backgroundColor : theme.colorScheme == 'dark' ? '#000000C0' : '#C7C7C7D0',
+        backgroundColor : theme.colorScheme == 'dark' ? '#000000C0' : '#C7C7C7F0',
         boxShadow : 'rgb(255 255 255 / 19%) 2px 0px 10px 0px'
       }}
       p="md" 

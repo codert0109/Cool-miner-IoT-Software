@@ -15,7 +15,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   shadowStyle : {
-    boxShadow : 'rgb(255 255 255 / 19%) 0px 2px 10px 5px'
+    boxShadow : 'rgb(255 255 255 / 19%) 0px 2px 10px 5px',
+    opacity : theme.colorScheme == 'dark' ? 1.0 : 0.95
   },
 
   links: {
@@ -41,8 +42,6 @@ export const index = observer(() => {
   const { classes } = useStyles();
   const { user } = useStore();
   const theme = useMantineTheme();
-
-  console.log('primaryColor', theme.primaryColor);
 
   return (
     <Header height={56} className={classes.shadowStyle}>

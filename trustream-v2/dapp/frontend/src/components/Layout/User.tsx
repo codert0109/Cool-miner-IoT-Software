@@ -44,7 +44,7 @@ export const User = observer(() => {
               <Text size="sm" weight={500}>
                 {helper.string.truncate(god.currentNetwork.account || '0x......', 12, '...')}
               </Text>
-              <Text color="dimmed" size="xs">
+              <Text color={theme.colorScheme == 'dark' ? "dimmed" : 'black'} size="xs">
                 <span style={{ marginRight: 4 }}>{god.currentChain.Coin.balance.format}</span>
                 <span>{god.currentChain.Coin.symbol}</span>
               </Text>

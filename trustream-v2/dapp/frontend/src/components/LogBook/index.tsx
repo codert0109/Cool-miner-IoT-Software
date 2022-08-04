@@ -7,6 +7,12 @@ import RewardView from './RewardView';
 const useStyles = createStyles((theme) => ({
     selected : {
         fontWeight : 'bold'
+    },
+    divColor : {
+        backgroundColor : theme.colorScheme === 'dark' ? 'transparent' : '#DBDBDB',
+        padding : '20px',
+        paddingTop : '10px',
+        borderRadius : '10px'
     }
 }));
 
@@ -17,7 +23,7 @@ export default function () {
     const { classes } = useStyles();
 
     return (
-        <>
+        <div className={classes.divColor}>
             <Group position="center" my="xl">
                 <SegmentedControl
                     value={'colorScheme'}
@@ -46,7 +52,7 @@ export default function () {
             </Group>
             {tab == 'Staked' && <StakedView data={StackMockData.data} />}
             {tab == 'Reward' && <RewardView data={RewardMockData.data}/>}
-        </>
+        </div>
     );
 }
 

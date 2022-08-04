@@ -13,7 +13,7 @@ const useStyles = createStyles((theme) => ({
         color : 'white',
         borderTopRightRadius : 6,
         borderBottomRightRadius : 6,
-        backgroundColor: '#0887BF',
+        backgroundColor : (theme.colorScheme == 'dark' ? '#0887BF' : '#26BCFF'),
         writingMode: 'vertical-lr',
         transform: 'rotate(180deg)',
         paddingTop : 20,

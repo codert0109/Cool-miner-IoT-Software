@@ -8,7 +8,7 @@ const useStyles = createStyles((theme) => ({
     },
     textItem : {
         paddingLeft : 10,
-        color : 'white',
+        color : (theme.colorScheme == 'dark' ? 'white' : 'black'),
         width : '100%'
     },
     buttonStyle: {
