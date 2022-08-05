@@ -89,7 +89,7 @@ const links: Array<HeaderSearchProps> = [
 ];
 
 const DesktopNav = observer((props) => {
-  const { god, lang } = useStore();
+  const { god, lang, user } = useStore();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
 
@@ -115,7 +115,10 @@ const DesktopNav = observer((props) => {
           placement="end"
           gutter={1}
           control={
-            <a href={link.link} className={classes.link}>
+            <a href={link.link} className={classes.link} 
+              onClick={() => {
+                user.layout.sidebarOpen.setValue(false);
+              }}>
               <Center>
                 <span className={classes.linkLabel}>{link.label}</span>
                 <ChevronDown size={12} />

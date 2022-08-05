@@ -140,7 +140,9 @@ export const NavbarSimple = observer(() => {
       p="md" 
       hiddenBreakpoint="sm" 
       hidden={!user.layout.sidebarOpen.value} 
+      onClick={() => user.layout.sidebarOpen.setValue(false)}
       width={{ sm: 200, lg: 300 }}>
+      
       <Navbar.Section grow>
         <Group className={classes.header} position="apart" align={'center'}>
           <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>

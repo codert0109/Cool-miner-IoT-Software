@@ -54,7 +54,10 @@ export const index = observer(() => {
           <Group spacing={5} className={classes.links}>
             <DesktopNav />
           </Group>
-          <Burger opened={user.layout.sidebarOpen.value} onClick={() => user.layout.sidebarOpen.setValue(!user.layout.sidebarOpen.value)} className={classes.burger} size="sm" />
+          <Burger 
+            opened={user.layout.sidebarOpen.value} 
+            onClick={() => user.layout.sidebarOpen.setValue(!user.layout.sidebarOpen.value)} 
+            className={classes.burger} size="sm" />
         </div>
       </Container>
       <WalletInfo />
