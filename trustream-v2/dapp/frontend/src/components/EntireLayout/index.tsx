@@ -17,8 +17,8 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     position: 'relative',
     boxSizing: 'border-box',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : 'transparent',
-    boxShadow : theme.colorScheme === 'dark' ? '0px 0px 6px 6px #00000030' : 'none'
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : '#ffffffdb',
+    boxShadow : theme.colorScheme === 'dark' ? '0px 0px 6px 6px #00000030' : '0px 0px 6px 6px #ffffffdb'
   },
 
   inner: {

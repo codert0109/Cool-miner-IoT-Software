@@ -9,10 +9,11 @@ const useStyles = createStyles((theme) => ({
         fontWeight : 'bold'
     },
     divColor : {
-        backgroundColor : theme.colorScheme === 'dark' ? 'transparent' : '#DBDBDB',
+        backgroundColor : theme.colorScheme === 'dark' ? 'transparent' : 'transparent',
         padding : '20px',
         paddingTop : '10px',
-        borderRadius : '10px'
+        borderRadius : '10px',
+        border: '3px solid #DBDBDB'
     }
 }));
 
