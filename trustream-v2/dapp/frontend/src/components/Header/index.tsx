@@ -16,7 +16,8 @@ const useStyles = createStyles((theme) => ({
 
   shadowStyle : {
     boxShadow : 'rgb(255 255 255 / 19%) 0px 2px 10px 5px',
-    opacity : theme.colorScheme == 'dark' ? 1.0 : 0.95
+    opacity : theme.colorScheme == 'dark' ? 1.0 : 0.95,
+    zIndex : 1000
   },
 
   links: {
