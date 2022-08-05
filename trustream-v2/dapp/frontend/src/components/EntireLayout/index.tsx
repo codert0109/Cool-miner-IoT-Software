@@ -22,7 +22,10 @@ const useStyles = createStyles((theme) => ({
   },
 
   inner: {
-    position: 'relative',    
+    position: 'relative',
+    paddingLeft : 0,
+    paddingRight : 0,
+    maxWidth : 'none'
     // paddingTop: 200,
     // paddingBottom: 120,
 

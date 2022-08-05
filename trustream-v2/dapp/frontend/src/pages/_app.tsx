@@ -103,7 +103,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       {/* <ColorSchemeProvider colorScheme={store.colorScheme} toggleColorScheme={user.toggleTheme}> */}
       <MantineProvider
         theme={{
-          fontFamily: 'Proxima-Nova-Bold, Proxima-Nova, Oxanium, sans-serif;',
+          fontFamily: 'Proxima-Nova-Bold !important',
           colors: (store.colors as any),
           colorScheme: store.colorScheme
         }} withGlobalStyles withNormalizeCSS>
