@@ -22,8 +22,6 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
   const { classes, theme } = useStyles();
   const { god, user } = useStore();
 
-  console.log('rootDiv', classes.rootDiv);
-
   let mainStyle = {};
 
   if (theme.colorScheme == 'dark') {

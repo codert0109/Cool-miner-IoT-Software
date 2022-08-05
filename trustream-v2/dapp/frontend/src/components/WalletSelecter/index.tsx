@@ -8,7 +8,6 @@ import { Box, Group, Modal, Tabs, TabsProps, Text, Avatar, AvatarsGroup, Badge, 
 import { metamaskUtils } from '../../lib/metaskUtils';
 import { useEffect } from 'react';
 import { StringState } from '../../store/standard/base';
-import classNames from 'classnames';
 
 export const WalletSelecter = observer(() => {
   const { god, lang } = useStore();
@@ -108,7 +107,9 @@ export const WalletSelecter = observer(() => {
       icon: '/images/imtoken.svg'
     }
   ];
+
   const names = config.map((item) => item.title).join(', ');
+
   return (
     <Modal opened={store.visible} overlayOpacity={0.45} centered onClose={store.close} title={lang.t(god.isConnect ? 'switch-network' : 'connect-to-wallet')}>
       <SegmentedControl 
@@ -126,7 +127,12 @@ export const WalletSelecter = observer(() => {
                   src={`//logo.chainbit.xyz/${i.Coin.symbol.toLowerCase()}`}
                   size={45}
                   style={{ cursor: 'pointer', background: 'transparent' }}
-                  onClick={() => store.setChain(i.chainId)}
+                  onClick={() => {
+                    if (i.chainId === god.currentChain.chainId)
+                      store.connectInejct();
+                    else
+                      store.setChain(i.chainId);
+                  }}
                 ></Avatar>
                 {god.currentChain.chainId == i.chainId && <Badge style={{ border: '2px solid white', position: 'absolute', right: -4, bottom: -4 }} size="xs" color="green" variant="filled" />}
               </Box>

@@ -34,7 +34,6 @@ export const ETHProvider = observer(({ children }) => {
       });
     }
 
-    console.log('working now...');
     if (chainId) {
       if (god.currentNetwork.allowChains.includes(chainId)) {
         god.setChain(chainId);

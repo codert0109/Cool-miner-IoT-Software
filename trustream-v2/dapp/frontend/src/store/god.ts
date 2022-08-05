@@ -8,6 +8,8 @@ import { eventBus } from '../lib/event';
 import { rpc } from '../lib/smartgraph/gql';
 import { CoinState } from './lib/CoinState';
 
+const { ethereum } = require('../global.js').getWindow();
+
 export enum Network {
   ETH = 'eth',
   BSC = 'bsc',
@@ -43,7 +45,7 @@ export class GodStore {
         allowChains: data.networks.map((i) => i.chainId),
         god: this,
         chain: new MappingState({
-          currentId: 4689,
+          currentId: ethereum?.networkVersion,
           map: data.networks
             .map(
               (i) =>
@@ -93,6 +95,7 @@ export class GodStore {
   }
 
   setChain(val: number) {
+    console.log('setChain called', val);
     this.currentNetwork.chain.setCurrentId(val);
     eventBus.emit('chain.switch');
   }

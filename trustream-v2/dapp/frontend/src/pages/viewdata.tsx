@@ -27,7 +27,7 @@ export default function TableReviews() {
         axios.get('/api/device_status')
         // axios.get('https://localhost:3333/api/device_status')
             .then((data) => {
-                console.log('data', data);
+                // console.log('data', data);
                 setTableData(data.data.data);
             })
             .catch((err) => {
