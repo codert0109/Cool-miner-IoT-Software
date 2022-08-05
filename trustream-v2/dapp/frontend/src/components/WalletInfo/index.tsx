@@ -8,7 +8,7 @@ import * as clipboard from 'clipboard-polyfill/text';
 import { helper } from '@/lib/helper';
 import { from } from '@iotexproject/iotex-address-ts';
 import { NetworkState } from '@/store/lib/NetworkState';
-import { Box, Button, Modal, Group, Tooltip, Image, Anchor, Text, Center } from '@mantine/core';
+import { Box, Button, Modal, Group, Tooltip, Image, Anchor, Text, Center, createStyles } from '@mantine/core';
 import { Copy, ExternalLink } from 'tabler-icons-react';
 import Jazzicon from '../Jazzicon/index';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,7 @@ export const WalletInfo = observer(() => {
     },
     toggleIOTipOpen(val: boolean) {
       this.isTipOpen = val;
-    }
+    },
   }));
 
   return (

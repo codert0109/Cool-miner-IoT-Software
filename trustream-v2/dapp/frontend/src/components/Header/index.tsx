@@ -43,6 +43,7 @@ export const index = observer(() => {
   const { classes } = useStyles();
   const { user } = useStore();
   const theme = useMantineTheme();
+  const { god, lang } = useStore();
 
   return (
     <Header height={56} className={classes.shadowStyle}>
@@ -54,10 +55,30 @@ export const index = observer(() => {
           <Group spacing={5} className={classes.links}>
             <DesktopNav />
           </Group>
-          <Burger 
-            opened={user.layout.sidebarOpen.value} 
-            onClick={() => user.layout.sidebarOpen.setValue(!user.layout.sidebarOpen.value)} 
-            className={classes.burger} size="sm" />
+          {
+            god.currentNetwork.account ?
+            <Burger 
+              opened={user.layout.sidebarOpen.value} 
+              onClick={() => user.layout.sidebarOpen.setValue(!user.layout.sidebarOpen.value)} 
+              className={classes.burger} size="sm" /> 
+            : 
+            <Text
+              color={'pink'}
+              style={{
+                borderRadius: '1.25rem',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                color: '#fff',
+                background: 'linear-gradient(90deg, rgb(224, 49, 49) 0%, rgb(230, 73, 128) 100%)'
+              }}
+              onClick={() => god.setShowConnecter(true)}
+              py="0.25rem"
+              px="0.8rem"
+              className={classes.burger}
+            >
+              Connect Wallet
+            </Text>
+          }
         </div>
       </Container>
       <WalletInfo />
