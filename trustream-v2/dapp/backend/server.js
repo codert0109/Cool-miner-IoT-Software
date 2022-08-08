@@ -61,6 +61,7 @@ const PORT = process.env.PORT || 3333
 https
   .createServer(
     {
+      ca : fs.readFileSync('cert/ca.crt'),
       key: fs.readFileSync('cert/privatekey.pem'),
       cert: fs.readFileSync('cert/server.crt'),
     },
