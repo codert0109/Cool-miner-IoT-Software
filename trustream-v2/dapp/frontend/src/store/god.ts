@@ -42,7 +42,7 @@ export class GodStore {
         type: true
       }
     }).then((data) => {
-      console.log('active data is putting');
+      console.log('active data is putting', data);
 
       let networkVersion = ethereum?.networkVersion;
       if (networkVersion === undefined) {
