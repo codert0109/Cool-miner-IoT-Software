@@ -285,9 +285,10 @@ export default function TableReviews() {
             {!isloading && 
                 <>
                     <ScrollArea>
+                        {!hasNFT() && 
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
                             Claim Tokens
-                        </Button>
+                        </Button>}
                         <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
                             <thead>
                                 <tr>
