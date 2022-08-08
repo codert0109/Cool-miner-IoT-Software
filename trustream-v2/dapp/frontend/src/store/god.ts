@@ -23,6 +23,7 @@ export class GodStore {
   updateTicker = new NumberState();
 
   constructor(rootStore: RootStore) {
+    console.log('new version testing');
     this.rootStore = rootStore;
     makeAutoObservable(this, {
       rootStore: false
@@ -41,6 +42,8 @@ export class GodStore {
         type: true
       }
     }).then((data) => {
+      console.log('active data is putting');
+
       let networkVersion = ethereum?.networkVersion;
       if (networkVersion === undefined) {
         networkVersion = 4689;
