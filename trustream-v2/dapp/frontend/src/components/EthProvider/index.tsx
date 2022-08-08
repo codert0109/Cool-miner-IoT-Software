@@ -26,12 +26,15 @@ export const ETHProvider = observer(({ children }) => {
   }));
 
   useEffect(() => {
+    console.log('useEffect called');
     if (error) {
+      console.log('error', error);
       showNotification({
         title: 'Error',
         message: error.message,
         color: 'red'
       });
+      return;
     }
 
     if (chainId) {

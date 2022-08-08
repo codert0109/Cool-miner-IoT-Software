@@ -134,7 +134,7 @@ export const WalletSelecter = observer(() => {
                       store.setChain(i.chainId);
                   }}
                 ></Avatar>
-                {god.currentChain.chainId == i.chainId && <Badge style={{ border: '2px solid white', position: 'absolute', right: -4, bottom: -4 }} size="xs" color="green" variant="filled" />}
+                {god.currentChain?.chainId == i.chainId && <Badge style={{ border: '2px solid white', position: 'absolute', right: -4, bottom: -4 }} size="xs" color="green" variant="filled" />}
               </Box>
               <Text size="xs" mt={1}>
                 {i.name}

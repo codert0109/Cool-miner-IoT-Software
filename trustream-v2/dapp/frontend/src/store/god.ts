@@ -41,11 +41,16 @@ export class GodStore {
         type: true
       }
     }).then((data) => {
+      let networkVersion = ethereum?.networkVersion;
+      if (networkVersion === undefined) {
+        networkVersion = 4689;
+      }
+
       this.network = new EthNetworkState({
         allowChains: data.networks.map((i) => i.chainId),
         god: this,
         chain: new MappingState({
-          currentId: ethereum?.networkVersion,
+          currentId: networkVersion,
           map: data.networks
             .map(
               (i) =>
@@ -91,11 +96,10 @@ export class GodStore {
   }
 
   get Coin() {
-    return this.currentChain.Coin;
+    return this.currentChain?.Coin;
   }
 
   setChain(val: number) {
-    console.log('setChain called', val);
     this.currentNetwork.chain.setCurrentId(val);
     eventBus.emit('chain.switch');
   }
