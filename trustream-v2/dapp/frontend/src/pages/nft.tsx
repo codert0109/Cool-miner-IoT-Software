@@ -314,10 +314,10 @@ export default function TableReviews() {
                             Buy NFT
                         </Button>
                         <div></div>
-                        <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
+                        {/* <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
                         <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
                             Transfer NFT
-                        </Button>
+                        </Button> */}
                     </SimpleGrid>
                 </>
             }
