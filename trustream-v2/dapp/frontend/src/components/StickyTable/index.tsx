@@ -89,10 +89,10 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
         <tr key={row.id}>
             <td>{new Date(row.timestamp * 1000).toLocaleString()}</td>
             <td>{helper.string.truncate(god.currentNetwork.account || '0x......', 12, '...')}</td>
-            <td>{row.pedestrains}</td>
+            {/* <td>{row.pedestrains}</td>
             <td>{row.cars}</td>
             <td>{row.bus}</td>
-            <td>{row.truck}</td>
+            <td>{row.truck}</td> */}
             <td>{row.total}</td>
             <td>
                 <Anchor<'a'>
@@ -119,13 +119,13 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
                 <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <tr>
                         <th>Timestamp</th>
-                        <th>Address</th>
-                        <th>Pedestrians</th>
+                        <th>Miner</th>
+                        {/* <th>Pedestrians</th>
                         <th>Cars</th>
                         <th>Bus</th>
-                        <th>Truck</th>
-                        <th>Total</th>
-                        <th>Location</th>
+                        <th>Truck</th> */}
+                        <th>Total of Events</th>
+                        <th>Video Link</th>
                         {/* <th>City</th>
                         <th>Region</th>
                         <th>Postalcode</th>
