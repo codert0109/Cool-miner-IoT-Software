@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { observer, useObserver, useLocalObservable } from 'mobx-react-lite';
+import { observer, Observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '@/store/index';
 import { helper } from '@/lib/helper';
 import { Box, Center, createStyles, Menu, Text } from '@mantine/core';
 import Jazzicon from '../Jazzicon';
-import { Settings, ChevronDown, Home, LayersLinked, CloudDataConnection, Stack2 } from 'tabler-icons-react';
+
+import {
+  Settings,
+  ChevronDown,
+  Home,
+  LayersLinked,
+  FileDatabase,
+  CloudDataConnection,
+  Stack2
+} from 'tabler-icons-react';
+
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -72,9 +82,9 @@ const links: Array<HeaderSearchProps> = [
     icon: Home
   },
   {
-    link: '/setting',
-    label: 'Setting',
-    icon: Settings
+    link: '/miners',
+    label: 'Miners',
+    icon: FileDatabase
   },
   {
     link: '/nft',
@@ -115,7 +125,7 @@ const DesktopNav = observer((props) => {
           placement="end"
           gutter={1}
           control={
-            <a href={link.link} className={classes.link} 
+            <a href={link.link} className={classes.link}
               onClick={() => {
                 user.layout.sidebarOpen.setValue(false);
               }}>
@@ -161,59 +171,65 @@ const DesktopNav = observer((props) => {
       // </a>
     );
   });
-  const accountView = useObserver(() => {
-    if (!god.currentNetwork.account) {
-      return (
-        <Text
-          color={'pink'}
-          style={{
-            borderRadius: '1.25rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            color: '#fff',
-            background: 'linear-gradient(90deg, rgb(224, 49, 49) 0%, rgb(230, 73, 128) 100%)'
-          }}
-          onClick={store.showConnecter}
-          py="0.25rem"
-          px="0.8rem"
-        >
-          Connect Wallet
-        </Text>
-      );
-    }
-    return (
-      <>
-        {god.currentNetwork.account && (
-          <Box mr="1rem" color="pink">
-            {/* <Person /> */}
-            {/* <Box style={{ borderRadius: '50%' }} ml={5}>
-              <Jazzicon diameter={30} address={god.currentNetwork.account || '0x......'} />
-            </Box> */}
-          </Box>
-        )}
-        <Box
-          style={{ display: 'flex', fontWeight: 'semibold', cursor: 'pointer', borderRadius: '1.25rem' }}
-          sx={(theme) => ({
-            background: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0]
-          })}
-          onClick={store.showWalletInfo}
-        >
-          <Box style={{ background: '#edfff6', borderRadius: '1.25rem' }} py="0.25rem" px="8px" mr="0.5rem">
+
+  // {!god.currentNetwork.account &&
+  const accountView =
+    <Observer>
+      {() => {
+        if (!god.currentNetwork.account) {
+          return (
             <Text
+              color={'pink'}
               style={{
-                color: 'rgb(67, 201, 186)'
+                borderRadius: '1.25rem',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                color: '#fff',
+                background: 'linear-gradient(90deg, rgb(224, 49, 49) 0%, rgb(230, 73, 128) 100%)'
               }}
+              onClick={store.showConnecter}
+              py="0.25rem"
+              px="0.8rem"
             >
-              0x
+              Connect Wallet
             </Text>
-          </Box>
-          <Text mr={2} pr="2" py="0.25rem">
-            {helper.string.truncate(god.currentNetwork.account, 10, '...')}
-          </Text>
-        </Box>
-      </>
-    );
-  });
+          );
+        }
+
+        return (
+          <>
+            {god.currentNetwork.account && (
+              <Box mr="1rem" color="pink">
+                {/* <Person /> */}
+                {/* <Box style={{ borderRadius: '50%' }} ml={5}>
+                  <Jazzicon diameter={30} address={god.currentNetwork.account || '0x......'} />
+                </Box> */}
+              </Box>
+            )}
+            <Box
+              style={{ display: 'flex', fontWeight: 'semibold', cursor: 'pointer', borderRadius: '1.25rem' }}
+              sx={(theme) => ({
+                background: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0]
+              })}
+              onClick={store.showWalletInfo}
+            >
+              <Box style={{ background: '#edfff6', borderRadius: '1.25rem' }} py="0.25rem" px="8px" mr="0.5rem">
+                <Text
+                  style={{
+                    color: 'rgb(67, 201, 186)'
+                  }}
+                >
+                  0x
+                </Text>
+              </Box>
+              <Text mr={2} pr="2" py="0.25rem">
+                {helper.string.truncate(god.currentNetwork.account, 10, '...')}
+              </Text>
+            </Box>
+          </>
+        );
+      }}
+    </Observer>;
 
   return (
     <>

@@ -6,7 +6,7 @@ import { useStore } from '../../store';
 import { BrandGoogleDrive } from 'tabler-icons-react';
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { observer, useObserver, useLocalObservable } from 'mobx-react-lite';
+import { observer, Observer, useLocalObservable } from 'mobx-react-lite';
 import LoginMsgShow from "../LoginMsgShow";
 
 // import { LanguageSwitch } from '@/components/LanguageSwitch';
@@ -118,17 +118,21 @@ const HeroTitle = observer(({children}) => {
     currentAvatar: 1
   }));
 
-  const login_status = useObserver(() => {
-    return (
-      <MainLayout>
-        <div className={classes.wrapper}>
-          <Container className={classes.inner}>
-            {god.currentNetwork.account ? children : <LoginMsgShow className={classes.loginMsgDiv}/>}
-          </Container>
-        </div>
-      </MainLayout>
-    );
-  });
+  const login_status = <Observer>
+    {
+      () => {
+        return (
+          <MainLayout>
+            <div className={classes.wrapper}>
+              <Container className={classes.inner}>
+                {god.currentNetwork.account ? children : <LoginMsgShow className={classes.loginMsgDiv}/>}
+              </Container>
+            </div>
+          </MainLayout>
+        );
+      }
+    }
+  </Observer>
 
   return (
     <>

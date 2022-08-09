@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, useLocalObservable, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '../../store/index';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from '../../lib/web3-react';

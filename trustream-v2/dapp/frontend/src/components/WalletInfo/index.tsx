@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '../../store/index';
 import { eventBus } from '../../lib/event';
 import copy from 'copy-to-clipboard';
@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 export const WalletInfo = observer(() => {
   const { god, lang } = useStore();
   const { t } = useTranslation();
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     isTipOpen: false,
     isIOTipOpen: false,
     get visible() {

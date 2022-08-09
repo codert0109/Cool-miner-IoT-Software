@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '../../store/index';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect } from 'react';
@@ -15,7 +15,7 @@ export const ETHProvider = observer(({ children }) => {
   const { god, lang } = useStore();
   const { chainId, account, activate, active, library, deactivate, error, connector } = useWeb3React<Web3Provider>();
 
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     logout() {
       deactivate();
       god.eth.connector.latestProvider.clear();
