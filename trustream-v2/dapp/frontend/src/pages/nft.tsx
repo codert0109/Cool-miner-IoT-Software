@@ -250,48 +250,49 @@ export default function TableReviews() {
     };
 
     const onClaimTokens = () => {
-        if (hasNFT()) {
+        if (hasNFT() || hasBalance()) {
             Swal.fire(
                 'Error!',
                 'You can not claim tokens since you already buy an NFT.',
                 'error'
             )
-            axios.post(`/api/claim_tokens`, { account })
-                .then((data) => {
-                    if (data.data == 'success') {
-                        setTimeout(() => {
-                            god.currentNetwork.loadBalance();
-                        }, 2000);
-                        Swal.fire(
-                            'Congratulations!',
-                            '10 IoTex coins were successfully transferred to your account!',
-                            'success'
-                        )
-                    } else {
-                        Swal.fire(
-                            'Error!',
-                            'Something went wrong!',
-                            'error'
-                        )
-                    }
-                })
-                .catch((err) => {
-                    console.error('err received', err);
-                });
+            return;
         }
+        axios.post(`/api/claim_tokens`, { account })
+            .then((data) => {
+                if (data.data == 'success') {
+                    setTimeout(() => {
+                        god.currentNetwork.loadBalance();
+                    }, 2000);
+                    Swal.fire(
+                        'Congratulations!',
+                        '10 IoTex coins were successfully transferred to your account!',
+                        'success'
+                    )
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong!',
+                        'error'
+                    )
+                }
+            })
+            .catch((err) => {
+                console.error('err received', err);
+            });
     };
 
     return (
         <Layout>
             <NFTStore onStatus={onStatus} />
             {isloading && <Loading />}
-            {!isloading && 
+            {!isloading &&
                 <>
                     <ScrollArea>
-                        {!hasNFT() && !hasBalance() && 
-                        <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
-                            Claim Tokens
-                        </Button>}
+                        {!hasNFT() && !hasBalance() &&
+                            <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
+                                Claim Tokens
+                            </Button>}
                         <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
                             <thead>
                                 <tr>
