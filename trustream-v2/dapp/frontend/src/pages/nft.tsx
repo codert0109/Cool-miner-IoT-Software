@@ -218,7 +218,7 @@ export default function TableReviews() {
                 await receipt.wait();
                 Swal.fire(
                     'Awesome!',
-                    'You bought NFTs!',
+                    'Your NFT purchase has been completed!',
                     'success'
                 )
             }
@@ -260,9 +260,9 @@ export default function TableReviews() {
                             god.currentNetwork.loadBalance();
                         }, 2000);
                         Swal.fire(
-                            'Success!',
-                            'You got 10 IoTex coins. You can buy an NFT!',
-                            'error'
+                            'Congratulations!',
+                            '10 IoTex coins were successfully transferred to your account!',
+                            'success'
                         )
                     } else {
                         Swal.fire(
