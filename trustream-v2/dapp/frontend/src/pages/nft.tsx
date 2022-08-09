@@ -245,6 +245,10 @@ export default function TableReviews() {
         return tableData[0] ? tableData[0].balance > 0 : false;
     };
 
+    const hasBalance = () => {
+        return god.currentChain.Coin.balance.format != 0;
+    };
+
     const onClaimTokens = () => {
         if (hasNFT()) {
             Swal.fire(
@@ -252,7 +256,6 @@ export default function TableReviews() {
                 'You can not claim tokens since you already buy an NFT.',
                 'error'
             )
-        } else {
             axios.post(`/api/claim_tokens`, { account })
                 .then((data) => {
                     if (data.data == 'success') {
@@ -285,7 +288,7 @@ export default function TableReviews() {
             {!isloading && 
                 <>
                     <ScrollArea>
-                        {!hasNFT() && 
+                        {!hasNFT() && !hasBalance() && 
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
                             Claim Tokens
                         </Button>}
