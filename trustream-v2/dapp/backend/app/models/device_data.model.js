@@ -25,7 +25,7 @@ module.exports = (sequelize, Sequelize) => {
       type : Sequelize.INTEGER
     },
     link: {
-      type : Sequelize.LINK
+      type : Sequelize.STRING
     },
     created_at: {
       type: Sequelize.DATE
