@@ -39,12 +39,7 @@ interface TableScrollAreaProps {
         bus: string;
         truck: string;
         total: string;
-        city: string;
-        region: string;
-        postalcode: string;
-        country: string;
-        continent: string;
-        coordinates: string;
+        link: string;
     }[];
 }
 
@@ -99,9 +94,9 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
                     size="sm"
                     onClick={(event) => {
                         event.preventDefault();
-                        window.open(`https://www.google.ca/maps/@${getX(row)},${getY(row)},3z`);
+                        window.open(row.link);
                     }}>
-                    {row.country}
+                    Video
                 </Anchor>
             </td>
             {/* <td>{row.city}</td>
