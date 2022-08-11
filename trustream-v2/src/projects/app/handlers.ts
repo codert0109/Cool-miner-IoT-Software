@@ -111,12 +111,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     bus : decodedPayload.message.bus,
     truck : decodedPayload.message.truck,
     total : decodedPayload.message.total,
-    city : decodedPayload.message.city,
-    region : decodedPayload.message.region,  
-    postalcode : decodedPayload.message.postalcode,
-    country : decodedPayload.message.country,
-    continent : decodedPayload.message.continent,
-    coordinates : decodedPayload.message.coordinates
+    link : decodedPayload.message.link
   })
   // Store the data and execute some contracts (eg. rewards)
 }
