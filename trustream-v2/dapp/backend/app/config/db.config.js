@@ -1,7 +1,7 @@
 module.exports = {
-  HOST: "bix.cyoas0rbuedt.us-east-2.rds.amazonaws.com",
+  HOST: "database-1.c8hczoahlwk5.us-east-1.rds.amazonaws.com",
   USER: "postgres",
-  PASSWORD: "OSS6qdqKIh0XMr4kzN1G",
+  PASSWORD: "lqUYooZDk7LhMxuV60GR",
   DB: "datalayerdb",
   dialect: "postgres",
   pool: {

@@ -24,23 +24,8 @@ module.exports = (sequelize, Sequelize) => {
     total: {
       type : Sequelize.INTEGER
     },
-    city: {
-      type : Sequelize.STRING
-    },
-    region: {
-      type : Sequelize.STRING
-    },
-    postalcode: {
-      type : Sequelize.STRING
-    },
-    country: {
-      type : Sequelize.STRING
-    },
-    continent: {
-      type : Sequelize.STRING
-    },
-    coordinates: {
-      type : Sequelize.STRING
+    link: {
+      type : Sequelize.LINK
     },
     created_at: {
       type: Sequelize.DATE
