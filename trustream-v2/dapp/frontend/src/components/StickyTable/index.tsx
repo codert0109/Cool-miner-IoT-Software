@@ -83,7 +83,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
     const rows = data.map((row) => (
         <tr key={row.id}>
             <td>{new Date(row.timestamp * 1000).toLocaleString()}</td>
-            <td>{helper.string.truncate(god.currentNetwork.account || '0x......', 12, '...')}</td>
+            <td>{helper.string.truncate(row.address || '0x......', 12, '...')}</td>
             {/* <td>{row.pedestrains}</td>
             <td>{row.cars}</td>
             <td>{row.bus}</td>
