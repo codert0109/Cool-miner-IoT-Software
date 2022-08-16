@@ -81,11 +81,11 @@ const links: Array<HeaderSearchProps> = [
     label: 'NFT',
     icon: Stack2
   },
-  {
-    link: '/viewdata',
-    label: 'View Data',
-    icon: CloudDataConnection
-  },
+  //{
+  //  link: '/viewdata',
+  //  label: 'View Data',
+  //  icon: CloudDataConnection
+  //},
   {
     link: '/api/graphql',
     label: 'Stacking',
