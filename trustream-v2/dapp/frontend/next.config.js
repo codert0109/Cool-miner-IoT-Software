@@ -9,12 +9,13 @@ const nextConfig = {
   trailingSlash: true,
   exportPathMap: async function (defaultPathMap, { dev, dir, outDir, distDir, buildId } ) {
     return {
-      '/': { page: '/' },
-      '/setting': { page: '/setting' },
-      '/miners': { page: '/miners' },
-      '/nft': { page: '/nft' },
-      '/login': { page: '/login' },
-      '/viewdata': { page: '/viewdata' }
+      '/'         : { page: '/'         },
+      '/setting'  : { page: '/setting'  },
+      '/miners'   : { page: '/miners'   },
+      '/nft'      : { page: '/nft'      },
+      '/login'    : { page: '/login'    },
+      '/viewdata' : { page: '/viewdata' },
+      '/admin'    : { page: '/admin'    }
     }
   },
 };

@@ -1,5 +1,5 @@
 import { Oval } from 'react-loader-spinner'
-import { createStyles } from '@mantine/core';
+import { createStyles, Loader } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
     Loader: {
@@ -15,12 +15,14 @@ export default function() {
 
     return (
         <div className={classes.Loader}>
-            <Oval 
+            {/* <Oval 
                 color="#00BFFF" 
                 height={40} 
                 width={40} 
                 strokeWidth={7}
-                />
+                /> */}
+            <Loader/>
         </div>
+
     );
 };

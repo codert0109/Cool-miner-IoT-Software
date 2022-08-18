@@ -3,7 +3,8 @@ import { observer, Observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '@/store/index';
 import { helper } from '@/lib/helper';
 import { Box, Center, createStyles, Menu, Text } from '@mantine/core';
-import Jazzicon from '../Jazzicon';
+import NFTContractABI from '../../contracts/NFT.json';
+import ContractAddress from '../../contracts/contract-address.json';
 
 import {
   Settings,
@@ -12,7 +13,8 @@ import {
   LayersLinked,
   FileDatabase,
   CloudDataConnection,
-  Stack2
+  Stack2,
+  Lock
 } from 'tabler-icons-react';
 
 import { useRouter } from 'next/router';
@@ -73,6 +75,7 @@ interface HeaderSearchProps {
     link?: string;
     label?: string;
   }[];
+  access : string;
 }
 
 const links: Array<HeaderSearchProps> = [
@@ -84,18 +87,27 @@ const links: Array<HeaderSearchProps> = [
   {
     link: '/miners',
     label: 'Miners',
-    icon: FileDatabase
+    icon: FileDatabase,
+    access : 'public'
   },
   {
     link: '/nft',
     label: 'NFT',
-    icon: Stack2
+    icon: Stack2,
+    access : 'public'
   },
   {
     link: '/viewdata',
     label: 'View Data',
-    icon: CloudDataConnection
-  }
+    icon: CloudDataConnection,
+    access : 'public'
+  },
+  {
+    link: '/admin',
+    label: 'Admin',
+    icon: Lock,
+    access : 'admin'
+  },
 ];
 
 const DesktopNav = observer((props) => {
@@ -112,8 +124,27 @@ const DesktopNav = observer((props) => {
     },
     currentAvatar: 1
   }));
-  const router = useRouter();
-  const items = links.map((link) => {
+
+  const [isAdmin, setAdmin] = useState(false);
+
+  useEffect(() => {
+    const NFTContractAddress = ContractAddress.NFT;
+    god.currentNetwork.execContract({
+      address : NFTContractAddress,
+      abi : NFTContractABI.abi,
+      method : 'owner'
+    }).then((data) => {
+      if (data == god.currentNetwork.account) {
+        setAdmin(true);
+      } else {
+        setAdmin(false);
+      }
+    }).catch(() => {
+      setAdmin(false);
+    });
+  }, [god.currentNetwork.account]);
+  
+  const items = links.filter((item) => item.access === 'public' || (item.access === 'admin' && isAdmin)).map((link) => {
     const menuItems = link.links?.map((item) => <Menu.Item key={item.link}>{item.label}</Menu.Item>);
     if (menuItems) {
       return (

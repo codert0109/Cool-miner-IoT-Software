@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStyles, Navbar, Group, Box, TextInput, Code, Space, ThemeIcon, Text, Modal } from '@mantine/core';
 import {
   Home,
   Code as CodeIcon,
   Search,
   CloudDataConnection as ViewIcon,
-  Stack,
   News,
   Help,
-  Stack2
+  Lock
 }
   from 'tabler-icons-react';
 import { useStore } from '../../store/index';
 import { observer } from 'mobx-react-lite';
-import Link from 'next/link';
-import { SwitchThemeToggle } from './SwitchTheme';
 import { openSpotlight } from '@mantine/spotlight';
 import { User } from './User';
 import { WalletInfo } from '../WalletInfo';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
+import NFTContractABI from '../../contracts/NFT.json';
+import ContractAddress from '../../contracts/contract-address.json';
+
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef('icon');
   return {
@@ -93,15 +93,35 @@ export const NavbarSimple = observer(() => {
 
   const [isview, setView] = useState(false);
 
+  const [isAdmin, setAdmin] = useState(false);
+
+  useEffect(() => {
+    const NFTContractAddress = ContractAddress.NFT;
+    god.currentNetwork.execContract({
+      address : NFTContractAddress,
+      abi : NFTContractABI.abi,
+      method : 'owner'
+    }).then((data) => {
+      if (data == god.currentNetwork.account) {
+        setAdmin(true);
+      } else {
+        setAdmin(false);
+      }
+    }).catch(() => {
+      setAdmin(false);
+    });
+  }, [god.currentNetwork.account]);
+
   const data = [
     // { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false },
-    { link: '/nft',                                       label: 'NFT',           icon: ViewIcon, __blank : false },
-    { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon, __blank : false },
-    { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,     __blank : true },
-    { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,     __blank : true },
+    { link: '/admin',                                     label: 'Admin',         icon: Lock,     __blank : false, access : 'admin' },
+    { link: '/nft',                                       label: 'NFT',           icon: ViewIcon, __blank : false, access : 'public' },
+    { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon, __blank : false, access : 'public' },
+    { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,     __blank : true,  access : 'public' },
+    { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,     __blank : true,  access : 'public' },
   ];
 
-  const links = data.map((item) => (
+  const links = data.filter((item) => item.access === 'public' || (isAdmin && item.access === 'admin')).map((item) => (
     <Box
       className={cx(classes.link, { [classes.linkActive]: item.link === router.route })}
       sx={{ cursor: 'pointer' }}

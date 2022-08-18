@@ -104,6 +104,7 @@ export class GodStore {
     this.currentNetwork.chain.setCurrentId(val);
     eventBus.emit('chain.switch');
   }
+  
   setShowConnecter(value: boolean) {
     this.eth.connector.showConnector = value;
   }
