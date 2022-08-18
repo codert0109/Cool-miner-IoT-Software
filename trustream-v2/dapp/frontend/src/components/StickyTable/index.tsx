@@ -1,10 +1,7 @@
 import { useState } from 'react';
-import { createStyles, Table, ScrollArea, Anchor, Tooltip } from '@mantine/core';
+import { createStyles, Table, ScrollArea, Anchor } from '@mantine/core';
 import { helper } from '@/lib/helper';
 import { useStore } from '../../store/index';
-import { FileDigit } from 'tabler-icons-react';
-import { before } from 'lodash';
-import { ethers } from 'ethers';
 
 const useStyles = createStyles((theme) => ({
     header: {
@@ -110,7 +107,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
 
     return (
         <ScrollArea sx={{ height: 'calc(100vh - 140px)' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-            <Table striped highlightOnHover sx={{ minWidth: 700 }}>
+            <Table sx={{ minWidth: 700 }}>
                 <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <tr>
                         <th>Timestamp</th>
