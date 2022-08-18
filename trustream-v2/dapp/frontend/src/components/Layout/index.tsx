@@ -22,16 +22,15 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
   const { classes, theme } = useStyles();
   const { god, user } = useStore();
 
-  let mainStyle = {};
+  let mainStyle = {
+    backgroundImage : '',
+    overflow : 'hidden'
+  };
 
   if (theme.colorScheme == 'dark') {
-    mainStyle = {
-      backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(0,0,0,255))'
-    }
+    mainStyle.backgroundImage = 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(0,0,0,255))';
   } else {
-    mainStyle = {
-      backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(80,80,80,255))',
-    }
+    mainStyle.backgroundImage = 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(80,80,80,255))';
   }
 
   return (

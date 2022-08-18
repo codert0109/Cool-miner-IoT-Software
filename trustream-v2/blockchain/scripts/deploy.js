@@ -49,24 +49,37 @@ async function main() {
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
 
-  await AddWhiteLists(ContractObj);
+  await AddWhiteLists(ContractObj)
   saveFrontendFiles(ContractInfo)
 }
 
-async function AddWhiteLists(ContractObj) {
-  const NFTContract = ContractObj['NFT'];
-  // console.log('check whitelist', await NFTContract.isWhiteLists('0x19Ce1FEff967843152FB830e69f82d0Eadd1eB64'));
-  for (let i = 0; i < 10; i++) {
-    let addr = '0x19Ce1FEff967843152FB830e69f82d0Eadd1eB64';
-    let digits = "0123456789";
-    addr[addr.length - 1] = digits[~~(Math.random() * 10)];
-    await NFTContract.insertWhiteList(addr);
-    console.log(`added to whitelist ${addr}`);
-  }
+async function loadFromFile(path) {
+  const fs = require('fs')
+  const readline = require('readline')
+  const fileStream = fs.createReadStream(path)
 
-  // balanceRau = await deployer.getBalance()
-  // balanceIOTX = balanceRau / Math.pow(10, 18)
-  // console.log('Account balance after adding to whitelist:', balanceIOTX, ' IOTX')
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity,
+  })
+
+  let ret = [];
+
+  for await (const line of rl) {
+    ret.push(line)
+  }
+  return ret
+}
+
+async function AddWhiteLists(ContractObj) {
+  const NFTContract = ContractObj['NFT']
+
+  const lists = await loadFromFile('testers/list.txt')
+
+  for (const wallet of lists) {
+    await NFTContract.insertWhiteList(wallet)
+    console.log(`Added to whitelist ${wallet}`)
+  }
 }
 
 main()
@@ -92,7 +105,7 @@ function saveFrontendFiles(ContractInfo) {
   let contractNames = Object.keys(ContractInfo)
 
   for (let i = 0; i < contractNames.length; i++) {
-    const contractName = contractNames[i];
+    const contractName = contractNames[i]
     const ContractArtifact = artifacts.readArtifactSync(contractName)
 
     fs.writeFileSync(

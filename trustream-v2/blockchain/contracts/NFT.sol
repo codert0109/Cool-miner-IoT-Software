@@ -78,8 +78,9 @@ contract NFT is Ownable {
     /* Begin User Module */
     function verifyNFT(uint256 _normalNFTCnt, uint256 _specialNFTCnt) public virtual payable returns (bool) {
         // check if it is possible to buy
-        require (totalNormalSupply + _normalNFTCnt <= maxNormalSupply, "not enough normal NFTs left");
-        require (totalSpecialSupply + _specialNFTCnt <= maxSpecialSupply, "not enough special NFTs left");
+        require (totalNormalSupply + _normalNFTCnt <= maxNormalSupply, "not enough NFTs left");
+        require (totalSpecialSupply + _specialNFTCnt <= maxSpecialSupply, "not enough NFTs left");
+        require (isWhiteLists(msg.sender) == true, "You are not a beta tester.");
 
         uint256 bid_price = _normalNFTCnt * priceNormalNFT + _specialNFTCnt * priceSpecialNFT;
 

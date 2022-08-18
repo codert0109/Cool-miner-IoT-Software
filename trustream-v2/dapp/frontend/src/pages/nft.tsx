@@ -11,6 +11,7 @@ import axios from "axios";
 
 import { useStore } from '@/store/index';
 import Loading from "../components/Loading";
+import NFTMinerNode from "@/components/NFTMinerNode";
 
 let window = require('../global.js');
 
@@ -234,7 +235,7 @@ export default function TableReviews() {
             } else {
                 Swal.fire(
                     'Error!',
-                    'Something went wrong.',
+                    error.reason,
                     'error'
                 )
             }
@@ -325,6 +326,30 @@ export default function TableReviews() {
                     </SimpleGrid>
                 </>
             }
+
+            {/* <div>MARKETPLACE</div>
+            <SimpleGrid
+                cols={3}
+                breakpoints={[
+                    { maxWidth: 'sm', cols: 1 },
+                ]}
+            >
+                <NFTMinerNode 
+                    title="Testnet Miner"
+                    imgurl="/images/nft/TestNet.png"
+                    price="3 IOTX"
+                    comment="Qty available 250"/>
+                <NFTMinerNode 
+                    title="Public Pool Miner - mainnet"
+                    imgurl="/images/nft/PublicPool.png"
+                    price="xx"
+                    comment="Qty available Limited"/>
+                <NFTMinerNode 
+                    title="Webcam Miner - mainnet"
+                    imgurl="/images/nft/Webcam.png"
+                    price="xx"
+                    comment="Qty available xx"/>
+            </SimpleGrid> */}
         </Layout>
     );
 }
