@@ -11,10 +11,14 @@ import { useEffect, useState } from "react";
 import StickyTable from "../components/StickyTable";
 
 const useStyles = createStyles((theme) => ({
-    progressBar: {
-        '&:not(:first-of-type)': {
-            borderLeft: `3px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white}`,
-        },
+    table_header_button : {
+        marginTop : 10,
+        marginBottom : 10,
+        display : 'flex',
+        alignItems : 'center',
+        justifyContent : 'center'
+    },
+    refreshButton : {
     }
 }));
 
@@ -24,8 +28,13 @@ export default function TableReviews() {
     const [tableData, setTableData] = useState([]);
 
     useEffect(() => {
-        axios.get('/api/device_status')
-        // axios.get('https://localhost:3333/api/device_status')
+        onRefresh();
+    }, []);
+
+    const onRefresh = () => {
+        setTableData([]);
+        // axios.get('/api/device_status')
+        axios.get('https://localhost:3333/api/device_status')
             .then((data) => {
                 // console.log('data', data);
                 setTableData(data.data.data);
@@ -33,10 +42,13 @@ export default function TableReviews() {
             .catch((err) => {
 
             });
-    }, []);
+    };
 
     return (
         <Layout>
+            <div className={classes.table_header_button}>
+                <Button disabled={false} onClick={onRefresh} className={classes.refreshButton}>Refresh</Button>
+            </div>
             <StickyTable data={tableData}/>
         </Layout>
     );

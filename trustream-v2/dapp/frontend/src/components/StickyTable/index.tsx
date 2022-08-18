@@ -110,7 +110,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
 
     return (
         <ScrollArea sx={{ height: 'calc(100vh - 140px)' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-            <Table sx={{ minWidth: 700 }}>
+            <Table striped highlightOnHover sx={{ minWidth: 700 }}>
                 <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <tr>
                         <th>Timestamp</th>

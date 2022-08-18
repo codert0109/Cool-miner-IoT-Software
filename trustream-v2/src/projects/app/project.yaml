@@ -16,7 +16,7 @@ dataSources:
   - kind: ethereum/contract
     name: NFT
     source:
-      address: 4bA46750082DDf6Ac00E603182AB0dd6d1c95a3B
+      address: 0D36b5Ea7b4DE6C958706eAa08b278c4D11Ca1D7
       abi: NFT
     eventHandlers:
 
