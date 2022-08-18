@@ -48,10 +48,9 @@ export default function TableReviews() {
         <Layout>
             {loading && <Loading />}
             <div className={classes.table_header_button}>
-                {/* <Pagination page={activePage} onChange={setPage} total={100} /> */}
                 <Button disabled={loading} onClick={onRefresh} className={classes.refreshButton}>Refresh</Button>
             </div>
-            <StickyTable data={tableData}/>
+            {!loading && <StickyTable data={tableData}/>}
         </Layout>
     );
 }
