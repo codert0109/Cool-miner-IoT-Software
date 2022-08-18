@@ -94,7 +94,7 @@ export const NavbarSimple = observer(() => {
   const [isview, setView] = useState(false);
 
   const data = [
-    { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false },
+    // { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false },
     { link: '/nft',                                       label: 'NFT',           icon: ViewIcon, __blank : false },
     { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon, __blank : false },
     { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,     __blank : true },

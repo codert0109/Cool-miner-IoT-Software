@@ -1,16 +1,17 @@
 import Layout from "@/components/EntireLayout";
-import { createStyles, Container, Text, Button, Grid, Group, Skeleton, useMantineTheme, Anchor } from '@mantine/core';
-import STAKEDCLAIMED from "@/components/STAKEDCLAIMED";
-import BUYELUM from "@/components/BUYELUM";
-import INFOCONTAINER from '@/components/INFOCONTAINER';
-import MyAccount from '@/components/MyAccount';
-import LogBook from '@/components/LogBook';
-import EARNED from "@/components/EARNED";
+import { useEffect } from "react";
+import { useRouter } from 'next/router';
 
 export default function () {
+  const router = useRouter()
+
+  useEffect(() => {
+    router.push('/nft');
+  }, []);
+
   return (
     <Layout>
-      <Grid>
+      {/* <Grid>
         <Grid.Col xs={12}>
           <Grid style={{paddingLeft : '36px'}}>
             <Grid.Col sm={6} md={3}>{<STAKEDCLAIMED label="STACKED" />}</Grid.Col>
@@ -29,7 +30,7 @@ export default function () {
             <LogBook />
           </INFOCONTAINER>
         </Grid.Col>
-      </Grid>
+      </Grid> */}
     </Layout>
   );
 }
