@@ -33,8 +33,8 @@ export default function TableReviews() {
 
     const onRefresh = () => {
         setTableData([]);
-        // axios.get('/api/device_status')
-        axios.get('https://localhost:3333/api/device_status')
+        axios.get('/api/device_status')
+        // axios.get('https://localhost:3333/api/device_status')
             .then((data) => {
                 // console.log('data', data);
                 setTableData(data.data.data);
