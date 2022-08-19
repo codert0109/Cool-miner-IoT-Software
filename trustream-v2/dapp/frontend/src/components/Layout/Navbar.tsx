@@ -170,7 +170,7 @@ export const NavbarSimple = observer(() => {
               <CodeIcon />
             </ThemeIcon> */}
             <Text className={classes.navbar_title} weight="bold" size="lg">
-              Elumicate Dapp V1
+              Elumicate Mining Portal
             </Text>
           </Box>
         </Group>
