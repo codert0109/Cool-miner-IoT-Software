@@ -134,6 +134,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
 function getBaseUrl() {
   if (process.browser) {
     return '';

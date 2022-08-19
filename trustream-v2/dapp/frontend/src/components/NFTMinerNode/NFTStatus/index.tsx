@@ -8,7 +8,7 @@ const BREAKPOINT = '@media (max-width: 900px)';
 
 const useStyles = createStyles((theme) => ({
     caption: {
-        fontSize: '1.2rem',
+        fontSize: '1.5rem',
         paddingLeft: 10
     },
 
@@ -22,12 +22,13 @@ const useStyles = createStyles((theme) => ({
         cursor: 'pointer',
         height: 40,
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
     warning: {
-        border: '2px solid #0072B5',
-        borderLeft: '5px solid #0072B5',
+        border: '2px solid #1864ab',
+        borderLeft: '5px solid #1864ab',
+        backgroundColor : '#1864ab',
     },
 
     success: {
@@ -85,15 +86,15 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function ({ nftStatus, title, imgurl, price }) {
+export default function NFTStatus({nftStatus, title, imgurl, price}) {
     const { god } = useStore();
     const { classes, theme } = useStyles();
     const [modalOpen, setModalOpen] = useState(false);
     const comment = "Qty available 1";
     const [acquiredTime, setAcquiredTime] = useState("");
 
-
     useEffect(() => {
+        console.log('calling happen');
         const NFTContractAddress = ContractAddress.NFT;
         god.currentNetwork.execContract({
             address: NFTContractAddress,
@@ -101,14 +102,16 @@ export default function ({ nftStatus, title, imgurl, price }) {
             method: 'getAcquiredTime',
             params: [god.currentNetwork.account]
         }).then((data) => {
+            // console.log('receive data but', data);
             let timeStamp = parseInt(data.toString());
             if (timeStamp == 0) return;
             let info = new Date(timeStamp * 1000);
             setAcquiredTime(info.getFullYear() + " " + (info.getMonth() + 1) + " " + info.getDate());
-        }).catch(() => {
+        }).catch((error) => {
+            // console.log('receive error ', error);
             return;
         });
-    }, [god.currentNetwork.account]);
+    }, [god, nftStatus]);
 
 
     if (nftStatus == true) {

@@ -8,6 +8,7 @@ import { useStore } from '@/store/index';
 import Loading from "../components/Loading";
 import NFTMinerNode from "@/components/NFTMinerNode";
 import NFTStatus from "@/components/NFTMinerNode/NFTStatus";
+import { observer } from 'mobx-react-lite';
 
 const BigNumber = require("bignumber.js");
 let window = require('../global.js');
@@ -51,7 +52,7 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function TableReviews() {
+export default observer(() => {
     const { classes, theme } = useStyles();
     const { god } = useStore();
 
@@ -218,9 +219,11 @@ export default function TableReviews() {
             )
             return;
         }
-        axios.post(`/api/claim_tokens`, { account })
+        axios.post(`https://miner.elumicate.com/api/claim_tokens`, { account })
             .then((data) => {
                 if (data.data == 'success') {
+                    god.pollingData();
+                    console.log('call polling data');
                     setTimeout(() => {
                         god.currentNetwork.loadBalance();
                     }, 2000);
@@ -337,4 +340,4 @@ export default function TableReviews() {
                 </>}
         </Layout>
     );
-}
+});
