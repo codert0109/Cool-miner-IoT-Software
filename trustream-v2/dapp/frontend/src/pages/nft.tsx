@@ -68,49 +68,49 @@ export default function TableReviews() {
 
     const [isloading, setLoading] = useState(true);
 
-    const rows = tableData.filter((item, index) => index == 0).map((row) => {
-        let leftSupply = row.maxSupply - row.totalSupply;
-        let supplyP = row.totalSupply * 100 / Math.max(1, row.maxSupply);
-        let leftP = 100 - supplyP;
+    // const rows = tableData.filter((item, index) => index == 0).map((row) => {
+    //     let leftSupply = row.maxSupply - row.totalSupply;
+    //     let supplyP = row.totalSupply * 100 / Math.max(1, row.maxSupply);
+    //     let leftP = 100 - supplyP;
 
-        return (
-            <>
-                <tr key={row.type}>
-                    <td>{row.type == 'NormalNFT' ? 'Public Pool NFT' : ''}</td>
-                    <td>{row.price}</td>
-                    <td>
-                        {row.maxSupply ?
-                            <>
-                                <Group position="apart">
-                                    <Text size="xs" color="teal" weight={700}>
-                                        {row.totalSupply} sold
-                                    </Text>
-                                    <Text size="xs" color="red" weight={700}>
-                                        {leftSupply} left
-                                    </Text>
-                                </Group>
-                                <Progress
-                                    classNames={{ bar: classes.progressBar }}
-                                    sections={[
-                                        {
-                                            value: supplyP,
-                                            color: theme.colorScheme === 'dark' ? theme.colors.teal[9] : theme.colors.teal[6],
-                                        },
-                                        {
-                                            value: leftP,
-                                            color: theme.colorScheme === 'dark' ? theme.colors.red[9] : theme.colors.red[6],
-                                        },
-                                    ]}
-                                />
-                            </>
-                            : 'no supply'
-                        }
-                    </td>
-                    <td>{row.balance > 0 ? 'Yes' : 'No'}</td>
-                </tr>
-            </>
-        );
-    });
+    //     return (
+    //         <>
+    //             <tr key={row.type}>
+    //                 <td>{row.type == 'NormalNFT' ? 'Public Pool NFT' : ''}</td>
+    //                 <td>{row.price}</td>
+    //                 <td>
+    //                     {row.maxSupply ?
+    //                         <>
+    //                             <Group position="apart">
+    //                                 <Text size="xs" color="teal" weight={700}>
+    //                                     {row.totalSupply} sold
+    //                                 </Text>
+    //                                 <Text size="xs" color="red" weight={700}>
+    //                                     {leftSupply} left
+    //                                 </Text>
+    //                             </Group>
+    //                             <Progress
+    //                                 classNames={{ bar: classes.progressBar }}
+    //                                 sections={[
+    //                                     {
+    //                                         value: supplyP,
+    //                                         color: theme.colorScheme === 'dark' ? theme.colors.teal[9] : theme.colors.teal[6],
+    //                                     },
+    //                                     {
+    //                                         value: leftP,
+    //                                         color: theme.colorScheme === 'dark' ? theme.colors.red[9] : theme.colors.red[6],
+    //                                     },
+    //                                 ]}
+    //                             />
+    //                         </>
+    //                         : 'no supply'
+    //                     }
+    //                 </td>
+    //                 <td>{row.balance > 0 ? 'Yes' : 'No'}</td>
+    //             </tr>
+    //         </>
+    //     );
+    // });
 
     const onStatus = (info) => {
         // console.log('onStatus', info);
@@ -130,7 +130,6 @@ export default function TableReviews() {
             )
             return;
         }
-
 
         if (walletTransferArddress == 0) {
             Swal.fire(
@@ -283,11 +282,20 @@ export default function TableReviews() {
             });
     };
 
+    const getInfo = () => {
+        return tableData.filter((item, index) =>  index == 0).map((row) => {
+            return {
+                price : row.price,
+                left : row.maxSupply - row.totalSupply
+            }
+        })[0];
+    }
+
     return (
         <Layout>
             <NFTStore onStatus={onStatus} />
             {isloading && <Loading />}
-            {!isloading &&
+            {/* {!isloading &&
                 <>
                     <ScrollArea>
                         {!hasNFT() && !hasBalance() &&
@@ -319,37 +327,49 @@ export default function TableReviews() {
                             Buy NFT
                         </Button>
                         <div></div>
-                        {/* <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
+                        <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
                         <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
                             Transfer NFT
-                        </Button> */}
+                        </Button>
                     </SimpleGrid>
                 </>
-            }
-
-            {/* <div>MARKETPLACE</div>
-            <SimpleGrid
-                cols={3}
-                breakpoints={[
-                    { maxWidth: 'sm', cols: 1 },
-                ]}
-            >
-                <NFTMinerNode 
-                    title="Testnet Miner"
-                    imgurl="/images/nft/TestNet.png"
-                    price="3 IOTX"
-                    comment="Qty available 250"/>
-                <NFTMinerNode 
-                    title="Public Pool Miner - mainnet"
-                    imgurl="/images/nft/PublicPool.png"
-                    price="xx"
-                    comment="Qty available Limited"/>
-                <NFTMinerNode 
-                    title="Webcam Miner - mainnet"
-                    imgurl="/images/nft/Webcam.png"
-                    price="xx"
-                    comment="Qty available xx"/>
-            </SimpleGrid> */}
+            } */}
+            {!isloading &&
+                <>
+                    {!hasNFT() && !hasBalance() &&
+                        <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
+                            Claim Tokens
+                        </Button>}
+                    <div style={{ paddingLeft: 10 }}>MARKETPLACE</div>
+                    <SimpleGrid
+                        cols={3}
+                        breakpoints={[
+                            { maxWidth: 'xs', cols: 1 },
+                        ]}
+                    >
+                        <NFTMinerNode
+                            title="Testnet Miner"
+                            imgurl="/images/nft/TestNet.png"
+                            price={getInfo().price + " IOTX"}
+                            comment={"Qty available " + getInfo().left}
+                            callback={onBuyNFT}
+                            disabled={hasNFT()} />
+                        <NFTMinerNode
+                            title="Public Pool Miner - mainnet"
+                            imgurl="/images/nft/PublicPool.png"
+                            price="xx"
+                            comment="Qty available Limited"
+                            text="COMING SOON! LIMITED AVAILABILITY"
+                            disabled={true} />
+                        <NFTMinerNode
+                            title="Webcam Miner - mainnet"
+                            imgurl="/images/nft/Webcam.png"
+                            price="xx"
+                            comment="Qty available xx"
+                            text="COMING SOON!"
+                            disabled={true} />
+                    </SimpleGrid>
+                </>}
         </Layout>
     );
 }
