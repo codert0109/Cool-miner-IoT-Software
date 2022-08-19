@@ -370,11 +370,11 @@ export default function TableReviews() {
                             text="COMING SOON! LIMITED AVAILABILITY"
                             disabled={true} />
                         <NFTMinerNode
-                            title="Webcam Miner - mainnet"
+                            title="Webcam miner - Phase 2"
                             imgurl="/images/nft/Webcam.png"
                             price="xx"
                             comment="Qty available xx"
-                            text="COMING SOON!"
+                            text="COMING in Phase 2!"
                             disabled={true} />
                     </SimpleGrid>
                 </>}
