@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Device_Data = sequelize.define("device_data", {
+  const Device_Auth = sequelize.define("device_auth", {
     address: {
       type : Sequelize.STRING
     },
@@ -20,5 +20,5 @@ module.exports = (sequelize, Sequelize) => {
     }
   });
 
-  return Device_Data;
+  return Device_Auth;
 };
