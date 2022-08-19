@@ -12,6 +12,7 @@ import axios from "axios";
 import { useStore } from '@/store/index';
 import Loading from "../components/Loading";
 import NFTMinerNode from "@/components/NFTMinerNode";
+import NFTStatus from "@/components/NFTMinerNode/NFTStatus";
 
 let window = require('../global.js');
 
@@ -283,10 +284,10 @@ export default function TableReviews() {
     };
 
     const getInfo = () => {
-        return tableData.filter((item, index) =>  index == 0).map((row) => {
+        return tableData.filter((item, index) => index == 0).map((row) => {
             return {
-                price : row.price,
-                left : row.maxSupply - row.totalSupply
+                price: row.price,
+                left: row.maxSupply - row.totalSupply
             }
         })[0];
     }
@@ -340,6 +341,12 @@ export default function TableReviews() {
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
                             Claim Tokens
                         </Button>}
+                    {<NFTStatus
+                        nftStatus={hasNFT()}
+                        title="Testnet Miner"
+                        imgurl="/images/nft/TestNet.png"
+                        price={getInfo().price + " IOTX"}
+                        comment={"Qty available " + getInfo().left}/>}
                     <div style={{ paddingLeft: 10 }}>MARKETPLACE</div>
                     <SimpleGrid
                         cols={3}

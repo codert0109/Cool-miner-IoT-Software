@@ -46,7 +46,7 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = "" }) {
+export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = ""}) {
     const { classes, theme } = useStyles();
     const [ modalOpen, setModalOpen ] = useState(false);
 
