@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/EntireLayout";
 import { createStyles, Table, Progress, Anchor, Button, Text, TextInput, Group, ScrollArea, SimpleGrid } from '@mantine/core';
-const BigNumber = require("bignumber.js");
-
 import NFTStore from "../components/Blockchain/NFT";
-import { FloatingLabelInput } from "../components/FloatingLabelInput";
-
 import Swal from 'sweetalert2'
 import axios from "axios";
-
 import { useStore } from '@/store/index';
 import Loading from "../components/Loading";
 import NFTMinerNode from "@/components/NFTMinerNode";
 import NFTStatus from "@/components/NFTMinerNode/NFTStatus";
 
+const BigNumber = require("bignumber.js");
 let window = require('../global.js');
-
 
 const useStyles = createStyles((theme) => ({
     progressBar: {
@@ -49,6 +44,10 @@ const useStyles = createStyles((theme) => ({
     },
     marginBottom: {
         marginBottom: '10px'
+    },
+    marketplace : {
+        fontSize : '1.5rem',
+        paddingLeft : 10
     }
 }));
 
@@ -70,52 +69,7 @@ export default function TableReviews() {
 
     const [isloading, setLoading] = useState(true);
 
-    // const rows = tableData.filter((item, index) => index == 0).map((row) => {
-    //     let leftSupply = row.maxSupply - row.totalSupply;
-    //     let supplyP = row.totalSupply * 100 / Math.max(1, row.maxSupply);
-    //     let leftP = 100 - supplyP;
-
-    //     return (
-    //         <>
-    //             <tr key={row.type}>
-    //                 <td>{row.type == 'NormalNFT' ? 'Public Pool NFT' : ''}</td>
-    //                 <td>{row.price}</td>
-    //                 <td>
-    //                     {row.maxSupply ?
-    //                         <>
-    //                             <Group position="apart">
-    //                                 <Text size="xs" color="teal" weight={700}>
-    //                                     {row.totalSupply} sold
-    //                                 </Text>
-    //                                 <Text size="xs" color="red" weight={700}>
-    //                                     {leftSupply} left
-    //                                 </Text>
-    //                             </Group>
-    //                             <Progress
-    //                                 classNames={{ bar: classes.progressBar }}
-    //                                 sections={[
-    //                                     {
-    //                                         value: supplyP,
-    //                                         color: theme.colorScheme === 'dark' ? theme.colors.teal[9] : theme.colors.teal[6],
-    //                                     },
-    //                                     {
-    //                                         value: leftP,
-    //                                         color: theme.colorScheme === 'dark' ? theme.colors.red[9] : theme.colors.red[6],
-    //                                     },
-    //                                 ]}
-    //                             />
-    //                         </>
-    //                         : 'no supply'
-    //                     }
-    //                 </td>
-    //                 <td>{row.balance > 0 ? 'Yes' : 'No'}</td>
-    //             </tr>
-    //         </>
-    //     );
-    // });
-
     const onStatus = (info) => {
-        // console.log('onStatus', info);
         setTableData(info.Info);
         setAccount(info.account);
         setLoading(false);
@@ -348,7 +302,7 @@ export default function TableReviews() {
                         imgurl="/images/nft/TestNet.png"
                         price={getInfo().price + " IOTX"}
                         comment={"Qty available " + getInfo().left}/>}
-                    <div style={{ paddingLeft: 10 }}>MARKETPLACE</div>
+                    <div className={classes.marketplace}>MARKETPLACE</div>
                     <SimpleGrid
                         cols={3}
                         breakpoints={[

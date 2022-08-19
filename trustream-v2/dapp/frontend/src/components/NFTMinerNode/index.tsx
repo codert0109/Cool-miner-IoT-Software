@@ -13,7 +13,8 @@ const useStyles = createStyles((theme) => ({
     header: {
         overflow: 'hidden',
         whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis'
+        textOverflow: 'ellipsis',
+        fontSize: '1.3rem'
     },
     info: {
         paddingTop: 10,
