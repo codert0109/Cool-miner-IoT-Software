@@ -370,7 +370,7 @@ export default function TableReviews() {
                             text="COMING SOON! LIMITED AVAILABILITY"
                             disabled={true} />
                         <NFTMinerNode
-                            title="Webcam miner - Phase 2"
+                            title="Webcam Miner - Phase 2"
                             imgurl="/images/nft/Webcam.png"
                             price="xx"
                             comment="Qty available xx"
