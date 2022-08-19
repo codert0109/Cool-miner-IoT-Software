@@ -1,21 +1,28 @@
 import { createStyles, Modal, Button } from "@mantine/core";
-import { useState } from "react";
-import NFTMinerNode from "..";
+import { useEffect, useState } from "react";
+import NFTContractABI from '../../../contracts/NFT.json';
+import ContractAddress from '../../../contracts/contract-address.json';
+import { useStore } from '../../../store/index';
 
 const BREAKPOINT = '@media (max-width: 900px)';
 
 const useStyles = createStyles((theme) => ({
+    caption: {
+        fontSize: '1.2rem',
+        paddingLeft: 10
+    },
+
     infodiv: {
         padding: 5,
-        paddingLeft: 10,
+        paddingLeft: 0,
         marginTop: 10,
         marginLeft: 10,
         fontSize: '1.2rem',
         marginBottom: 20,
         cursor: 'pointer',
-        height: 50,
-        display : 'flex',
-        alignItems : 'center'
+        height: 40,
+        display: 'flex',
+        alignItems: 'center'
     },
 
     warning: {
@@ -24,12 +31,15 @@ const useStyles = createStyles((theme) => ({
     },
 
     success: {
-        border: '2px solid #00A170',
-        borderLeft: '5px solid #00A170',
+        // border: '2px solid #00A170',
+        // borderLeft: '5px solid #00A170',
     },
 
     textinfo: {
-        marginLeft: 10
+        marginLeft: 10,
+        fontSize: '0.9rem',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
 
     node: {
@@ -37,11 +47,13 @@ const useStyles = createStyles((theme) => ({
         paddingRight: 10,
         cursor: 'pointer'
     },
+
     header: {
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis'
     },
+
     info: {
         paddingTop: 10,
         display: 'flex',
@@ -73,9 +85,31 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function ({ nftStatus, title, imgurl, price, comment}) {
+export default function ({ nftStatus, title, imgurl, price }) {
+    const { god } = useStore();
     const { classes, theme } = useStyles();
     const [modalOpen, setModalOpen] = useState(false);
+    const comment = "Qty available 1";
+    const [acquiredTime, setAcquiredTime] = useState("");
+
+
+    useEffect(() => {
+        const NFTContractAddress = ContractAddress.NFT;
+        god.currentNetwork.execContract({
+            address: NFTContractAddress,
+            abi: NFTContractABI.abi,
+            method: 'getAcquiredTime',
+            params: [god.currentNetwork.account]
+        }).then((data) => {
+            let timeStamp = parseInt(data.toString());
+            if (timeStamp == 0) return;
+            let info = new Date(timeStamp * 1000);
+            setAcquiredTime(info.getFullYear() + " " + (info.getMonth() + 1) + " " + info.getDate());
+        }).catch(() => {
+            return;
+        });
+    }, [god.currentNetwork.account]);
+
 
     if (nftStatus == true) {
         const renderMinerNode = () => {
@@ -92,9 +126,9 @@ export default function ({ nftStatus, title, imgurl, price, comment}) {
                             <div>{comment}</div>
                         </div>
                         <div>
-                            <Button disabled={true} className={classes.buybtn}>
+                            {/* <Button disabled={true} className={classes.buybtn}>
                                 BUY
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
                 </div>
@@ -113,9 +147,15 @@ export default function ({ nftStatus, title, imgurl, price, comment}) {
                     }}>
                     {renderMinerNode()}
                 </Modal>
+
+                <div className={classes.caption}>OWNED</div>
                 <div className={classes.infodiv + ' ' + classes.success} onClick={() => setModalOpen(true)}>
                     <img style={{ height: "100%" }} src="/images/nft/TestNet.png"></img>
-                    <span className={classes.textinfo}>You have been purchased NFT.</span>
+                    <span className={classes.textinfo}>
+                        <span>Testnet Miner </span>
+                        | <span style={{ whiteSpace: 'nowrap' }}>contract address {ContractAddress.NFT} </span>
+                        | <span style={{ whiteSpace: 'nowrap' }}>acquired on {acquiredTime}</span>
+                    </span>
                 </div>
             </>
         );
@@ -126,6 +166,4 @@ export default function ({ nftStatus, title, imgurl, price, comment}) {
             </div>
         );
     }
-
-
 }

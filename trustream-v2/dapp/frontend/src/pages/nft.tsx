@@ -188,9 +188,13 @@ export default function TableReviews() {
                 )
                 return;
             } else {
+                let reason = error.reason;
+                if (reason.indexOf('You are not a beta tester.') !== -1) {
+                    reason = "Your wallet account is not approved to buy this NFT.";
+                }
                 Swal.fire(
                     'Error!',
-                    error.reason,
+                    reason,
                     'error'
                 )
             }
@@ -300,8 +304,7 @@ export default function TableReviews() {
                         nftStatus={hasNFT()}
                         title="Testnet Miner"
                         imgurl="/images/nft/TestNet.png"
-                        price={getInfo().price + " IOTX"}
-                        comment={"Qty available " + getInfo().left}/>}
+                        price={getInfo().price + " IOTX"}/>}
                     <div className={classes.marketplace}>MARKETPLACE</div>
                     <SimpleGrid
                         cols={3}

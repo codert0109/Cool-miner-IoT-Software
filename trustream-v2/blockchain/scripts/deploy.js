@@ -76,10 +76,12 @@ async function AddWhiteLists(ContractObj) {
 
   const lists = await loadFromFile('testers/list.txt')
 
-  for (const wallet of lists) {
-    await NFTContract.insertWhiteList(wallet)
-    console.log(`Added to whitelist ${wallet}`)
-  }
+  await NFTContract.insertWhiteListArray(lists);
+
+  // for (const wallet of lists) {
+  //   await NFTContract.insertWhiteList(wallet)
+  //   console.log(`Added to whitelist ${wallet}`)
+  // }
 }
 
 main()

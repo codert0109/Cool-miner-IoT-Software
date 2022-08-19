@@ -17,6 +17,8 @@ contract NFT is Ownable {
     uint public totalSpecialSupply = 0;
     mapping (address => uint256) specialBalance;
 
+    mapping (address => uint256) acquiredTime;
+
     mapping (address => bool) whiteLists;
 
     address private token_address;
@@ -69,6 +71,12 @@ contract NFT is Ownable {
         whiteLists[addr] = true;
     }
 
+    function insertWhiteListArray(address[] calldata addrList) public virtual onlyOwner {
+        for (uint i = 0; i < addrList.length; i++) {
+            whiteLists[addrList[i]] = true;
+        }
+    }
+
     function removeWhiteList(address addr) public virtual onlyOwner {
         whiteLists[addr] = false;
     }
@@ -94,7 +102,12 @@ contract NFT is Ownable {
         normalBalance[msg.sender] += _normalNFTCnt;
         specialBalance[msg.sender] += _specialNFTCnt;
 
+        acquiredTime[msg.sender] = block.timestamp;
         return true;
+    }
+
+    function getAcquiredTime(address addr) public view virtual returns (uint256) {
+        return acquiredTime[addr];
     }
 
     function transferNFT(uint256 _normalNFTCnt, uint256 _specialNFTCnt, address to) public virtual returns (bool) {
