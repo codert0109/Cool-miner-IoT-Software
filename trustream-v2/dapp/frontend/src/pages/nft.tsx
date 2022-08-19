@@ -44,7 +44,8 @@ const useStyles = createStyles((theme) => ({
         marginTop: '10px'
     },
     gridDivBtn: {
-        marginTop: '16px'
+        marginTop: '16px',
+        marginLeft: 10
     },
     marginBottom: {
         marginBottom: '10px'

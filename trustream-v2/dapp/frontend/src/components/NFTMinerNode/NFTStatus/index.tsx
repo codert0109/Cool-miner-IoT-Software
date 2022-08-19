@@ -8,6 +8,7 @@ const useStyles = createStyles((theme) => ({
     infodiv: {
         padding: 5,
         paddingLeft: 10,
+        marginTop: 10,
         marginLeft: 10,
         fontSize: '1.2rem',
         marginBottom: 20,
