@@ -43,9 +43,9 @@ function verifySignature(address, nounce, signature) {
 }
 
 function updateNounce(address, nounce, success_callback, error_callback) {
-  Device_Auth.findOne({ address })
+  Device_Auth.findOne({ where : { address : address }})
     .then((data) => {
-      if (data === null) {
+      if (data === null || data.address !== address) {
         Device_Auth.create({
           address,
           nounce,

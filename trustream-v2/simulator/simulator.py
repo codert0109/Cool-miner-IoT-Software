@@ -50,7 +50,7 @@ class Signature:
 
         self.hex = base64.b64encode(signed_message.signature).decode("utf-8")
 
-        self.hex = "ilrtfvdzorjaeiskmqhhnxlwlzjdjtsgbhvxmcif"
+        self.hex = "csoechbokgouhnryytvxfxihlmprqbuqibatspiv"
 
 class DataFrame:
     def __init__(self, message: Message, privKey : bytes):
