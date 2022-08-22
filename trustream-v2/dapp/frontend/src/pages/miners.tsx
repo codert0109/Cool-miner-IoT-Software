@@ -24,9 +24,10 @@ const useStyles = createStyles((theme) => ({
 export default function TableReviews() {
     const { classes, theme } = useStyles();
     const { god, lang } = useStore();
-    const signMessage = async () => {
+    
+    const signMessage = async (message) => {
         console.log('global', require('../global.js'));
-        const message = 'Very Message Such Wow';
+        // const message = 'Very Message Such Wow';
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;
@@ -36,7 +37,6 @@ export default function TableReviews() {
                 params: [msg, from, 'Random text'],
             });
             return sign;
-            // document.getElementById("signature").innerHTML = JSON.stringify(sign);
         } catch (err) {
             console.error(err);
             return null;
@@ -61,6 +61,17 @@ export default function TableReviews() {
         return false;
     }
 
+    const getNounce = async () => {
+        try {
+            let ret = await $.post('http://localhost:3334/api/device_auth/getNounce', {
+                address : god.currentNetwork.account
+            });
+            return ret.data.nounce;
+        } catch (err) {
+            return null;
+        }
+    }
+
     const onSendSignature = async () => {
         const nft_flg = await hasNFT();
         if (nft_flg === false) {
@@ -74,13 +85,24 @@ export default function TableReviews() {
             return false;
         }
 
+        const nounce = await getNounce();
+        if (nounce == null) {
+            Swal.fire(
+                'Error',
+                `<p>Connection Error!</p>`,
+                'error'
+            );
+            return false;
+        }
+
         const url = `${publicConfig.DEVICE_URL}/set_signature`;
-        const signature = await signMessage();
+        const signature = await signMessage(nounce);
         if (signature !== null) {
+            console.log('signature', signature);
             const wallet = god.currentNetwork.account;
             // we are currently using the same value we will change it for the future.
             const nftID = wallet;
-            verifyMessage(signature);
+            verifyMessage(signature, nounce);
             $.post(url, { signature, nftID, wallet }, {
             });
         } else {
@@ -92,8 +114,8 @@ export default function TableReviews() {
         }
     };
 
-    const verifyMessage = (signature) => {
-        const message = 'Very Message Such Wow';
+    const verifyMessage = (signature, message) => {
+        // const message = 'Very Message Such Wow';
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;

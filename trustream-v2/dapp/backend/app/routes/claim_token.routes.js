@@ -4,4 +4,3 @@ module.exports = app => {
     router.post("/", claim_tokens.get);
     app.use("/api/claim_tokens", router);
   };
-  
