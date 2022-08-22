@@ -12,7 +12,7 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   })
   public id!: string;
 
-  @ForeignKey(() => DeviceModel)
+  // @ForeignKey(() => DeviceModel)
   @Column({
     allowNull: false,
     type: DataType.STRING(64)
@@ -20,13 +20,37 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   public address!: string;
 
   @Column({
-    allowNull: false,
-    type: DataType.INTEGER()
+    allowNull: false
   })
-  public heartRate!: number;
+  public timestamp!: number;
 
   @Column({
     allowNull: false
   })
-  public timestamp!: number;
+  public pedestrains!: number;
+
+  @Column({
+    allowNull: false
+  })
+  public cars!: number;
+
+  @Column({
+    allowNull: false
+  })
+  public bus!: number;
+
+  @Column({
+    allowNull: false
+  })
+  public truck!: number;
+
+  @Column({
+    allowNull: false
+  })
+  public total!: number;
+
+  @Column({
+    allowNull: false
+  })
+  public link!: string;
 }

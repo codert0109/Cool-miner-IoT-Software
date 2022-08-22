@@ -4,26 +4,20 @@ import { useInterval } from '@mantine/hooks';
 import { BorderStyle } from 'tabler-icons-react';
 import WhiteLabel from '../WhiteLabel';
 import classjoin from 'classnames';
+import Box from '../Container/Box';
 
 const useStyles = createStyles((theme) => ({
     header: {
-        backgroundColor: 'rgb(42, 187, 254)',
-        borderTopWidth: '3px',
-        borderLeftWidth: '3px',
-        borderRightWidth: '3px',
-        borderBottomWidth: '0px',
-        borderStyle: 'solid',
-        borderColor: 'rgb(100, 117, 124)',
-        marginLeft: '10%',
-        marginRight: '30%',
-        borderTopLeftRadius: '20px 20px',
-        borderTopRightRadius: '20px 20px',
+        backgroundColor: '#0887BF',
+        border: '0px',
+        borderRadius: '6px',
         color: 'white',
         alignItems: 'center',
         justifyContent: 'center',
         display: 'flex',
         fontWeight: 'bold',
-        fontSize: '1.3em'
+        position: 'relative',
+        height: '42px'
     },
     body: {
         backgroundColor: 'rgb(219, 219, 219)',
@@ -38,7 +32,7 @@ const useStyles = createStyles((theme) => ({
         borderRadius: '20px',
     },
     secondMargin: {
-        marginTop: '5px'
+        marginTop: '10px'
     },
     box: {
         minWidth: '190px'
@@ -46,7 +40,10 @@ const useStyles = createStyles((theme) => ({
     button: {
         position: 'relative',
         transition: 'background-color 150ms ease',
-        backgroundColor: 'rgb(42, 187, 254)',
+        height : '28px',
+        minWidth : '100px',
+        maxWidth : '100%'
+        // backgroundColor: '#0887BF',
     },
 
     progress: {
@@ -86,36 +83,26 @@ export default function ({ label }) {
     );
 
     return (
-        <div className={classes.box}>
-            <div className={classes.header}>
-                <div>{label}</div>
-            </div>
-            <div className={classes.body}>
-                <div style={{ flexGrow: 1 }}>
-                    <WhiteLabel label="Total Amount" className={""} />
-                    <Button
-                        fullWidth
-                        className={classjoin(classes.button, classes.secondMargin)}
-                        onClick={() => (loaded ? setLoaded(false) : !interval.active && interval.start())}
-                        color={loaded ? 'teal' : theme.primaryColor}
-                    >
-                        <div className={classes.label}>
-                            {progress !== 0 ? 'Waiting' : loaded ? 'Success' : 'Buy'}
-                        </div>
-                        {progress !== 0 && (
-                            <Progress
-                                value={progress}
-                                className={classes.progress}
-                                color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
-                                radius="sm"
-                            />
-                        )}
-                    </Button>
+        <Box label={label}>
+            <WhiteLabel label="Desired Amount" className="" />
+            <WhiteLabel label="USD 12.3456789" className={classes.secondMargin} />
+            <Button
+                className={classjoin(classes.button, classes.secondMargin)}
+                onClick={() => (loaded ? setLoaded(false) : !interval.active && interval.start())}
+                color={loaded ? 'teal' : 'yellow'}
+            >
+                <div className={classes.label}>
+                    {progress !== 0 ? 'WAITING' : loaded ? 'SUCCESS' : 'BUY'}
                 </div>
-                <div style={{ 'display': 'flex', 'alignItems': 'center', 'justifyContent': 'center' }}>
-                    <img src="images\logo\White-Square-E-75px.png" style={{ width: '70%' }}></img>
-                </div>
-            </div>
-        </div>
+                {progress !== 0 && (
+                    <Progress
+                        value={progress}
+                        className={classes.progress}
+                        color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
+                        radius="sm"
+                    />
+                )}
+            </Button>
+        </Box>
     );
 }

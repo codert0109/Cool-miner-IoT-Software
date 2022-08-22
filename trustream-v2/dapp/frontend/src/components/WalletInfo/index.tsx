@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '../../store/index';
 import { eventBus } from '../../lib/event';
 import copy from 'copy-to-clipboard';
@@ -8,7 +8,7 @@ import * as clipboard from 'clipboard-polyfill/text';
 import { helper } from '@/lib/helper';
 import { from } from '@iotexproject/iotex-address-ts';
 import { NetworkState } from '@/store/lib/NetworkState';
-import { Box, Button, Modal, Group, Tooltip, Image, Anchor, Text, Center } from '@mantine/core';
+import { Box, Button, Modal, Group, Tooltip, Image, Anchor, Text, Center, createStyles } from '@mantine/core';
 import { Copy, ExternalLink } from 'tabler-icons-react';
 import Jazzicon from '../Jazzicon/index';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 export const WalletInfo = observer(() => {
   const { god, lang } = useStore();
   const { t } = useTranslation();
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     isTipOpen: false,
     isIOTipOpen: false,
     get visible() {
@@ -38,7 +38,7 @@ export const WalletInfo = observer(() => {
     },
     toggleIOTipOpen(val: boolean) {
       this.isTipOpen = val;
-    }
+    },
   }));
 
   return (
@@ -69,7 +69,7 @@ export const WalletInfo = observer(() => {
             </Text>
           </Tooltip>
         </Group>
-        {god.Coin.symbol === 'iotex' && (
+        {god.Coin?.symbol === 'iotex' && (
           <>
             <Group mt="8px" spacing={8}>
               <Image style={{ width: '1.2rem', height: '1.2rem' }} src="/images/enter.svg" />
@@ -106,10 +106,10 @@ export const WalletInfo = observer(() => {
 
             style={{ display: 'flex' }}
             target="_blank"
-            href={`${god.currentChain.explorerURL}/address/${(god.currentNetwork as NetworkState).account}`}
+            href={god.currentChain ? `${god.currentChain.explorerURL.replace('testnest', 'testnet')}/address/${(god.currentNetwork as NetworkState).account}` : ''}
           >
             <ExternalLink size="18" style={{ margin: '0px 2px' }} />
-            {t('view-on-0')} {`${god.currentChain.explorerName}`}
+            {t('view-on-0')} {`${god.currentChain?.explorerName}`}
           </Anchor>
         </Group>
         <Center>

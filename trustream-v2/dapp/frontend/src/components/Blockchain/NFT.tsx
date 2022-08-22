@@ -65,7 +65,6 @@ export default function ({onStatus}) {
     }
 
     const _initialize = async (userAddress) => {
-        console.log('_initialize called', userAddress);
         // This method initializes the dapp
 
         // We first store the user's address in the component's state
@@ -88,7 +87,6 @@ export default function ({onStatus}) {
 
         // Then, we initialize the contract using that provider and the token's
         // artifact. You can do this same thing with your contracts.
-        console.log('getsigner', _provider.getSigner());
         window._NFT = new ethers.Contract(
             contractAddress.NFT,
             NFTArtifact.abi,
@@ -104,7 +102,6 @@ export default function ({onStatus}) {
         // It returns a promise that will resolve to the user's address.
 
         let selectedAddress = (god.currentNetwork as NetworkState).account;
-        console.log('selectedAddress', selectedAddress);
 
         // Once we have the address, we can initialize the application.
 
@@ -114,8 +111,6 @@ export default function ({onStatus}) {
         }
 
         _initialize(selectedAddress);
-
-        console.log('init working');
 
         // We reinitialize it whenever the user changes their account.
         ethereum.on("accountsChanged", ([newAddress]) => {
@@ -145,9 +140,7 @@ export default function ({onStatus}) {
 
     const _startPollingData = () => {
         _stopPollingData();
-
         require('../../global.js')._pollDataInterval = setInterval(() => _updateInfo(), 1000);
-
         // We run it once immediately so we don't have to wait for it
         _updateInfo();
     }
@@ -159,7 +152,6 @@ export default function ({onStatus}) {
     }
 
     useEffect(() => {
-        console.log('connect wallet called');
         _connectWallet();
     }, []);
 

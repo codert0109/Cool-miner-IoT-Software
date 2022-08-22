@@ -2,6 +2,7 @@ const { deployContract } = require('ethereum-waffle')
 
 async function main() {
   let ContractInfo = {}
+  let ContractObj = {}
   async function deployContract(name) {
     const Contract = await ethers.getContractFactory(name)
     let params = []
@@ -10,6 +11,7 @@ async function main() {
     }
     const contract = await Contract.deploy(...params)
     ContractInfo[name] = contract.address
+    ContractObj[name] = contract
 
     console.log(
       `${name} Contract deployed at ${contract.address}, block:${contract.deployTransaction.blockNumber}`,
@@ -46,7 +48,40 @@ async function main() {
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
+
+  await AddWhiteLists(ContractObj)
   saveFrontendFiles(ContractInfo)
+}
+
+async function loadFromFile(path) {
+  const fs = require('fs')
+  const readline = require('readline')
+  const fileStream = fs.createReadStream(path)
+
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity,
+  })
+
+  let ret = [];
+
+  for await (const line of rl) {
+    ret.push(line)
+  }
+  return ret
+}
+
+async function AddWhiteLists(ContractObj) {
+  const NFTContract = ContractObj['NFT']
+
+  const lists = await loadFromFile('testers/list.txt')
+
+  await NFTContract.insertWhiteListArray(lists);
+
+  // for (const wallet of lists) {
+  //   await NFTContract.insertWhiteList(wallet)
+  //   console.log(`Added to whitelist ${wallet}`)
+  // }
 }
 
 main()
@@ -72,7 +107,7 @@ function saveFrontendFiles(ContractInfo) {
   let contractNames = Object.keys(ContractInfo)
 
   for (let i = 0; i < contractNames.length; i++) {
-    const contractName = contractNames[i];
+    const contractName = contractNames[i]
     const ContractArtifact = artifacts.readArtifactSync(contractName)
 
     fs.writeFileSync(

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/EntireLayout";
 import { createStyles, Table, Progress, Anchor, Button, Text, TextInput, Group, ScrollArea, SimpleGrid } from '@mantine/core';
-const BigNumber = require("bignumber.js");
-
 import NFTStore from "../components/Blockchain/NFT";
-import { FloatingLabelInput } from "../components/FloatingLabelInput";
-
 import Swal from 'sweetalert2'
+import axios from "axios";
+import { useStore } from '@/store/index';
+import Loading from "../components/Loading";
+import NFTMinerNode from "@/components/NFTMinerNode";
+import NFTStatus from "@/components/NFTMinerNode/NFTStatus";
+import { observer } from 'mobx-react-lite';
 
-
+const BigNumber = require("bignumber.js");
 let window = require('../global.js');
 
 const useStyles = createStyles((theme) => ({
@@ -38,13 +40,21 @@ const useStyles = createStyles((theme) => ({
         marginTop: '10px'
     },
     gridDivBtn: {
-        marginTop: '16px'
+        marginTop: '16px',
+        marginLeft: 10
+    },
+    marginBottom: {
+        marginBottom: '10px'
+    },
+    marketplace : {
+        fontSize : '1.5rem',
+        paddingLeft : 10
     }
 }));
 
-export default function TableReviews() {
+export default observer(() => {
     const { classes, theme } = useStyles();
-    // const { god, lang } = useStore();
+    const { god } = useStore();
 
     const [tableData, setTableData] = useState([]);
     const [account, setAccount] = useState(null);
@@ -58,63 +68,17 @@ export default function TableReviews() {
     const [specialTransferCnt, setSpecialTransferCnt] = useState(0);
     const [walletTransferArddress, setWalletAddress] = useState(0);
 
-    const rows = tableData.filter((item, index) => index == 0).map((row) => {
-        let leftSupply = row.maxSupply - row.totalSupply;
-        let supplyP = row.totalSupply * 100 / Math.max(1, row.maxSupply);
-        let leftP = 100 - supplyP;
-
-        return (
-            <>
-                <tr key={row.type}>
-                    <td>{row.type == 'NormalNFT' ? 'Public Pool NFT' : ''}</td>
-                    <td>{row.price}</td>
-                    <td>
-                        {row.maxSupply ?
-                            <>
-                                <Group position="apart">
-                                    <Text size="xs" color="teal" weight={700}>
-                                        {row.totalSupply} using
-                                    </Text>
-                                    <Text size="xs" color="red" weight={700}>
-                                        {leftSupply} left
-                                    </Text>
-                                </Group>
-                                <Progress
-                                    classNames={{ bar: classes.progressBar }}
-                                    sections={[
-                                        {
-                                            value: supplyP,
-                                            color: theme.colorScheme === 'dark' ? theme.colors.teal[9] : theme.colors.teal[6],
-                                        },
-                                        {
-                                            value: leftP,
-                                            color: theme.colorScheme === 'dark' ? theme.colors.red[9] : theme.colors.red[6],
-                                        },
-                                    ]}
-                                />
-                            </>
-                            : 'no supply'
-                        }
-                    </td>
-                    <td>{row.balance > 0 ? 'Yes' : 'No'}</td>
-                </tr>
-            </>
-        );
-    });
+    const [isloading, setLoading] = useState(true);
 
     const onStatus = (info) => {
         setTableData(info.Info);
         setAccount(info.account);
+        setLoading(false);
     };
 
     const onTransferNFT = async () => {
         let _normalCnt = parseInt(normalTransferCnt.toString());
         let _specialCnt = parseInt(specialTransferCnt.toString());
-
-        console.log('normal', _normalCnt);
-        console.log('special', _specialCnt);
-        console.log('wallet', walletTransferArddress);
-
         if (_normalCnt < 0 || _specialCnt < 0 || (_normalCnt + _specialCnt == 0)) {
             Swal.fire(
                 'Error!',
@@ -123,7 +87,6 @@ export default function TableReviews() {
             )
             return;
         }
-
 
         if (walletTransferArddress == 0) {
             Swal.fire(
@@ -200,7 +163,6 @@ export default function TableReviews() {
             from: account
         });
 
-
         try {
             const receipt = await tx;
             if (receipt.status == 0) {
@@ -213,7 +175,7 @@ export default function TableReviews() {
                 await receipt.wait();
                 Swal.fire(
                     'Awesome!',
-                    'You bought NFTs!',
+                    'Your NFT purchase has been completed!',
                     'success'
                 )
             }
@@ -227,9 +189,13 @@ export default function TableReviews() {
                 )
                 return;
             } else {
+                let reason = error.reason;
+                if (reason.indexOf('You are not a beta tester.') !== -1) {
+                    reason = "Your wallet account is not approved to buy this NFT.";
+                }
                 Swal.fire(
                     'Error!',
-                    'Something went wrong.',
+                    reason,
                     'error'
                 )
             }
@@ -237,78 +203,141 @@ export default function TableReviews() {
     };
 
     const hasNFT = () => {
-        // console.log('hasNFT', tableData[0] ? tableData[0].balance >= 0 : false);
         return tableData[0] ? tableData[0].balance > 0 : false;
     };
 
+    const hasBalance = () => {
+        return god.currentChain.Coin.balance.format != 0;
+    };
+
+    const onClaimTokens = () => {
+        if (hasNFT() || hasBalance()) {
+            Swal.fire(
+                'Error!',
+                'You can not claim tokens since you already buy an NFT.',
+                'error'
+            )
+            return;
+        }
+        axios.post(`https://miner.elumicate.com/api/claim_tokens`, { account })
+            .then((data) => {
+                if (data.data == 'success') {
+                    god.pollingData();
+                    console.log('call polling data');
+                    setTimeout(() => {
+                        god.currentNetwork.loadBalance();
+                    }, 2000);
+                    Swal.fire(
+                        'Congratulations!',
+                        '10 IoTex coins were successfully transferred to your account!',
+                        'success'
+                    )
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong!',
+                        'error'
+                    )
+                }
+            })
+            .catch((err) => {
+                console.error('err received', err);
+            });
+    };
+
+    const getInfo = () => {
+        return tableData.filter((item, index) => index == 0).map((row) => {
+            return {
+                price: row.price,
+                left: row.maxSupply - row.totalSupply
+            }
+        })[0];
+    }
+
     return (
         <Layout>
-            <ScrollArea>
-                <NFTStore onStatus={onStatus} />
-                <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Price</th>
-                            <th>Supply</th>
-                            <th>Owned</th>
-                        </tr>
-                    </thead>
-                    <tbody>{rows}</tbody>
-                </Table>
-            </ScrollArea>
-            {/* <SimpleGrid
-                cols={4}
-                breakpoints={[
-                    { maxWidth: 'xl', cols: 4 },
-                    { maxWidth: 'md', cols: 4 },
-                    { maxWidth: 'sm', cols: 2 },
-                ]}
-                className={classes.gridDiv}
-            >
-                <FloatingLabelInput onChange={setNormalBuyCnt} label="Public Pool NFT" placeholder="Input an number." />
-                <FloatingLabelInput onChange={setSpecialBuyCnt} label="Special NFT" placeholder="Input an number." />
-                <div></div>
-                <Button onClick={onBuyNFT} className={classes.gridDivBtn}>
-                    Buy NFT
-                </Button>
-            </SimpleGrid>
-            <SimpleGrid
-                cols={4}
-                breakpoints={[
-                    { maxWidth: 'xl', cols: 4 },
-                    { maxWidth: 'md', cols: 4 },
-                    { maxWidth: 'sm', cols: 2 },
-                ]}
-                className={classes.gridDiv}
-            >
-                <FloatingLabelInput onChange={setNormalTransferCnt} label="Public Pool NFT" placeholder="Input an number." />
-                <FloatingLabelInput onChange={setSpecialTransferCnt} label="Special NFT" placeholder="Input an number." />
-                <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
-                <Button onClick={onTransferNFT} className={classes.gridDivBtn}>
-                    Transfer NFT
-                </Button>
-            </SimpleGrid> */}
-
-
-            <SimpleGrid
-                cols={4}
-                breakpoints={[
-                    { maxWidth: 'xl', cols: 4 },
-                    { maxWidth: 'md', cols: 4 },
-                    { maxWidth: 'sm', cols: 2 },
-                ]}
-                className={classes.gridDiv}
-            >
-                <Button disabled={hasNFT()} onClick={onBuyNFT} className={classes.gridDivBtn}>
-                    Buy NFT
-                </Button>
-                <div></div>
-                <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
-                <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
-                    Transfer NFT
-                </Button>
-            </SimpleGrid>
+            <NFTStore onStatus={onStatus} />
+            {isloading && <Loading />}
+            {/* {!isloading &&
+                <>
+                    <ScrollArea>
+                        {!hasNFT() && !hasBalance() &&
+                            <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
+                                Claim Tokens
+                            </Button>}
+                        <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Price</th>
+                                    <th>Supply</th>
+                                    <th>Owned</th>
+                                </tr>
+                            </thead>
+                            <tbody>{rows}</tbody>
+                        </Table>
+                    </ScrollArea>
+                    <SimpleGrid
+                        cols={4}
+                        breakpoints={[
+                            { maxWidth: 'xl', cols: 4 },
+                            { maxWidth: 'md', cols: 4 },
+                            { maxWidth: 'sm', cols: 2 },
+                        ]}
+                        className={classes.gridDiv}
+                    >
+                        <Button disabled={hasNFT()} onClick={onBuyNFT} className={classes.gridDivBtn}>
+                            Buy NFT
+                        </Button>
+                        <div></div>
+                        <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
+                        <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
+                            Transfer NFT
+                        </Button>
+                    </SimpleGrid>
+                </>
+            } */}
+            {!isloading &&
+                <>
+                    {!hasNFT() && !hasBalance() &&
+                        <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
+                            Claim Tokens
+                        </Button>}
+                    {<NFTStatus
+                        nftStatus={hasNFT()}
+                        title="Testnet Miner"
+                        imgurl="/images/nft/TestNet.png"
+                        price={getInfo().price + " IOTX"}/>}
+                    <div className={classes.marketplace}>MARKETPLACE</div>
+                    <SimpleGrid
+                        cols={3}
+                        breakpoints={[
+                            { maxWidth: 'xs', cols: 1 },
+                        ]}
+                    >
+                        <NFTMinerNode
+                            title="Testnet Miner"
+                            imgurl="/images/nft/TestNet.png"
+                            price={getInfo().price + " IOTX"}
+                            comment={"Qty available " + getInfo().left}
+                            callback={onBuyNFT}
+                            disabled={hasNFT()} />
+                        <NFTMinerNode
+                            title="Public Pool Miner - mainnet"
+                            imgurl="/images/nft/PublicPool.png"
+                            price="xx"
+                            comment="Qty available Limited"
+                            text="COMING SOON! LIMITED AVAILABILITY"
+                            disabled={true} />
+                        <NFTMinerNode
+                            title="Webcam Miner - Phase 2"
+                            imgurl="/images/nft/Webcam.png"
+                            price="xx"
+                            comment="Qty available xx"
+                            text="COMING in Phase 2!"
+                            disabled={true} />
+                    </SimpleGrid>
+                </>}
         </Layout>
     );
-}
+});

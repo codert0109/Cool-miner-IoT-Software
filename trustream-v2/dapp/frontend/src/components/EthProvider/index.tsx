@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '../../store/index';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect } from 'react';
@@ -15,7 +15,7 @@ export const ETHProvider = observer(({ children }) => {
   const { god, lang } = useStore();
   const { chainId, account, activate, active, library, deactivate, error, connector } = useWeb3React<Web3Provider>();
 
-  const store = useLocalStore(() => ({
+  const store = useLocalObservable(() => ({
     logout() {
       deactivate();
       god.eth.connector.latestProvider.clear();
@@ -26,13 +26,17 @@ export const ETHProvider = observer(({ children }) => {
   }));
 
   useEffect(() => {
+    console.log('useEffect called');
     if (error) {
+      console.log('error', error);
       showNotification({
         title: 'Error',
         message: error.message,
         color: 'red'
       });
+      return;
     }
+
     if (chainId) {
       if (god.currentNetwork.allowChains.includes(chainId)) {
         god.setChain(chainId);
@@ -65,6 +69,16 @@ export const ETHProvider = observer(({ children }) => {
     eventBus.addListener('wallet.logout', store.logout);
     return () => {
       eventBus.removeListener('wallet.logout', store.logout);
+    };
+  }, []);
+
+  const onChainSwitch = () => {
+    god.updateTicker.setValue(god.updateTicker.value + 1);
+  }
+  useEffect(() => {
+    eventBus.addListener('chain.switch', onChainSwitch);
+    return () => {
+      eventBus.removeListener('chain.switch', onChainSwitch);
     };
   }, []);
 

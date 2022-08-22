@@ -1,3 +1,4 @@
+import { toUpper } from 'lodash';
 import { makeAutoObservable } from 'mobx';
 
 export class StringState<T extends string> {
@@ -8,6 +9,10 @@ export class StringState<T extends string> {
   }
   setValue(value: T) {
     this.value = value;
+  }
+  getValue() {
+    return toUpper(this.value.substring(0, 1)) + this.value.substring(1);
+    // return this.value;
   }
 }
 
