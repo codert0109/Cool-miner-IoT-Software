@@ -72,37 +72,7 @@ __decorate([
         allowNull: false
     }),
     __metadata("design:type", String)
-], DeviceDataModel.prototype, "city", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false
-    }),
-    __metadata("design:type", String)
-], DeviceDataModel.prototype, "region", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false
-    }),
-    __metadata("design:type", String)
-], DeviceDataModel.prototype, "postalcode", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false
-    }),
-    __metadata("design:type", String)
-], DeviceDataModel.prototype, "country", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false
-    }),
-    __metadata("design:type", String)
-], DeviceDataModel.prototype, "continent", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false
-    }),
-    __metadata("design:type", String)
-], DeviceDataModel.prototype, "coordinates", void 0);
+], DeviceDataModel.prototype, "link", void 0);
 DeviceDataModel = __decorate([
     sequelize_typescript_1.Table({
         tableName: 'device_data'

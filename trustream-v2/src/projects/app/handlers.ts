@@ -26,25 +26,18 @@ function buf2hex(buffer : ArrayBuffer) { // buffer is an ArrayBuffer
       .join('');
 }
 
+/*
+- Old Version of Signature Verification Method
+
 function verifyMessage(from : string, signature : string) {
   const message = 'Very Message Such Wow';
   try {
-    // console.log('before call message', bops.from(message, 'utf8').toString('hex'));
-    //   let msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
-      // data: 0x86,101,114,121,32,77,101,115,115,97,103,101,32,83,117,99,104,32,87,111,119
-      // sig : 0x89611b02e3c84b624eaef17c1849ddc140aa691f4f7ce2711d81684775f15c8f748856766d67dd5abf42d0eb64d8ed0c289c60df2713b177a12a137f6722cfea1c
-      // console.log('before call', msg, signature);
-      // console.log('bops', bops.from);
-
       const msg = "0x86,101,114,121,32,77,101,115,115,97,103,101,32,83,117,99,104,32,87,111,119";
-
       const recoveredAddr = recoverPersonalSignature({data: msg, sig: signature,});
       console.log('recoveredAddr : ' + recoveredAddr);
       if (recoveredAddr.toLowerCase() === from.toLowerCase()) {
         return true;
-          // console.log(`Successfully ecRecovered signer as ${recoveredAddr}`);
       } else {
-          // console.log(`Failed to verify signer when comparing ${recoveredAddr} to ${from}`,);
         return false;
       }
   } catch (err) {
@@ -52,6 +45,11 @@ function verifyMessage(from : string, signature : string) {
       return false;
   }
   return false;
+}
+*/
+
+function verifyMessage(from : string, sessionID : string) {
+  
 }
 
 async function onMqttData(context: ProjectContext, topic: string, payload: Buffer) {
@@ -85,6 +83,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   
   if (isValid === false) {
     console.log(`WARNING: Dropping data message: Invalid signature. Recovered address doesn't match ${address}`)
+    return;
   }
 
   let NFTContract : any = context.getContract("NFT");

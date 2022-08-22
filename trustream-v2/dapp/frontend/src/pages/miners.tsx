@@ -31,7 +31,8 @@ export default function TableReviews() {
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;
-            const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
+            // const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
+            const msg = message;
             const sign = await ethereum.request({
                 method: 'personal_sign',
                 params: [msg, from, 'Random text'],
@@ -72,6 +73,18 @@ export default function TableReviews() {
         }
     }
 
+    const getSessionID = async (password) => {
+        try {
+            let ret = await $.post('http://localhost:3334/api/device_auth/login', {
+                address : god.currentNetwork.account,
+                password : password
+            });
+            return ret.data.session;
+        } catch (err) {
+            return null;
+        }
+    }
+
     const onSendSignature = async () => {
         const nft_flg = await hasNFT();
         if (nft_flg === false) {
@@ -97,13 +110,22 @@ export default function TableReviews() {
 
         const url = `${publicConfig.DEVICE_URL}/set_signature`;
         const signature = await signMessage(nounce);
+
         if (signature !== null) {
+
             console.log('signature', signature);
-            const wallet = god.currentNetwork.account;
-            // we are currently using the same value we will change it for the future.
-            const nftID = wallet;
+
             verifyMessage(signature, nounce);
-            $.post(url, { signature, nftID, wallet }, {
+
+            let sessionID = await getSessionID(signature);
+
+            const wallet = god.currentNetwork.account;            
+            const nftID = wallet;
+
+            console.log('sessionID', sessionID);
+
+            $.post(url, { sessionID, nftID, wallet }, {
+
             });
         } else {
             Swal.fire(
@@ -119,7 +141,8 @@ export default function TableReviews() {
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;
-            const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
+            // const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
+            const msg = message;
             const recoveredAddr = recoverPersonalSignature({ data: msg, sig: signature });
             if (recoveredAddr.toLowerCase() === from.toLowerCase()) {
                 console.log(`Successfully ecRecovered signer as ${recoveredAddr}`);

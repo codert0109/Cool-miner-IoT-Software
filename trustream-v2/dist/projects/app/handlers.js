@@ -48,6 +48,7 @@ async function onMqttData(context, topic, payload) {
     const address = values[1];
     let decodedPayload = eval('(' + payload.toString() + ')');
     const message = JSON.stringify(decodedPayload.message);
+    console.log('message', message);
     const signature = decodedPayload.signature;
     let isValid = false;
     isValid = verifyMessage(address, signature);
@@ -64,23 +65,17 @@ async function onMqttData(context, topic, payload) {
     }
     console.log("Device has NFT. Processing data");
     console.log(`Device address: ${address}`);
-    console.log(`Message Data: ${decodedPayload.message}`);
     console.log(`Timestamp: ${decodedPayload.message.timestamp}`);
     await models_1.deviceDataRepository.upsert({
         id: address + '-' + decodedPayload.message.timestamp,
         address: address,
         timestamp: decodedPayload.message.timestamp,
-        pedestrains: decodedPayload.message.pedestrains,
+        pedestrains: decodedPayload.message.pedestrians,
         cars: decodedPayload.message.cars,
         bus: decodedPayload.message.bus,
         truck: decodedPayload.message.truck,
         total: decodedPayload.message.total,
-        city: decodedPayload.message.city,
-        region: decodedPayload.message.region,
-        postalcode: decodedPayload.message.postalcode,
-        country: decodedPayload.message.country,
-        continent: decodedPayload.message.continent,
-        coordinates: decodedPayload.message.coordinates
+        link: decodedPayload.message.link
     });
 }
 const handlers = {

@@ -75,6 +75,8 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   // First, recover the address from the message signature
   const message : any = JSON.stringify(decodedPayload.message)
 
+  console.log('message', message);
+
   const signature = decodedPayload.signature
 
   let isValid: boolean = false
@@ -98,24 +100,18 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   console.log("Device has NFT. Processing data")
   console.log(`Device address: ${address}`)
-  console.log(`Message Data: ${decodedPayload.message}`)
   console.log(`Timestamp: ${decodedPayload.message.timestamp}`)
 
   await deviceDataRepository.upsert({
     id: address + '-' + decodedPayload.message.timestamp,
     address: address,
     timestamp: decodedPayload.message.timestamp,
-    pedestrains : decodedPayload.message.pedestrains,
+    pedestrains : decodedPayload.message.pedestrians,
     cars : decodedPayload.message.cars,
     bus : decodedPayload.message.bus,
     truck : decodedPayload.message.truck,
     total : decodedPayload.message.total,
-    city : decodedPayload.message.city,
-    region : decodedPayload.message.region,  
-    postalcode : decodedPayload.message.postalcode,
-    country : decodedPayload.message.country,
-    continent : decodedPayload.message.continent,
-    coordinates : decodedPayload.message.coordinates
+    link : decodedPayload.message.link
   })
   // Store the data and execute some contracts (eg. rewards)
 }
