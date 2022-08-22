@@ -5,7 +5,6 @@ import { publicConfig } from "../config/public";
 import { useStore } from '../store/index';
 import { NetworkState } from '@/store/lib/NetworkState';
 import $ from "axios";
-import bops from "bops";
 import { recoverPersonalSignature } from "eth-sig-util";
 import Swal from 'sweetalert2';
 import NFTContractABI from '../contracts/NFT.json';
@@ -26,16 +25,12 @@ export default function TableReviews() {
     const { god, lang } = useStore();
     
     const signMessage = async (message) => {
-        console.log('global', require('../global.js'));
-        // const message = 'Very Message Such Wow';
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;
-            // const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
-            const msg = message;
             const sign = await ethereum.request({
                 method: 'personal_sign',
-                params: [msg, from, 'Random text'],
+                params: [message, from, 'Random text'],
             });
             return sign;
         } catch (err) {
@@ -59,12 +54,11 @@ export default function TableReviews() {
         } catch (err) {
             return false;
         }
-        return false;
     }
 
     const getNounce = async () => {
         try {
-            let ret = await $.post('http://localhost:3334/api/device_auth/getNounce', {
+            let ret = await $.post('https://miner.elumicate.com/api/device_auth/getNounce', {
                 address : god.currentNetwork.account
             });
             return ret.data.nounce;
@@ -75,7 +69,7 @@ export default function TableReviews() {
 
     const getSessionID = async (password) => {
         try {
-            let ret = await $.post('http://localhost:3334/api/device_auth/login', {
+            let ret = await $.post('https://miner.elumicate.com/api/device_auth/login', {
                 address : god.currentNetwork.account,
                 password : password
             });
@@ -112,17 +106,21 @@ export default function TableReviews() {
         const signature = await signMessage(nounce);
 
         if (signature !== null) {
-
-            console.log('signature', signature);
-
             verifyMessage(signature, nounce);
-
+            
             let sessionID = await getSessionID(signature);
+
+            if (sessionID == null) {
+                Swal.fire(
+                    'Error',
+                    `<p>Connection Error!</p>`,
+                    'error'
+                );
+                return false;
+            }
 
             const wallet = god.currentNetwork.account;            
             const nftID = wallet;
-
-            console.log('sessionID', sessionID);
 
             $.post(url, { sessionID, nftID, wallet }, {
 
