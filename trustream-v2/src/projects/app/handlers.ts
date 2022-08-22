@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { deviceDataRepository, deviceRepository } from './models'
+import { deviceDataRepository, deviceRepository, deviceAuthRepository } from './models'
 import { ProjectContext } from '../interface'
 // import { EthHelper } from "@helpers/index"
 // import { ecrecover, toBuffer } from 'ethereumjs-util'
@@ -48,8 +48,16 @@ function verifyMessage(from : string, signature : string) {
 }
 */
 
-function verifyMessage(from : string, sessionID : string) {
-  
+async function verifyMessage(from : string, sessionID : string) {
+  try {
+    let result = await deviceAuthRepository.findOne({ where : {address : from, session_id : sessionID}})
+    if (result === null)
+      return false;
+    return true;
+  } catch (err) {
+    console.log(`errors occured in verifyMessage ${err}`);
+    return false;
+  }
 }
 
 async function onMqttData(context: ProjectContext, topic: string, payload: Buffer) {
@@ -79,10 +87,10 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   let isValid: boolean = false
 
-  isValid = verifyMessage(address, signature);
+  isValid = await verifyMessage(address, signature);
   
   if (isValid === false) {
-    console.log(`WARNING: Dropping data message: Invalid signature. Recovered address doesn't match ${address}`)
+    console.log(`WARNING: Dropping data message: Invalid session id ${address}`)
     return;
   }
 

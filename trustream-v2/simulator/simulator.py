@@ -30,7 +30,7 @@ class Account:
         
 class Message:
     def __init__(self, address: string, heartRate: int):
-      self.address = "0x78D0e460f234efbFc235152d32AB5e31b30B2171"
+      self.address = os.getenv('PUBLIC_KEY')
       self.pedestrians = random.randint(0, 5)
       self.cars = random.randint(0, 5)
       self.bus = random.randint(0, 5)
