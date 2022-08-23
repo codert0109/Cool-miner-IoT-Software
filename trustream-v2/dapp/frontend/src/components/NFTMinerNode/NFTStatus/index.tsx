@@ -28,7 +28,7 @@ const useStyles = createStyles((theme) => ({
     warning: {
         border: '2px solid #1864ab',
         borderLeft: '5px solid #1864ab',
-        backgroundColor : '#1864ab',
+        backgroundColor: '#1864ab',
     },
 
     success: {
@@ -86,7 +86,7 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function NFTStatus({nftStatus, title, imgurl, price}) {
+export default function NFTStatus({ nftStatus, title, imgurl, price }) {
     const { god } = useStore();
     const { classes, theme } = useStyles();
     const [modalOpen, setModalOpen] = useState(false);
@@ -115,24 +115,40 @@ export default function NFTStatus({nftStatus, title, imgurl, price}) {
 
 
     if (nftStatus == true) {
-        const renderMinerNode = () => {
+        const renderMinerNode = (isDetailShow = false) => {
             return (
                 <div className={classes.node}>
-                    <div><p className={classes.header}>{title}</p></div>
+                    {isDetailShow === false && <div><p className={classes.header}>{title}</p></div>}
                     <div className={classes.imgdiv}>
                         <img src={imgurl} width="100%"></img>
                         {/* <div className={classes.imgtext}>{text}</div> */}
                     </div>
                     <div className={classes.info}>
-                        <div className={classes.info_text}>
-                            <div>Price {price}</div>
-                            <div>{comment}</div>
-                        </div>
-                        <div>
-                            {/* <Button disabled={true} className={classes.buybtn}>
-                                BUY
-                            </Button> */}
-                        </div>
+                        {
+                            isDetailShow === true &&
+                            <div className={classes.info_text}>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>Contract Address</td>
+                                            <td>0x69cd...31ad</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Token ID</td>
+                                            <td>1377</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Token Standard</td>
+                                            <td>ERC-721</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Blockchain</td>
+                                            <td>Ethereum</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
                     </div>
                 </div>
             );
@@ -141,6 +157,7 @@ export default function NFTStatus({nftStatus, title, imgurl, price}) {
         return (
             <>
                 <Modal
+                    title={title}
                     centered
                     size="sm"
                     overlayColor={theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2]}
@@ -148,7 +165,7 @@ export default function NFTStatus({nftStatus, title, imgurl, price}) {
                     overlayBlur={3} opened={modalOpen} onClose={function (): void {
                         setModalOpen(false);
                     }}>
-                    {renderMinerNode()}
+                    {renderMinerNode(true)}
                 </Modal>
 
                 <div className={classes.caption}>OWNED</div>

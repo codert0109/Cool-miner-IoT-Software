@@ -122,7 +122,7 @@ export default function TableReviews() {
             const wallet = god.currentNetwork.account;            
             const nftID = wallet;
 
-            $.post(url, { sessionID, nftID, wallet }, {
+            $.post(url, { signature : sessionID, nftID, wallet }, {
 
             });
         } else {

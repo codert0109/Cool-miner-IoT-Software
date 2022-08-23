@@ -1,6 +1,6 @@
 import { createStyles, Button, Modal } from '@mantine/core';
 import Swal from 'sweetalert2'
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 const BREAKPOINT = '@media (max-width: 900px)';
 
@@ -47,9 +47,9 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = ""}) {
+export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = "" }) {
     const { classes, theme } = useStyles();
-    const [ modalOpen, setModalOpen ] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
 
     const onBuy = (e) => {
         callback();
@@ -68,32 +68,58 @@ export default function ({ title, imgurl, price, comment, disabled = false, call
         }
     };
 
-    const renderMinerNode = () => {
+    const renderMinerNode = (isDetailShow = false) => {
         return (
             <div className={classes.node} onClick={onView}>
-                <div><p className={classes.header}>{title}</p></div>
+                {isDetailShow === false && <div><p className={classes.header}>{title}</p></div>}
                 <div className={classes.imgdiv}>
                     <img src={imgurl} width="100%"></img>
                     {/* <div className={classes.imgtext}>{text}</div> */}
                 </div>
                 <div className={classes.info}>
-                    <div className={classes.info_text}>
+                    {isDetailShow === false && <div className={classes.info_text}>
                         <div>Price {price}</div>
                         <div>{comment}</div>
-                    </div>
-                    <div>
+                    </div>}
+                    {isDetailShow === false && <div>
                         <Button disabled={disabled} onClick={onBuy} className={classes.buybtn}>
                             BUY
                         </Button>
-                    </div>
+                    </div>}
+                    {
+                        isDetailShow === true &&
+                        <div className={classes.info_text}>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>Contract Address</td>
+                                        <td>0x69cd...31ad</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Token ID</td>
+                                        <td>1377</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Token Standard</td>
+                                        <td>ERC-721</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Blockchain</td>
+                                        <td>Ethereum</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
                 </div>
             </div>
         );
     }
-    
+
     return (
         <>
             <Modal
+                title={title}
                 centered
                 size="sm"
                 overlayColor={theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2]}
@@ -101,7 +127,7 @@ export default function ({ title, imgurl, price, comment, disabled = false, call
                 overlayBlur={3} opened={modalOpen} onClose={function (): void {
                     setModalOpen(false);
                 }}>
-                {renderMinerNode()}
+                {renderMinerNode(true)}
             </Modal>
 
             {renderMinerNode()}
