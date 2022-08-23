@@ -110,7 +110,7 @@ exports.login = (req, res) => {
 
   const { address, password } = req.body
 
-  Device_Auth.findOne({ address })
+  Device_Auth.findOne({ where : { address } })
     .then((data) => {
       if (data === null) {
         res.send({
