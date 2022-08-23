@@ -56,6 +56,15 @@ export default function TableReviews() {
         }
     }
 
+    const isActive = async () => {
+        try {
+            let ret = await $.get(`https://miner.elumicate.com/api/device_status/isActive?address=${god.currentNetwork.account}`);
+            return ret.data.active;
+        } catch (err) {
+            return false;
+        }
+    }
+
     const getNounce = async () => {
         try {
             let ret = await $.post('https://miner.elumicate.com/api/device_auth/getNounce', {
@@ -92,25 +101,9 @@ export default function TableReviews() {
             return false;
         }
 
-        const nounce = await getNounce();
-        if (nounce == null) {
-            Swal.fire(
-                'Error',
-                `<p>Connection Error!</p>`,
-                'error'
-            );
-            return false;
-        }
-
-        const url = `${publicConfig.DEVICE_URL}/set_signature`;
-        const signature = await signMessage(nounce);
-
-        if (signature !== null) {
-            verifyMessage(signature, nounce);
-            
-            let sessionID = await getSessionID(signature);
-
-            if (sessionID == null) {
+        const processLogin = async () => {
+            const nounce = await getNounce();
+            if (nounce == null) {
                 Swal.fire(
                     'Error',
                     `<p>Connection Error!</p>`,
@@ -119,18 +112,53 @@ export default function TableReviews() {
                 return false;
             }
 
-            const wallet = god.currentNetwork.account;            
-            const nftID = wallet;
+            const url = `${publicConfig.DEVICE_URL}/set_signature`;
+            const signature = await signMessage(nounce);
 
-            $.post(url, { signature : sessionID, nftID, wallet }, {
+            if (signature !== null) {
+                verifyMessage(signature, nounce);
+                
+                let sessionID = await getSessionID(signature);
 
+                if (sessionID == null) {
+                    Swal.fire(
+                        'Error',
+                        `<p>Connection Error!</p>`,
+                        'error'
+                    );
+                    return false;
+                }
+
+                const wallet = god.currentNetwork.account;            
+                const nftID = wallet;
+
+                $.post(url, { signature : sessionID, nftID, wallet }, {
+
+                });
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'Errors occured while creating signature',
+                    'error'
+                )
+            }
+        };
+
+        const active = await isActive();
+
+        if (active == true) {
+            Swal.fire({
+                title : 'Warning',
+                html : `<p>Do you want to disconnect old session and start new mining?</p>`,
+                icon : 'warning',
+                showCancelButton: true,
+            }).then((result) => {
+                if (!result.isConfirmed) 
+                    return;
+                processLogin();
             });
         } else {
-            Swal.fire(
-                'Error!',
-                'Errors occured while creating signature',
-                'error'
-            )
+            processLogin();
         }
     };
 
