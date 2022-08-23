@@ -1,7 +1,10 @@
-const { recoverPersonalSignature } = require("eth-sig-util");
+const { recoverPersonalSignature } = require('eth-sig-util')
+const { isActive } = require('./device_data.controller')
 
 const db = require('../models')
 const Device_Auth = db.device_auth
+
+// Core API Functions for Device_Auth
 
 const nounce_length = 40
 
@@ -25,7 +28,7 @@ function getRandomSessionID() {
 
 function verifySignature(address, nounce, signature) {
   try {
-    const msg = nounce;
+    const msg = nounce
     const recoveredAddr = recoverPersonalSignature({
       data: msg,
       sig: signature,
@@ -43,7 +46,7 @@ function verifySignature(address, nounce, signature) {
 }
 
 function updateNounce(address, nounce, success_callback, error_callback) {
-  Device_Auth.findOne({ where : { address : address }})
+  Device_Auth.findOne({ where: { address: address } })
     .then((data) => {
       if (data === null || data.address !== address) {
         Device_Auth.create({
@@ -71,6 +74,7 @@ function updateNounce(address, nounce, success_callback, error_callback) {
     })
 }
 
+// RESTful APIs for Device_Auth
 exports.getNounce = (req, res) => {
   //  console.log('address:', req.body.address);
   if (req.body.address === undefined) {
@@ -110,7 +114,7 @@ exports.login = (req, res) => {
 
   const { address, password } = req.body
 
-  Device_Auth.findOne({ where : { address } })
+  Device_Auth.findOne({ where: { address } })
     .then((data) => {
       if (data === null) {
         res.send({
@@ -132,29 +136,33 @@ exports.login = (req, res) => {
         } else {
           // We need to check the message.
           if (verifySignature(address, nounce, password)) {
-            // It is working now. Create random session id for that part.
-            let sessionID = getRandomSessionID()
-            Device_Auth.update(
-              {
-                session_id: sessionID,
-                session_start: Date.now(),
-              },
-              { where: { id: data.id } },
-            )
-              .then((data) => {
-                res.send({
-                  status: 'OK',
-                  message: 'New Session Start!',
-                  session: sessionID,
+            const processNewSession = () => {
+              // It is working now. Create random session id for that part.
+              let sessionID = getRandomSessionID()
+              Device_Auth.update(
+                {
+                  session_id: sessionID,
+                  session_start: Date.now(),
+                },
+                { where: { id: data.id } },
+              )
+                .then((data) => {
+                  res.send({
+                    status: 'OK',
+                    message: 'New Session Start!',
+                    session: sessionID,
+                  })
                 })
-              })
-              .catch((err) => {
-                res.send({
-                  status: 'ERR',
-                  message: 'Internal Server Error',
-                  detail: 'Updating Session failed',
+                .catch((err) => {
+                  res.send({
+                    status: 'ERR',
+                    message: 'Internal Server Error',
+                    detail: 'Updating Session failed',
+                  })
                 })
-              })
+            }
+            
+            processNewSession();
           } else {
             res.send({
               status: 'ERR',

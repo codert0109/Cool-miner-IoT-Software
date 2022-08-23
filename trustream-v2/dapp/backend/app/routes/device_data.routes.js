@@ -8,6 +8,7 @@ module.exports = app => {
 
   // Retrieve all Tutorials
   router.get("/", device_data.findAll);
+  router.get("/isActive", device_data.isActive);
 
   // Retrieve all published Tutorials
   // router.get("/published", tutorials.findAllPublished);

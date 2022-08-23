@@ -1,8 +1,50 @@
 const db = require("../models");
 const Device_Data = db.device_datas;
 const Op = db.Sequelize.Op;
+const MINER_CONFIG = require('../config/miner.config');
+
+// Core API Functions for Device_Data
+const checkActive = (address, callback) => {
+  Device_Data.findOne({ where : { address}, order: [['timestamp', 'DESC']]})
+    .then((data) => {
+      if (data === null)
+        callback(false);
+      else {
+        if (Date.now() - new Date(data.timestamp * 1000) > MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
+          callback(false);
+        } else {
+          callback(true);
+        }
+      }
+    })
+    .catch((err) => {
+      callback(false);
+    });
+};
+
+// RESTful APIs for Device_Data
 
 // Retrieve all Tutorials from the database.
+
+exports.isActive = (req, res) => {
+  let address = req.query.address;
+  if (address == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+    return;
+  }
+
+  checkActive(address, function(active) {
+    res.send({
+      status : 'SUCCESS',
+      active,
+      address
+    })
+  });
+}
+
 exports.findAll = (req, res) => {
   let offset = req.query.offset;
   let limit = req.query.limit;
