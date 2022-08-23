@@ -1,8 +1,12 @@
 import ContractAddress from '../contracts/contract-address.json';
 
-export function getContractAddressFormat() {
-    let address = ContractAddress.NFT;
+
+export function getAddressFormat(address) {
     return address.substring(0, 6) + '...' + address.substring(address.length - 4);
+}
+
+export function getContractAddressFormat() {
+    return getAddressFormat(ContractAddress.NFT);
 }
 
 export function getNFTIDFromAddress(address) {
