@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import NFTContractABI from '../../../contracts/NFT.json';
 import ContractAddress from '../../../contracts/contract-address.json';
 import { useStore } from '../../../store/index';
+import { getContractAddressFormat , getNFTIDFromAddress} from "../../../utils";
 
 const BREAKPOINT = '@media (max-width: 900px)';
 
@@ -63,6 +64,7 @@ const useStyles = createStyles((theme) => ({
         // height: 50
     },
     info_text: {
+        width: '100%',
         fontSize: '0.9rem',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
@@ -83,6 +85,9 @@ const useStyles = createStyles((theme) => ({
     buybtn: {
         minHeight: '100%',
         maxHeight: '100%'
+    },
+    text_right_align: {
+        textAlign: 'right'
     }
 }));
 
@@ -127,23 +132,23 @@ export default function NFTStatus({ nftStatus, title, imgurl, price }) {
                         {
                             isDetailShow === true &&
                             <div className={classes.info_text}>
-                                <table>
+                                <table style={{ width: '100%' }}>
                                     <tbody>
                                         <tr>
                                             <td>Contract Address</td>
-                                            <td>0x69cd...31ad</td>
+                                            <td className={classes.text_right_align}>{getContractAddressFormat()}</td>
                                         </tr>
                                         <tr>
                                             <td>Token ID</td>
-                                            <td>1377</td>
+                                            <td className={classes.text_right_align}>{getNFTIDFromAddress(god.currentNetwork.account)}</td>
                                         </tr>
                                         <tr>
                                             <td>Token Standard</td>
-                                            <td>ERC-721</td>
+                                            <td className={classes.text_right_align}>ERC-721</td>
                                         </tr>
                                         <tr>
                                             <td>Blockchain</td>
-                                            <td>Ethereum</td>
+                                            <td className={classes.text_right_align}>IoTeX_Testnet</td>
                                         </tr>
                                     </tbody>
                                 </table>
