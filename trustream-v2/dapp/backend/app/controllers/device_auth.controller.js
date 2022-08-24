@@ -101,6 +101,47 @@ exports.getNounce = (req, res) => {
   )
 }
 
+exports.verify = (req, res) => {
+  console.log('verify', req.body.address, req.body.signature);
+  if (req.body.address === undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+    return;
+  }
+
+  if (req.body.signature === undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+  }
+
+  const { address, signature } = req.body;
+
+  Device_Auth.findOne({ where : { address,  session_id : signature }})
+    .then((data) => {
+      if (data === null) {
+        res.send({
+          status : 'ERR',
+          message : 'Invalid signature'
+        })
+      } else {
+        res.send({
+          status : 'OK',
+          message : 'Signature is valid.'
+        })
+      }
+    })
+    .catch((err) => {
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      })
+    })
+}
+
 exports.login = (req, res) => {
   if (req.body.address === undefined) {
     res.send('Bad request')
