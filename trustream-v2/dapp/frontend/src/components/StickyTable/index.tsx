@@ -29,6 +29,7 @@ const useStyles = createStyles((theme) => ({
 interface TableScrollAreaProps {
     data: {
         id: string;
+        miner : string;
         timestamp: number;
         address: string;
         pedestrains: string;
@@ -80,6 +81,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
     const rows = data.map((row) => (
         <tr key={row.id}>
             <td>{new Date(row.timestamp * 1000).toLocaleString()}</td>
+            <td>{row.miner}</td>
             <td>{helper.string.truncate(row.address || '0x......', 12, '...')}</td>
             {/* <td>{row.pedestrains}</td>
             <td>{row.cars}</td>
@@ -111,7 +113,8 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
                 <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <tr>
                         <th>Timestamp</th>
-                        <th>Miner</th>
+                        <th>Name</th>
+                        <th>Wallet</th>
                         {/* <th>Pedestrians</th>
                         <th>Cars</th>
                         <th>Bus</th>

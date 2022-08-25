@@ -9,6 +9,7 @@ import Loading from "../components/Loading";
 import NFTMinerNode from "@/components/NFTMinerNode";
 import NFTStatus from "@/components/NFTMinerNode/NFTStatus";
 import { observer } from 'mobx-react-lite';
+import Router, { useRouter } from 'next/router';
 
 const BigNumber = require("bignumber.js");
 let window = require('../global.js');
@@ -75,6 +76,13 @@ export default observer(() => {
         setAccount(info.account);
         setLoading(false);
     };
+
+    // Update when url changes detect
+    useEffect(() => {
+        Router.events.on('routeChangeComplete', () => {
+            setLoading(true);
+        });
+    }, []);
 
     const onTransferNFT = async () => {
         let _normalCnt = parseInt(normalTransferCnt.toString());
