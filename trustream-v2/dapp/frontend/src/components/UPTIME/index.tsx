@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, Button, Progress } from '@mantine/core';
 import { useInterval } from '@mantine/hooks';
 import { BorderStyle } from 'tabler-icons-react';
@@ -6,6 +6,7 @@ import WhiteLabel from '../WhiteLabel';
 import classjoin from 'classnames';
 import Box from '../Container/Box';
 import { classToClassFromExist } from 'class-transformer';
+import $ from "axios";
 
 const useStyles = createStyles((theme) => ({
     secondMargin: {
@@ -55,8 +56,24 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function ({ label }) {
+    const INTERVAL_TIME = 5000;
+
     const { classes, theme } = useStyles();
     const [selectedItem, setSelectedItem] = useState('day');
+
+    const [timerID, setTimerID] = useState(null);
+
+    useEffect(() => {
+        let timerID = setInterval(() => {
+            console.log('adding logic');
+        }, INTERVAL_TIME);
+
+        setTimerID(timerID);
+
+        return () => {
+            clearInterval(timerID);
+        };
+    }, []);
 
     const renderText = (x, y, fontsize, caption, itemvalue) => {
         if (itemvalue !== selectedItem) {
@@ -71,7 +88,7 @@ export default function ({ label }) {
         <Box label={label}>
             <WhiteLabel label="Total Amount" className="" />
             <WhiteLabel label='0 "' className={classes.secondMargin} />
-            <div className={classes.resizeme}>
+            {/* <div className={classes.resizeme}>
                 <svg
                     width="100%"
                     height="100%"
@@ -83,18 +100,12 @@ export default function ({ label }) {
                     style={{cursor : 'context-menu'}}
                 >
                     {renderText(80, 60, 38, 'Day', 'day')}
-                    {/* <text x="0"     y="60" font-size="38" fill="white" className={classes.textItem}>1 Day</text> */}
                     <text x="160"    y="60" fontSize="38" fill={theme.colorScheme == 'dark' ? "white" : "black"} > | </text>
                     {renderText(178, 60, 38, 'Week', 'week')}
-                    {/* <text x="108"   y="60" font-size="38" fill="white" className={classes.textItem}>1 Week</text> */}
                     <text x="290"   y="60" fontSize="38" fill={theme.colorScheme == 'dark' ? "white" : "black"} > | </text>
                     {renderText(309, 60, 38, 'Month', 'month')}
-                    {/* <text x="239"   y="60" font-size="38" fill="white" className={classes.textItem}>1 Month</text> */}
-                    {/* <text x="378"   y="60" fontSize="38" fill={theme.colorScheme == 'dark' ? "white" : "black"} > | </text> */}
-                    {/* {renderText(390, 60, 38, '1 Year', 'year')} */}
-                    {/* <text x="390"   y="60" font-size="38" fill="white" className={classes.textItem}>1 Year</text> */}
                 </svg>
-            </div>
+            </div> */}
         </Box>
     );
 }
