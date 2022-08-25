@@ -147,20 +147,23 @@ export default function TableReviews() {
 
         const active = await isActive();
 
-        if (active == true) {
-            Swal.fire({
-                title : 'Warning',
-                html : `<p>Do you want to disconnect old session and start new mining?</p>`,
-                icon : 'warning',
-                showCancelButton: true,
-            }).then((result) => {
-                if (!result.isConfirmed) 
-                    return;
-                processLogin();
-            });
-        } else {
-            processLogin();
-        }
+        // we don't need to show error messages.
+        processLogin();
+
+        // if (active == true) {
+        //     Swal.fire({
+        //         title : 'Warning',
+        //         html : `<p>Do you want to disconnect old session and start new mining?</p>`,
+        //         icon : 'warning',
+        //         showCancelButton: true,
+        //     }).then((result) => {
+        //         if (!result.isConfirmed) 
+        //             return;
+                
+        //     });
+        // } else {
+        //     processLogin();
+        // }
     };
 
     const verifyMessage = (signature, message) => {

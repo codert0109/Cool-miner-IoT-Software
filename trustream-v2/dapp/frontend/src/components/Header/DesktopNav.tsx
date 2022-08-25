@@ -114,6 +114,7 @@ const DesktopNav = observer((props) => {
   const { god, lang, user } = useStore();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
+  const router = useRouter();
 
   const store = useLocalObservable(() => ({
     showConnecter() {
@@ -175,7 +176,7 @@ const DesktopNav = observer((props) => {
     return (
       <Link href={link.link} key={link.label}>
         <Box
-          className={cx(classes.link, { [classes.linkActive]: link.label === active })}
+          className={cx(classes.link, { [classes.linkActive]: link.link === router.route })}
           sx={{ cursor: 'pointer' }}
           onClick={(event) => {
             setActive(link.label);
