@@ -45,6 +45,43 @@ exports.isActive = (req, res) => {
   });
 }
 
+// exports.getUploadCnt = (req, res) => {
+//   // const { address, signature } = req.body;
+//   const { address, startTime, endTime } = req.body;
+
+//   if (address == null || startTime == null || endTime == null) {
+//     res.send({
+//       status : 'ERR',
+//       message : 'Bad request'
+//     });
+//     return;
+//   }
+
+//   Device_Data.count(
+//     { 
+//       where : { 
+//         address,
+//         created_at : {
+//           [Op.gt] : startTime,
+//           [Op.lt] : endTime
+//         }
+//       }
+//     })
+//     .then(count => {
+//       res.send({
+//         status : 'SUCCESS',
+//         count
+//       })
+//     })
+//     .catch(err => {
+//       res.send({
+//         status : 'ERR',
+//         message : 'Internal Server Error',
+//         error : err
+//       })
+//     });
+// }
+
 exports.findAll = (req, res) => {
   let offset = req.query.offset;
   let limit = req.query.limit;

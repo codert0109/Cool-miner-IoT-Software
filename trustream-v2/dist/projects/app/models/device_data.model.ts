@@ -20,6 +20,12 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   public address!: string;
 
   @Column({
+    allowNull: true,
+    type: DataType.STRING(64)
+  })
+  public miner!: string;
+
+  @Column({
     allowNull: false
   })
   public timestamp!: number;

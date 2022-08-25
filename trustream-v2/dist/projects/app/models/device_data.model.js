@@ -33,6 +33,13 @@ __decorate([
 ], DeviceDataModel.prototype, "address", void 0);
 __decorate([
     sequelize_typescript_1.Column({
+        allowNull: true,
+        type: sequelize_typescript_1.DataType.STRING(64)
+    }),
+    __metadata("design:type", String)
+], DeviceDataModel.prototype, "miner", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
         allowNull: false
     }),
     __metadata("design:type", Number)

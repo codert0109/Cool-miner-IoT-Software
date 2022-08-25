@@ -1,5 +1,10 @@
 import _ from 'lodash'
-import { deviceDataRepository, deviceRepository, deviceAuthRepository } from './models'
+import { 
+  deviceDataRepository, 
+  deviceRepository, 
+  deviceAuthRepository,
+  deviceUptimeRepository 
+} from './models'
 import { ProjectContext } from '../interface'
 // import { EthHelper } from "@helpers/index"
 // import { ecrecover, toBuffer } from 'ethereumjs-util'
@@ -60,6 +65,25 @@ async function verifyMessage(from : string, sessionID : string) {
   }
 }
 
+async function updateUpTime(address : string) {
+  const UPLOAD_INTERVAL = 2;
+
+  try {
+    let result = await deviceUptimeRepository.findOne({ where : { address } })
+    if (result === null) {
+      // find new miner! add data
+      await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
+    } else {
+      // update data
+      await deviceUptimeRepository.update(
+        { address, uptime : result.uptime + UPLOAD_INTERVAL},
+        { where : { address }});
+    }
+  } catch (err) {
+    console.log(`errors occured in updateUpTime ${err}`);
+  }
+}
+
 async function onMqttData(context: ProjectContext, topic: string, payload: Buffer) {
   
 
@@ -109,6 +133,11 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   console.log(`Device address: ${address}`)
   console.log(`Timestamp: ${decodedPayload.message.timestamp}`)
 
+  let { miner } = decodedPayload.message;
+
+  if (miner == undefined)
+    miner = 'Not set';
+
   await deviceDataRepository.upsert({
     id: address + '-' + decodedPayload.message.timestamp,
     address: address,
@@ -118,8 +147,11 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     bus : decodedPayload.message.bus,
     truck : decodedPayload.message.truck,
     total : decodedPayload.message.total,
-    link : decodedPayload.message.link
+    link : decodedPayload.message.link,
+    miner
   })
+
+  await updateUpTime(address);
   // Store the data and execute some contracts (eg. rewards)
 }
 

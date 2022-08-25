@@ -38,6 +38,7 @@ class Message:
       self.total = self.pedestrians + self.cars + self.bus + self.truck
       self.link = 'testing'
       self.timestamp = int(time.time())
+      self.miner = 'testminer'
 
 class Signature:
     def __init__(self, message: Message, privKey: bytes):
@@ -50,12 +51,14 @@ class Signature:
 
         self.hex = base64.b64encode(signed_message.signature).decode("utf-8")
 
-        self.hex = "csoechbokgouhnryytvxfxihlmprqbuqibatspiv"
+        self.hex = "olndxjkyxcyaswxfrjxwtzulzqsdweufsazepcke"
 
 class DataFrame:
     def __init__(self, message: Message, privKey : bytes):
         self.message = message
         self.signature = Signature(message, privKey).hex
+
+        print (self.signature)
 
 def connect_to_broker():
     def on_connect(client, userdata, flags, rc):

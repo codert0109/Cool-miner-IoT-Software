@@ -66,6 +66,7 @@ export default function ({ label }) {
         }
         return <text x={x} y={y} fontSize={fontsize} fill="#00ff11" onClick={() => setSelectedItem(itemvalue)} className={classes.textItem}>{caption}</text>;
     };
+    
     return (
         <Box label={label}>
             <WhiteLabel label="Total Amount" className="" />
