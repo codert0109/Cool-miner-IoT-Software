@@ -113,7 +113,7 @@ export default function ({ label }) {
 
     return (
         <Box label={label}>
-            <WhiteLabel label="Total Amount" className="" />
+            <WhiteLabel label="Accumulated Uptime" className="" />
             <WhiteLabel label={`${uptime}`} className={classes.secondMargin} />
             {/* <div className={classes.resizeme}>
                 <svg

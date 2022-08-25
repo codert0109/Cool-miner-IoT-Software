@@ -190,7 +190,7 @@ export default function TableReviews() {
         <Layout>
             <ScrollArea>
                 <div style={{maxWidth : '250px', width : '100%', marginBottom : '10px'}}>
-                    <UPTIME label="UPTIME" />
+                    <UPTIME label="Public Pool Mining" />
                 </div>
                 <Button onClick={onSendSignature} rightIcon={<Send size={18} />} sx={{ paddingRight: 12 }}>
                     Secure Miner Connection
