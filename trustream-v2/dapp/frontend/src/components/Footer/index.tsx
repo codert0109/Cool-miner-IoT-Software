@@ -1,6 +1,6 @@
 import { Footer, createStyles, useMantineTheme, Container, Group, ActionIcon } from '@mantine/core';
 import { BrandTwitter, BrandLinkedin, BrandDiscord } from 'tabler-icons-react';
-
+import Router, { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
     inner: {
@@ -23,7 +23,8 @@ const useStyles = createStyles((theme) => ({
         },
     },
     imgdiv: {
-        flexGrow: 1
+        flexGrow: 1,
+        cursor : 'pointer'
     },
     imgstyle: {
         height: '17px'
@@ -33,15 +34,17 @@ const useStyles = createStyles((theme) => ({
 export default function () {
     const theme = useMantineTheme();
     const { classes } = useStyles();
+    const router = useRouter();
 
     return (
         <Footer height={50} p="sm">
             <Container className={classes.inner}>
                 {/* <MantineLogo /> */}
-                <div className={classes.imgdiv}>
+                <div className={classes.imgdiv} onClick={() => router.push('https://www.elumicate.com/')}>
                     {theme.colorScheme === 'dark' && <img className={classes.imgstyle} src="/images/logo/Elumicate-font-viga-white-logo-SMALL.png"></img>}
                     {theme.colorScheme !== 'dark' && <img className={classes.imgstyle} src="/images/logo/Elumicate-font-viga-black-logo-SMALL.png"></img>}
                 </div>
+
 
                 <Group spacing={0} className={classes.links} position="right" noWrap>
                     <ActionIcon size="lg" onClick={() => open("https://twitter.com/elumicate/")}>

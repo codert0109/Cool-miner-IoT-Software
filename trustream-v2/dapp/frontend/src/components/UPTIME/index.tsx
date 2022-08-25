@@ -8,6 +8,7 @@ import Box from '../Container/Box';
 import { classToClassFromExist } from 'class-transformer';
 import $ from "axios";
 import { useStore } from '@/store/index';
+import Router, { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
     secondMargin: {
@@ -90,12 +91,16 @@ export default function ({ label }) {
                     }
                 });
         };
+
         let timerID = setInterval(() => {
             updateTime();
         }, INTERVAL_TIME);
 
         setTimerID(timerID);
         updateTime();
+        Router.events.on('routeChangeComplete', () => {
+            updateTime();
+        });
 
         return () => {
             clearInterval(timerID);

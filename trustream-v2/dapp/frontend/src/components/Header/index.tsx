@@ -4,7 +4,7 @@ import { Burger, Container, createStyles, Group, Header, Text, useMantineTheme }
 import DesktopNav from './DesktopNav';
 import { WalletInfo } from '../WalletInfo';
 import { useStore } from '@/store/index';
-
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -12,6 +12,10 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+
+  header_logo : {
+    cursor : 'pointer'
   },
 
   shadowStyle : {
@@ -44,13 +48,16 @@ export const index = observer(() => {
   const { user } = useStore();
   const theme = useMantineTheme();
   const { god, lang } = useStore();
+  const router = useRouter();
 
   return (
     <Header height={56} className={classes.shadowStyle}>
       <Container className={classes.ContainerStyle}>
         <div className={classes.inner}>
-          {theme.colorScheme === 'dark' && <img src="/images/logo/White-Square-E-75px.png" height={36}/>}
-          {theme.colorScheme !== 'dark' && <img src="/images/logo/Black-Square-E-75px.png" height={36}/>}          
+          <div className={classes.header_logo} onClick={() => router.reload()}>
+            {theme.colorScheme === 'dark' && <img src="/images/logo/White-Square-E-75px.png" height={36}/>}
+            {theme.colorScheme !== 'dark' && <img src="/images/logo/Black-Square-E-75px.png" height={36}/>}          
+          </div>
           {/* <Text>Elumicate</Text> */}
           <Group spacing={5} className={classes.links}>
             <DesktopNav />

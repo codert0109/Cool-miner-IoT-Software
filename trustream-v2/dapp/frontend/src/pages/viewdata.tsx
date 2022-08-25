@@ -6,15 +6,17 @@ import { useEffect, useState } from "react";
 import StickyTable from "../components/StickyTable";
 import Loading from "../components/Loading";
 
+import Router, { useRouter } from 'next/router';
+
 const useStyles = createStyles((theme) => ({
-    table_header_button : {
-        marginTop : 10,
-        marginBottom : 10,
-        display : 'flex',
-        alignItems : 'center',
-        justifyContent : 'center'
+    table_header_button: {
+        marginTop: 10,
+        marginBottom: 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    refreshButton : {
+    refreshButton: {
     }
 }));
 
@@ -25,15 +27,19 @@ export default function TableReviews() {
     const [loading, setLoading] = useState(false);
     const [activePage, setPage] = useState(1);
 
+
     useEffect(() => {
         onRefresh();
+        Router.events.on('routeChangeComplete', () => {
+            onRefresh();
+        });
     }, []);
 
     const onRefresh = () => {
         setTableData([]);
         setLoading(true);
         axios.get('https://miner.elumicate.com/api/device_status')
-        // axios.get('https://localhost:3333/api/device_status')
+            // axios.get('https://localhost:3333/api/device_status')
             .then((data) => {
                 // console.log('data', data);
                 setTableData(data.data.data);
@@ -50,7 +56,7 @@ export default function TableReviews() {
             <div className={classes.table_header_button}>
                 <Button disabled={loading} onClick={onRefresh} className={classes.refreshButton}>Refresh</Button>
             </div>
-            {!loading && <StickyTable data={tableData}/>}
+            {!loading && <StickyTable data={tableData} />}
         </Layout>
     );
 }
