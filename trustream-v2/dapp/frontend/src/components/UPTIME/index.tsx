@@ -7,6 +7,7 @@ import classjoin from 'classnames';
 import Box from '../Container/Box';
 import { classToClassFromExist } from 'class-transformer';
 import $ from "axios";
+import { useStore } from '@/store/index';
 
 const useStyles = createStyles((theme) => ({
     secondMargin: {
@@ -58,14 +59,37 @@ const useStyles = createStyles((theme) => ({
 export default function ({ label }) {
     const INTERVAL_TIME = 5000;
 
+    const { god } = useStore();
+
     const { classes, theme } = useStyles();
     const [selectedItem, setSelectedItem] = useState('day');
 
     const [timerID, setTimerID] = useState(null);
+    const [uptime, setUpTime] = useState('0');
 
     useEffect(() => {
         let timerID = setInterval(() => {
             console.log('adding logic');
+            $.post('https://miner.elumicate.com/api/device_uptime/getUpTime', 
+                { address : god.currentNetwork.account}).then(function(data : any) {
+                    let info = data.data;
+                    if (info.status === 'OK') {
+                        let timeInfo = "";
+                        let timeunit = ['s', 'm', 'h'];
+                        let cur = info.uptime;
+                        for (let i = 0; i < 2; i++) {
+                            let head = ~~(cur / 60);
+
+                            timeInfo = `${cur % 60}${timeunit[i]}${i==0?'':' '}${timeInfo}`;
+                            cur = head;
+                            if (cur == 0) break;
+                        }
+                        if (cur > 0) {
+                            timeInfo = `${cur}h ${timeInfo}`;
+                        }
+                        setUpTime(timeInfo);
+                    }
+                });
         }, INTERVAL_TIME);
 
         setTimerID(timerID);
@@ -87,7 +111,7 @@ export default function ({ label }) {
     return (
         <Box label={label}>
             <WhiteLabel label="Total Amount" className="" />
-            <WhiteLabel label='0 "' className={classes.secondMargin} />
+            <WhiteLabel label={`${uptime}`} className={classes.secondMargin} />
             {/* <div className={classes.resizeme}>
                 <svg
                     width="100%"
