@@ -3,8 +3,9 @@ module.exports = app => {
 
   var router = require("express").Router();
 
-  router.post("/getNounce", device_auth.getNounce);
-  router.post("/login",     device_auth.login);
+  router.post("/getNounce",   device_auth.getNounce);
+  router.post("/login",       device_auth.login);
+  router.post("/verify",      device_auth.verify);
 
   app.use("/api/device_auth", router);
 };

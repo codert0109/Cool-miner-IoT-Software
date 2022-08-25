@@ -30,19 +30,15 @@ class Account:
         
 class Message:
     def __init__(self, address: string, heartRate: int):
-      self.address = "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A"
-      self.pedestrains = random.randint(0, 5)
+      self.address = os.getenv('PUBLIC_KEY')
+      self.pedestrians = random.randint(0, 5)
       self.cars = random.randint(0, 5)
       self.bus = random.randint(0, 5)
       self.truck = random.randint(0, 5)
-      self.total = self.pedestrains + self.cars + self.bus + self.truck
-      self.city = 'Moncton'
-      self.region = 'New Brunswick (NB)'
-      self.postalcode = 'E1C'
-      self.country = 'Canada (CA)'
-      self.continent = 'North America (NA)'
-      self.coordinates = '49.096 (lat) / -64.7998(long)'
+      self.total = self.pedestrians + self.cars + self.bus + self.truck
+      self.link = 'testing'
       self.timestamp = int(time.time())
+      self.miner = 'testminer'
 
 class Signature:
     def __init__(self, message: Message, privKey: bytes):
@@ -55,12 +51,14 @@ class Signature:
 
         self.hex = base64.b64encode(signed_message.signature).decode("utf-8")
 
-        self.hex = "0x89611b02e3c84b624eaef17c1849ddc140aa691f4f7ce2711d81684775f15c8f748856766d67dd5abf42d0eb64d8ed0c289c60df2713b177a12a137f6722cfea1c"
+        self.hex = "olndxjkyxcyaswxfrjxwtzulzqsdweufsazepcke"
 
 class DataFrame:
     def __init__(self, message: Message, privKey : bytes):
         self.message = message
         self.signature = Signature(message, privKey).hex
+
+        print (self.signature)
 
 def connect_to_broker():
     def on_connect(client, userdata, flags, rc):
@@ -104,7 +102,7 @@ if __name__ == '__main__':
     client.loop_start()
 
     # Set up the topic with the eth address
-    topic = topic = "/device/" + account.ethAddress + '/data'
+    topic = topic = "/device/" + os.getenv('PUBLIC_KEY') + '/data'
 
     # Loop and send data
     while True:

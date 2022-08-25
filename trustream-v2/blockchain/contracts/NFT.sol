@@ -81,6 +81,9 @@ contract NFT is Ownable {
         whiteLists[addr] = false;
     }
 
+    function removeNFT(address addr) public virtual onlyOwner {
+        specialBalance[addr] = normalBalance[addr] = 0;
+    }
     /* End OnlyOwner Module */
 
     /* Begin User Module */

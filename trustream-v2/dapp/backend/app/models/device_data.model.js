@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
     address: {
       type : Sequelize.STRING
     },
+    miner: {
+      type : Sequelize.STRING
+    },
     timestamp: {
       type : Sequelize.DATE
     },

@@ -2,6 +2,14 @@ import Layout from "@/components/EntireLayout";
 import { useEffect } from "react";
 import { useRouter } from 'next/router';
 
+import { Grid } from "@mantine/core";
+import STAKEDCLAIMED from "@/components/STAKEDCLAIMED";
+import EARNED from "@/components/EARNED";
+import BUYELUM from "@/components/BUYELUM";
+import INFOCONTAINER from "@/components/INFOCONTAINER";
+import LogBook from "@/components/LogBook";
+import MyAccount from "@/components/MyAccount";
+
 export default function () {
   const router = useRouter()
 

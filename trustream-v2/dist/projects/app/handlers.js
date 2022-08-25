@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("./models");
 var ethUtil = require('ethereumjs-util');
 var bops = require('bops');
-const eth_sig_util_1 = require("eth-sig-util");
 async function onDeviceRegistered(context, event) {
     if (event) {
         const { _deviceAddress } = event.returnValues;
@@ -19,24 +18,32 @@ function buf2hex(buffer) {
         .map(x => x.toString(16).padStart(2, '0'))
         .join('');
 }
-function verifyMessage(from, signature) {
-    const message = 'Very Message Such Wow';
+async function verifyMessage(from, sessionID) {
     try {
-        const msg = "0x86,101,114,121,32,77,101,115,115,97,103,101,32,83,117,99,104,32,87,111,119";
-        const recoveredAddr = eth_sig_util_1.recoverPersonalSignature({ data: msg, sig: signature, });
-        console.log('recoveredAddr : ' + recoveredAddr);
-        if (recoveredAddr.toLowerCase() === from.toLowerCase()) {
-            return true;
+        let result = await models_1.deviceAuthRepository.findOne({ where: { address: from, session_id: sessionID } });
+        if (result === null)
+            return false;
+        return true;
+    }
+    catch (err) {
+        console.log(`errors occured in verifyMessage ${err}`);
+        return false;
+    }
+}
+async function updateUpTime(address) {
+    const UPLOAD_INTERVAL = 2;
+    try {
+        let result = await models_1.deviceUptimeRepository.findOne({ where: { address } });
+        if (result === null) {
+            await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
         }
         else {
-            return false;
+            await models_1.deviceUptimeRepository.update({ address, uptime: result.uptime + UPLOAD_INTERVAL }, { where: { address } });
         }
     }
     catch (err) {
-        console.error(err);
-        return false;
+        console.log(`errors occured in updateUpTime ${err}`);
     }
-    return false;
 }
 async function onMqttData(context, topic, payload) {
     console.log("Received a message on topic: ", topic);
@@ -48,11 +55,13 @@ async function onMqttData(context, topic, payload) {
     const address = values[1];
     let decodedPayload = eval('(' + payload.toString() + ')');
     const message = JSON.stringify(decodedPayload.message);
+    console.log('message', message);
     const signature = decodedPayload.signature;
     let isValid = false;
-    isValid = verifyMessage(address, signature);
+    isValid = await verifyMessage(address, signature);
     if (isValid === false) {
-        console.log(`WARNING: Dropping data message: Invalid signature. Recovered address doesn't match ${address}`);
+        console.log(`WARNING: Dropping data message: Invalid session id ${address}`);
+        return;
     }
     let NFTContract = context.getContract("NFT");
     let NFTBalance = await NFTContract.methods.balanceOf(address).call();
@@ -64,24 +73,23 @@ async function onMqttData(context, topic, payload) {
     }
     console.log("Device has NFT. Processing data");
     console.log(`Device address: ${address}`);
-    console.log(`Message Data: ${decodedPayload.message}`);
     console.log(`Timestamp: ${decodedPayload.message.timestamp}`);
+    let { miner } = decodedPayload.message;
+    if (miner == undefined)
+        miner = 'Not set';
     await models_1.deviceDataRepository.upsert({
         id: address + '-' + decodedPayload.message.timestamp,
         address: address,
         timestamp: decodedPayload.message.timestamp,
-        pedestrains: decodedPayload.message.pedestrains,
+        pedestrains: decodedPayload.message.pedestrians,
         cars: decodedPayload.message.cars,
         bus: decodedPayload.message.bus,
         truck: decodedPayload.message.truck,
         total: decodedPayload.message.total,
-        city: decodedPayload.message.city,
-        region: decodedPayload.message.region,
-        postalcode: decodedPayload.message.postalcode,
-        country: decodedPayload.message.country,
-        continent: decodedPayload.message.continent,
-        coordinates: decodedPayload.message.coordinates
+        link: decodedPayload.message.link,
+        miner
     });
+    await updateUpTime(address);
 }
 const handlers = {
     onDeviceRegistered,

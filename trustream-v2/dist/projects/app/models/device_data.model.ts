@@ -20,6 +20,12 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   public address!: string;
 
   @Column({
+    allowNull: true,
+    type: DataType.STRING(64)
+  })
+  public miner!: string;
+
+  @Column({
     allowNull: false
   })
   public timestamp!: number;
@@ -52,30 +58,5 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   @Column({
     allowNull: false
   })
-  public city!: string;  
-
-  @Column({
-    allowNull: false
-  })
-  public region!: string;  
-
-  @Column({
-    allowNull: false
-  })
-  public postalcode!: string;  
-
-  @Column({
-    allowNull: false
-  })
-  public country!: string;  
-
-  @Column({
-    allowNull: false
-  })
-  public continent!: string;  
-
-  @Column({
-    allowNull: false
-  })
-  public coordinates!: string;  
+  public link!: string;
 }

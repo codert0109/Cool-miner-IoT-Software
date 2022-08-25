@@ -5,11 +5,11 @@ import { publicConfig } from "../config/public";
 import { useStore } from '../store/index';
 import { NetworkState } from '@/store/lib/NetworkState';
 import $ from "axios";
-import bops from "bops";
 import { recoverPersonalSignature } from "eth-sig-util";
 import Swal from 'sweetalert2';
 import NFTContractABI from '../contracts/NFT.json';
 import ContractAddress from '../contracts/contract-address.json';
+import UPTIME from "@/components/UPTIME";
 
 const { ethereum } = require('../global.js').getWindow();
 
@@ -26,15 +26,12 @@ export default function TableReviews() {
     const { god, lang } = useStore();
     
     const signMessage = async (message) => {
-        console.log('global', require('../global.js'));
-        // const message = 'Very Message Such Wow';
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;
-            const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
             const sign = await ethereum.request({
                 method: 'personal_sign',
-                params: [msg, from, 'Random text'],
+                params: [message, from, 'Random text'],
             });
             return sign;
         } catch (err) {
@@ -58,15 +55,35 @@ export default function TableReviews() {
         } catch (err) {
             return false;
         }
-        return false;
+    }
+
+    const isActive = async () => {
+        try {
+            let ret = await $.get(`https://miner.elumicate.com/api/device_status/isActive?address=${god.currentNetwork.account}`);
+            return ret.data.active;
+        } catch (err) {
+            return false;
+        }
     }
 
     const getNounce = async () => {
         try {
-            let ret = await $.post('http://localhost:3334/api/device_auth/getNounce', {
+            let ret = await $.post('https://miner.elumicate.com/api/device_auth/getNounce', {
                 address : god.currentNetwork.account
             });
             return ret.data.nounce;
+        } catch (err) {
+            return null;
+        }
+    }
+
+    const getSessionID = async (password) => {
+        try {
+            let ret = await $.post('https://miner.elumicate.com/api/device_auth/login', {
+                address : god.currentNetwork.account,
+                password : password
+            });
+            return ret.data.session;
         } catch (err) {
             return null;
         }
@@ -85,32 +102,64 @@ export default function TableReviews() {
             return false;
         }
 
-        const nounce = await getNounce();
-        if (nounce == null) {
-            Swal.fire(
-                'Error',
-                `<p>Connection Error!</p>`,
-                'error'
-            );
-            return false;
-        }
+        const processLogin = async () => {
+            const nounce = await getNounce();
+            if (nounce == null) {
+                Swal.fire(
+                    'Error',
+                    `<p>Connection Error!</p>`,
+                    'error'
+                );
+                return false;
+            }
 
-        const url = `${publicConfig.DEVICE_URL}/set_signature`;
-        const signature = await signMessage(nounce);
-        if (signature !== null) {
-            console.log('signature', signature);
-            const wallet = god.currentNetwork.account;
-            // we are currently using the same value we will change it for the future.
-            const nftID = wallet;
-            verifyMessage(signature, nounce);
-            $.post(url, { signature, nftID, wallet }, {
+            const url = `${publicConfig.DEVICE_URL}/set_signature`;
+            const signature = await signMessage(nounce);
+
+            if (signature !== null) {
+                verifyMessage(signature, nounce);
+                
+                let sessionID = await getSessionID(signature);
+
+                if (sessionID == null) {
+                    Swal.fire(
+                        'Error',
+                        `<p>Connection Error!</p>`,
+                        'error'
+                    );
+                    return false;
+                }
+
+                const wallet = god.currentNetwork.account;            
+                const nftID = wallet;
+
+                $.post(url, { signature : sessionID, nftID, wallet }, {
+
+                });
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'Errors occured while creating signature',
+                    'error'
+                )
+            }
+        };
+
+        const active = await isActive();
+
+        if (active == true) {
+            Swal.fire({
+                title : 'Warning',
+                html : `<p>Do you want to disconnect old session and start new mining?</p>`,
+                icon : 'warning',
+                showCancelButton: true,
+            }).then((result) => {
+                if (!result.isConfirmed) 
+                    return;
+                processLogin();
             });
         } else {
-            Swal.fire(
-                'Error!',
-                'Errors occured while creating signature',
-                'error'
-            )
+            processLogin();
         }
     };
 
@@ -119,7 +168,8 @@ export default function TableReviews() {
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;
-            const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
+            // const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
+            const msg = message;
             const recoveredAddr = recoverPersonalSignature({ data: msg, sig: signature });
             if (recoveredAddr.toLowerCase() === from.toLowerCase()) {
                 console.log(`Successfully ecRecovered signer as ${recoveredAddr}`);
@@ -136,6 +186,9 @@ export default function TableReviews() {
     return (
         <Layout>
             <ScrollArea>
+                <div style={{maxWidth : '250px', width : '100%', marginBottom : '10px'}}>
+                    <UPTIME label="UPTIME" />
+                </div>
                 <Button onClick={onSendSignature} rightIcon={<Send size={18} />} sx={{ paddingRight: 12 }}>
                     Secure Miner Connection
                 </Button>

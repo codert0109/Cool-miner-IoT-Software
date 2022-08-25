@@ -86,7 +86,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
             <td>{row.bus}</td>
             <td>{row.truck}</td> */}
             <td>{row.total}</td>
-            <td>
+            {/* <td>
                 <Anchor<'a'>
                     size="sm"
                     onClick={(event) => {
@@ -95,7 +95,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
                     }}>
                     Video
                 </Anchor>
-            </td>
+            </td> */}
             {/* <td>{row.city}</td>
             <td>{row.region}</td>
             <td>{row.postalcode}</td>
@@ -117,7 +117,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
                         <th>Bus</th>
                         <th>Truck</th> */}
                         <th>Total of Events</th>
-                        <th>Video Link</th>
+                        {/* <th>Video Link</th> */}
                         {/* <th>City</th>
                         <th>Region</th>
                         <th>Postalcode</th>

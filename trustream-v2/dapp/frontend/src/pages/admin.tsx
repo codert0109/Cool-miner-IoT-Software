@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import NFTContractABI from '../contracts/NFT.json';
 import ContractAddress from '../contracts/contract-address.json';
 import Swal from 'sweetalert2'
+import MultipleWalletAdd from "../components/Admin/MultipleWalletAdd";
 
 const useStyles = createStyles((theme) => ({
     gridDiv: {
@@ -81,6 +82,7 @@ export default function TableReviews() {
                         Add To BetaTester Lists
                     </Button>
                 </SimpleGrid>
+                <MultipleWalletAdd />
             </ScrollArea>
         </Layout>
     );

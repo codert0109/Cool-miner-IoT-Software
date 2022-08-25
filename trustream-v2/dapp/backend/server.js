@@ -7,8 +7,8 @@ const https = require('https')
 const fs = require('fs')
 
 function ensureSecure(req, res, next) {
-  return next()
-
+  // return next() // for testing purpose
+  
   if (req.secure) {
     // OK, continue
     return next()
@@ -52,6 +52,7 @@ app.get('/', (req, res) => {
 
 require('./app/routes/device_data.routes')(app)
 require('./app/routes/device_auth.routes')(app)
+require('./app/routes/device_uptime.routes')(app)
 require('./app/routes/claim_token.routes')(app)
 
 // set port, listen for requests
