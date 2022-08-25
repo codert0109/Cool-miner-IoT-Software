@@ -69,7 +69,6 @@ export default function ({ label }) {
 
     useEffect(() => {
         let timerID = setInterval(() => {
-            console.log('adding logic');
             $.post('https://miner.elumicate.com/api/device_uptime/getUpTime', 
                 { address : god.currentNetwork.account}).then(function(data : any) {
                     let info = data.data;
