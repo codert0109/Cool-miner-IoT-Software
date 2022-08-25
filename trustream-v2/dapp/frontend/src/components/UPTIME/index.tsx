@@ -44,15 +44,15 @@ const useStyles = createStyles((theme) => ({
     resizeme: {
         margin: '0',
         padding: '0',
-        paddingTop : '5px',
+        paddingTop: '5px',
         // height: '75px',
         width: '100%',
         // backgroundColor: 'lightblue',
         overflow: 'hidden'
     },
 
-    textItem : {
-        cursor : 'pointer'
+    textItem: {
+        cursor: 'pointer'
     }
 }));
 
@@ -68,9 +68,9 @@ export default function ({ label }) {
     const [uptime, setUpTime] = useState('0');
 
     useEffect(() => {
-        let timerID = setInterval(() => {
-            $.post('https://miner.elumicate.com/api/device_uptime/getUpTime', 
-                { address : god.currentNetwork.account}).then(function(data : any) {
+        const updateTime = () => {
+            $.post('https://miner.elumicate.com/api/device_uptime/getUpTime',
+                { address: god.currentNetwork.account }).then(function (data: any) {
                     let info = data.data;
                     if (info.status === 'OK') {
                         let timeInfo = "";
@@ -79,7 +79,7 @@ export default function ({ label }) {
                         for (let i = 0; i < 2; i++) {
                             let head = ~~(cur / 60);
 
-                            timeInfo = `${cur % 60}${timeunit[i]}${i==0?'':' '}${timeInfo}`;
+                            timeInfo = `${cur % 60}${timeunit[i]}${i == 0 ? '' : ' '}${timeInfo}`;
                             cur = head;
                             if (cur == 0) break;
                         }
@@ -89,9 +89,13 @@ export default function ({ label }) {
                         setUpTime(timeInfo);
                     }
                 });
+        };
+        let timerID = setInterval(() => {
+            updateTime();
         }, INTERVAL_TIME);
 
         setTimerID(timerID);
+        updateTime();
 
         return () => {
             clearInterval(timerID);
@@ -106,7 +110,7 @@ export default function ({ label }) {
         }
         return <text x={x} y={y} fontSize={fontsize} fill="#00ff11" onClick={() => setSelectedItem(itemvalue)} className={classes.textItem}>{caption}</text>;
     };
-    
+
     return (
         <Box label={label}>
             <WhiteLabel label="Total Amount" className="" />
