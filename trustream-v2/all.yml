@@ -1,9 +1,9 @@
 apps:
   - script: './dist/projects/app/main.js'
-    name: 'app'
+    name: 'web3stream'
     exec_mode: 'fork'
     instances: 1
   - script: './dapp/backend/server.js'
-    name: 'app'
+    name: 'webserver'
     exec_mode: 'fork'
     instances: 1
