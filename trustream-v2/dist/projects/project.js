@@ -33,6 +33,7 @@ class Project {
         this.listen_lock = false;
         this.useMqtt = false;
         this.useBlockchain = false;
+        this.port = null;
         this.mqtt = null;
         this.contractEvents = [];
         this.templateEvents = [];
@@ -47,6 +48,7 @@ class Project {
         const c = yaml_1.default.parse(file);
         this.useMqtt = c.features.includes('mqtt');
         this.useBlockchain = c.features.includes('blockchain');
+        this.port = c.port;
         if (this.useBlockchain) {
             const ce = c.dataSources.filter((v) => v.kind == 'ethereum/contract');
             const normalCe = ce.filter((v) => !lodash_1.default.isNil(v.source.address));
@@ -168,11 +170,18 @@ class Project {
         await this.catchUp();
         node_cron_1.default.schedule('*/5 * * * * *', async () => await self.listen(), { timezone: 'Asia/Shanghai' }).start();
     }
+    async portOpen() {
+        var net = require('net');
+        var server = net.createServer();
+        if (this.port !== null)
+            server.listen(this.port);
+    }
     async run() {
         if (this.useMqtt)
             this.mqtt = await this.startMqtt();
         if (this.useBlockchain)
             await this.startBlockchain();
+        this.portOpen();
     }
 }
 __decorate([

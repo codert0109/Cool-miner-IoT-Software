@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.21.1"
+    "sequelize": "^6.21.1",
+    "tcp-port-used": "^1.0.2"
   }
 }
