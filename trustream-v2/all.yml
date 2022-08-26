@@ -3,3 +3,7 @@ apps:
     name: 'app'
     exec_mode: 'fork'
     instances: 1
+  - script: './dapp/backend/server.js'
+    name: 'app'
+    exec_mode: 'fork'
+    instances: 1
