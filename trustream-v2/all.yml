@@ -3,7 +3,3 @@ apps:
     name: 'web3stream'
     exec_mode: 'fork'
     instances: 1
-  - script: './dapp/backend/server.js'
-    name: 'webserver'
-    exec_mode: 'fork'
-    instances: 1
