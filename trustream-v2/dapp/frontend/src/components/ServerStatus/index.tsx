@@ -1,7 +1,10 @@
 import Box from "../Container/Box";
 import { createStyles } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WhiteLabel from "../WhiteLabel";
+import $ from "axios";
+import Router, { useRouter } from 'next/router';
+import { Loader } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
     centerAlign : {
@@ -33,6 +36,8 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function() {
+    const INTERVAL_TIME = 60000;
+
     const { classes, theme } = useStyles();
 
     const [serverStatus, setServerStatus] = useState([
@@ -40,6 +45,46 @@ export default function() {
         { name : 'W3bstream',   working : true },
         { name : 'Database',    working : true }
     ]);
+
+    const [isloading, setLoading] = useState(true);
+    const [timerID, setTimerID] = useState(null);
+
+    useEffect(() => {
+        const updateStatus = () => {
+            setLoading(true);
+            $.get('https://miner.elumicate.com/api/status/servers')
+                .then(function (data : any) {
+                    setLoading(false);
+                    let info : any = data.data;
+                    setServerStatus(info);
+                })
+                .catch(function (err) {
+                    setLoading(false);
+                    setServerStatus(
+                        [
+                            { name : 'MQTT',        working : false },
+                            { name : 'W3bstream',   working : false },
+                            { name : 'Database',    working : false }
+                        ]
+                    );
+                });
+
+        };
+
+        let timerID = setInterval(() => {
+            updateStatus();
+        }, INTERVAL_TIME);
+
+        setTimerID(timerID);
+        updateStatus();
+        Router.events.on('routeChangeComplete', () => {
+            updateStatus();
+        });
+
+        return () => {
+            clearInterval(timerID);
+        };
+    }, []);
 
     const renderLabel = () => {
         let status = true;
@@ -49,6 +94,13 @@ export default function() {
 
         return (
             <div className={classes.centerAlign}>
+                {
+                    isloading &&
+                    <>
+                        <Loader size="xs"/>
+                        &nbsp;&nbsp;
+                    </>
+                }
                 {status === false && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
                 {status === true && <img src="/images/status/working.png" className={classes.imgStyle}></img>}
                 <span>Server Status</span>

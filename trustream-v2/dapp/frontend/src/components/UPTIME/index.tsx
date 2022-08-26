@@ -10,12 +10,19 @@ import $ from "axios";
 import { useStore } from '@/store/index';
 import Router, { useRouter } from 'next/router';
 
+import { Loader } from '@mantine/core';
+
 const useStyles = createStyles((theme) => ({
     secondMargin: {
         marginTop: '10px'
     },
     box: {
         minWidth: '190px'
+    },
+    header : {
+        display : 'flex',
+        alignItems : 'center',
+        justifyContent : 'center'
     },
     button: {
         position: 'relative',
@@ -68,10 +75,14 @@ export default function ({ label }) {
     const [timerID, setTimerID] = useState(null);
     const [uptime, setUpTime] = useState('0');
 
+    const [isloading, setLoading] = useState(true);
+
     useEffect(() => {
         const updateTime = () => {
+            setLoading(true);
             $.post('https://miner.elumicate.com/api/device_uptime/getUpTime',
                 { address: god.currentNetwork.account }).then(function (data: any) {
+                    setLoading(false);
                     let info = data.data;
                     if (info.status === 'OK') {
                         let timeInfo = "";
@@ -89,6 +100,8 @@ export default function ({ label }) {
                         }
                         setUpTime(timeInfo);
                     }
+                }).catch(function(err) {
+                    setLoading(false);
                 });
         };
 
@@ -116,8 +129,22 @@ export default function ({ label }) {
         return <text x={x} y={y} fontSize={fontsize} fill="#00ff11" onClick={() => setSelectedItem(itemvalue)} className={classes.textItem}>{caption}</text>;
     };
 
+    const renderHeader = () => {
+        if (isloading === true) {
+            return (
+                <div className={classes.header}>
+                    <Loader size="xs"/>
+                    <span>&nbsp;&nbsp;{label}</span>
+                </div>
+            );
+        }
+        return (
+            <span>{label}</span>
+        )
+    };
+
     return (
-        <Box label={label}>
+        <Box label={renderHeader()}>
             <WhiteLabel label="Accumulated Uptime" className="" />
             <WhiteLabel label={`${uptime}`} className={classes.secondMargin} />
             {/* <div className={classes.resizeme}>
