@@ -9,9 +9,6 @@ import { recoverPersonalSignature } from "eth-sig-util";
 import Swal from 'sweetalert2';
 import NFTContractABI from '../contracts/NFT.json';
 import ContractAddress from '../contracts/contract-address.json';
-import UPTIME from "@/components/UPTIME";
-import ServerStatus from "@/components/ServerStatus";
-import { Grid } from "@mantine/core";
 
 const { ethereum } = require('../global.js').getWindow();
 
@@ -197,17 +194,6 @@ export default function TableReviews() {
                 sx={{ paddingRight: 12 }}>
                 Secure Miner Connection
             </Button>
-
-            <Grid>
-                <Grid.Col>
-                    <Grid.Col sm={12} md={6}>
-                        <UPTIME label="Public Pool Mining" />
-                    </Grid.Col>
-                    <Grid.Col sm={12} md={6}>
-                        <ServerStatus/>
-                    </Grid.Col>
-                </Grid.Col>
-            </Grid>
         </Layout>
     );
 }
