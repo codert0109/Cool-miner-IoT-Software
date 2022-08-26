@@ -113,7 +113,7 @@ export const NavbarSimple = observer(() => {
   }, [god.currentNetwork.account]);
 
   const data = [
-    // { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false },
+    { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false, access : 'public' },
     { link: '/admin',                                     label: 'Admin',         icon: Lock,     __blank : false, access : 'admin' },
     { link: '/nft',                                       label: 'NFT',           icon: ViewIcon, __blank : false, access : 'public' },
     { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon, __blank : false, access : 'public' },
