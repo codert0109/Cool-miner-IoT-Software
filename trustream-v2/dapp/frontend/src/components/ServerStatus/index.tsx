@@ -37,7 +37,7 @@ export default function() {
 
     const [serverStatus, setServerStatus] = useState([
         { name : 'MQTT',        working : true },
-        { name : 'Web3stream',  working : true },
+        { name : 'W3bstream',   working : true },
         { name : 'Database',    working : true }
     ]);
 
