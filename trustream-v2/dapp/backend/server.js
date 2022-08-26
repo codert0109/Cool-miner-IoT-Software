@@ -8,7 +8,7 @@ const fs = require('fs')
 
 function ensureSecure(req, res, next) {
   // console.log(req.headers.origin);
-  return next() // for testing purpose
+  // return next() // for testing purpose
   
   if (req.secure) {
     // OK, continue
