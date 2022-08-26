@@ -1,4 +1,3 @@
-const MINER_CONFIG = require('../config/miner.config');
 const tcpPortUsed = require('tcp-port-used');
 const DB_CONFIG = require('../config/db.config');
 
@@ -16,7 +15,7 @@ async function getList(callback) {
         },
         { 
             name : 'Database',    
-            host : MINER_CONFIG.HOST,     
+            host : DB_CONFIG.HOST,     
             port : 5432
         }
     ];
