@@ -29,7 +29,9 @@ const useStyles = createStyles((theme) => ({
     warning: {
         border: '2px solid #1864ab',
         borderLeft: '5px solid #1864ab',
-        backgroundColor: '#1864ab',
+        backgroundColor: '#4784e4',
+        paddingLeft: 10,
+        color : '#FFFFFF'
     },
 
     success: {
@@ -99,7 +101,6 @@ export default function NFTStatus({ nftStatus, title, imgurl, price }) {
     const [acquiredTime, setAcquiredTime] = useState("");
 
     useEffect(() => {
-        console.log('calling happen');
         const NFTContractAddress = ContractAddress.NFT;
         god.currentNetwork.execContract({
             address: NFTContractAddress,
@@ -187,7 +188,7 @@ export default function NFTStatus({ nftStatus, title, imgurl, price }) {
     } else {
         return (
             <div className={classes.infodiv + ' ' + classes.warning}>
-                You need to buy NFT in order to mine.
+                You need to buy an NFT in order to mine.
             </div>
         );
     }
