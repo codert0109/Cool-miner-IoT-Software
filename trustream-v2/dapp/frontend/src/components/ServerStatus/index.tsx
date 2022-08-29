@@ -5,6 +5,7 @@ import WhiteLabel from "../WhiteLabel";
 import $ from "axios";
 import Router, { useRouter } from 'next/router';
 import { Loader } from '@mantine/core';
+import { Refresh } from 'tabler-icons-react';
 
 const useStyles = createStyles((theme) => ({
     centerAlign : {
@@ -23,6 +24,13 @@ const useStyles = createStyles((theme) => ({
         display : 'flex',
         alignItems : 'center',
         justifyContent : 'center'
+    },
+
+    refresh : {
+        position : 'absolute',
+        top : 6,
+        right : 4,
+        cursor : 'pointer'
     },
 
     expand : {
@@ -49,41 +57,42 @@ export default function() {
     const [isloading, setLoading] = useState(true);
     const [timerID, setTimerID] = useState(null);
 
+    const updateStatus = () => {
+        setLoading(true);
+        $.get('https://miner.elumicate.com/api/status/servers')
+            .then(function (data : any) {
+                setLoading(false);
+                let info : any = data.data;
+                setServerStatus(info);
+            })
+            .catch(function (err) {
+                setLoading(false);
+                setServerStatus(
+                    [
+                        { name : 'MQTT',        working : false },
+                        { name : 'W3bstream',   working : false },
+                        { name : 'Database',    working : false }
+                    ]
+                );
+            });
+
+    };
+
     useEffect(() => {
-        const updateStatus = () => {
-            setLoading(true);
-            $.get('https://miner.elumicate.com/api/status/servers')
-                .then(function (data : any) {
-                    setLoading(false);
-                    let info : any = data.data;
-                    setServerStatus(info);
-                })
-                .catch(function (err) {
-                    setLoading(false);
-                    setServerStatus(
-                        [
-                            { name : 'MQTT',        working : false },
-                            { name : 'W3bstream',   working : false },
-                            { name : 'Database',    working : false }
-                        ]
-                    );
-                });
+        // let timerID = setInterval(() => {
+        //     updateStatus();
+        // }, INTERVAL_TIME);
 
-        };
+        // setTimerID(timerID);
 
-        let timerID = setInterval(() => {
-            updateStatus();
-        }, INTERVAL_TIME);
-
-        setTimerID(timerID);
         updateStatus();
         Router.events.on('routeChangeComplete', () => {
             updateStatus();
         });
 
-        return () => {
-            clearInterval(timerID);
-        };
+        // return () => {
+        //     clearInterval(timerID);
+        // };
     }, []);
 
     const renderLabel = () => {
@@ -108,6 +117,19 @@ export default function() {
         )
     };
 
+    const onRefresh = () => {
+        updateStatus();
+    };
+
+    const renderHeader = () => {
+        return (
+            <>
+                {renderLabel()}
+                <Refresh className={classes.refresh} onClick={onRefresh}/>
+            </>
+        );
+    };
+
     const renderElement = (item) => {
         const renderBody = () => {
             return (
@@ -128,7 +150,7 @@ export default function() {
         )
     };
     return (
-        <Box label={renderLabel()}>
+        <Box label={renderHeader()}>
             {
                 serverStatus.map(item => renderElement(item))
             }

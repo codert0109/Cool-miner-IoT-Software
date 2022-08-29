@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createStyles, Button, Progress } from '@mantine/core';
 import { useInterval } from '@mantine/hooks';
-import { BorderStyle } from 'tabler-icons-react';
+import { Refresh } from 'tabler-icons-react';
 import WhiteLabel from '../WhiteLabel';
 import classjoin from 'classnames';
 import Box from '../Container/Box';
@@ -22,7 +22,13 @@ const useStyles = createStyles((theme) => ({
     header : {
         display : 'flex',
         alignItems : 'center',
-        justifyContent : 'center'
+        justifyContent : 'center',
+    },
+    refresh : {
+        position : 'absolute',
+        top : 6,
+        right : 4,
+        cursor : 'pointer'
     },
     button: {
         position: 'relative',
@@ -77,47 +83,47 @@ export default function ({ label }) {
 
     const [isloading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const updateTime = () => {
-            setLoading(true);
-            $.post('https://miner.elumicate.com/api/device_uptime/getUpTime',
-                { address: god.currentNetwork.account }).then(function (data: any) {
-                    setLoading(false);
-                    let info = data.data;
-                    if (info.status === 'OK') {
-                        let timeInfo = "";
-                        let timeunit = ['s', 'm', 'h'];
-                        let cur = info.uptime;
-                        for (let i = 0; i < 2; i++) {
-                            let head = ~~(cur / 60);
+    const updateTime = () => {
+        setLoading(true);
+        $.post('https://miner.elumicate.com/api/device_uptime/getUpTime',
+            { address: god.currentNetwork.account }).then(function (data: any) {
+                setLoading(false);
+                let info = data.data;
+                if (info.status === 'OK') {
+                    let timeInfo = "";
+                    let timeunit = ['s', 'm', 'h'];
+                    let cur = info.uptime;
+                    for (let i = 0; i < 2; i++) {
+                        let head = ~~(cur / 60);
 
-                            timeInfo = `${cur % 60}${timeunit[i]}${i == 0 ? '' : ' '}${timeInfo}`;
-                            cur = head;
-                            if (cur == 0) break;
-                        }
-                        if (cur > 0) {
-                            timeInfo = `${cur}h ${timeInfo}`;
-                        }
-                        setUpTime(timeInfo);
+                        timeInfo = `${cur % 60}${timeunit[i]}${i == 0 ? '' : ' '}${timeInfo}`;
+                        cur = head;
+                        if (cur == 0) break;
                     }
-                }).catch(function(err) {
-                    setLoading(false);
-                });
-        };
+                    if (cur > 0) {
+                        timeInfo = `${cur}h ${timeInfo}`;
+                    }
+                    setUpTime(timeInfo);
+                }
+            }).catch(function(err) {
+                setLoading(false);
+            });
+    };
+    
+    useEffect(() => {
+        // let timerID = setInterval(() => {
+        //     updateTime();
+        // }, INTERVAL_TIME);
 
-        let timerID = setInterval(() => {
-            updateTime();
-        }, INTERVAL_TIME);
-
-        setTimerID(timerID);
+        // setTimerID(timerID);
         updateTime();
         Router.events.on('routeChangeComplete', () => {
             updateTime();
         });
 
-        return () => {
-            clearInterval(timerID);
-        };
+        // return () => {
+        //     clearInterval(timerID);
+        // };
     }, []);
 
     const renderText = (x, y, fontsize, caption, itemvalue) => {
@@ -129,7 +135,7 @@ export default function ({ label }) {
         return <text x={x} y={y} fontSize={fontsize} fill="#00ff11" onClick={() => setSelectedItem(itemvalue)} className={classes.textItem}>{caption}</text>;
     };
 
-    const renderHeader = () => {
+    const renderContent = () => {
         if (isloading === true) {
             return (
                 <div className={classes.header}>
@@ -139,8 +145,17 @@ export default function ({ label }) {
             );
         }
         return (
-            <span>{label}</span>
+            <div>{label}</div>
         )
+    };
+
+    const renderHeader = () => {
+        return (
+            <>
+                {renderContent()}
+                <Refresh className={classes.refresh} onClick={updateTime}/>
+            </>
+        );
     };
 
     return (
