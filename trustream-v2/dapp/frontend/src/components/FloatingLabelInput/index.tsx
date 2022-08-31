@@ -38,9 +38,9 @@ const useStyles = createStyles((theme, { floating }: { floating: boolean }) => (
     },
 }));
 
-export function FloatingLabelInput({label, placeholder, onChange}) {
+export function FloatingLabelInput({label, placeholder, onChange, initvalue = ''}) {
     const [focused, setFocused] = useState(false);
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState(initvalue);
     const { classes } = useStyles({ floating: value.trim().length !== 0 || focused });
 
     return (
