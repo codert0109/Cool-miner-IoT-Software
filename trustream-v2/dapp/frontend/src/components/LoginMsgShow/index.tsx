@@ -1,8 +1,8 @@
 export default function({className}) {
     return (
         <div className={className}>
-            Welcome to Elumicate Mining Portal!
-            <br/>Please login with your Metamask to access the site. 
+            Welcome to the Elumicate Mining Portal!
+            <br/>Please login and connect to Metamask to access the site. 
         </div>
     )
 };

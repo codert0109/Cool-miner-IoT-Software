@@ -68,6 +68,7 @@ async function verifyMessage(from : string, sessionID : string) {
 async function updateUpTime(address : string) {
   const UPLOAD_INTERVAL = 2;
 
+  console.log('updateUpTime called');
   try {
     let result = await deviceUptimeRepository.findOne({ where : { address } })
     if (result === null) {

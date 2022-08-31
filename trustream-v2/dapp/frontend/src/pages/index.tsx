@@ -10,15 +10,29 @@ import INFOCONTAINER from "@/components/INFOCONTAINER";
 import LogBook from "@/components/LogBook";
 import MyAccount from "@/components/MyAccount";
 
+import UPTIME from "@/components/UPTIME";
+import ServerStatus from "@/components/ServerStatus";
+
+
 export default function () {
   const router = useRouter()
 
   useEffect(() => {
-    router.push('/nft');
+    // router.push('/nft');
   }, []);
 
   return (
     <Layout>
+      <Grid>
+        <Grid.Col>
+          <Grid.Col sm={12} md={6}>
+            <UPTIME label="Public Pool Mining" />
+          </Grid.Col>
+          <Grid.Col sm={12} md={6}>
+            <ServerStatus />
+          </Grid.Col>
+        </Grid.Col>
+      </Grid>
       {/* <Grid>
         <Grid.Col xs={12}>
           <Grid style={{paddingLeft : '36px'}}>

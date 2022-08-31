@@ -7,15 +7,16 @@ const https = require('https')
 const fs = require('fs')
 
 function ensureSecure(req, res, next) {
-  // return next() // for testing purpose
+  return next() // for testing purpose
   
   if (req.secure) {
     // OK, continue
     return next()
   }
+
   // handle port numbers if you need non defaults
   // res.redirect('https://' + req.host + req.url); // express 3.x
-  res.redirect('https://' + req.hostname + req.url) // express 4.x
+  res.redirect('https://' + 'miner.elumicate.com' + req.url) // express 4.x
 }
 
 app.all('*', ensureSecure)
@@ -54,6 +55,8 @@ require('./app/routes/device_data.routes')(app)
 require('./app/routes/device_auth.routes')(app)
 require('./app/routes/device_uptime.routes')(app)
 require('./app/routes/claim_token.routes')(app)
+require('./app/routes/server_status.routes')(app)
+require('./app/routes/server_update.routes')(app)
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3333

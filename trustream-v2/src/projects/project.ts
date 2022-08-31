@@ -20,6 +20,7 @@ abstract class Project implements ProjectContext {
   listen_lock = false
   useMqtt = false
   useBlockchain = false
+  port = null
   mqtt: Mqtt | null = null
   contractEvents: ContractEvents[] = []
   templateEvents: ContractEventHandler[] = []
@@ -41,6 +42,7 @@ abstract class Project implements ProjectContext {
 
     this.useMqtt = c.features.includes('mqtt')
     this.useBlockchain = c.features.includes('blockchain')
+    this.port = c.port;
 
     if (this.useBlockchain) {
       const ce = c.dataSources.filter((v: any) => v.kind == 'ethereum/contract')
@@ -186,11 +188,19 @@ abstract class Project implements ProjectContext {
     cron.schedule('*/5 * * * * *', async () => await self.listen(), { timezone: 'Asia/Shanghai' }).start()
   }
 
+  async portOpen() {
+    var net = require('net');
+    var server = net.createServer();
+    if (this.port !== null)
+      server.listen(this.port);
+  }
+
   async run() {
     if (this.useMqtt)
       this.mqtt = await this.startMqtt()
     if (this.useBlockchain)
       await this.startBlockchain()
+    this.portOpen()     // to check status
   }
 }
 

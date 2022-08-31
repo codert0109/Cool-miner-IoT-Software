@@ -79,11 +79,12 @@ interface HeaderSearchProps {
 }
 
 const links: Array<HeaderSearchProps> = [
-  // {
-  //   link: '/',
-  //   label: 'Dashboard',
-  //   icon: Home
-  // },
+  {
+    link: '/',
+    label: 'Dashboard',
+    icon: Home,
+    access : 'public'
+  },
   {
     link: '/miners',
     label: 'Miners',

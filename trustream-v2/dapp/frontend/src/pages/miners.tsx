@@ -9,7 +9,6 @@ import { recoverPersonalSignature } from "eth-sig-util";
 import Swal from 'sweetalert2';
 import NFTContractABI from '../contracts/NFT.json';
 import ContractAddress from '../contracts/contract-address.json';
-import UPTIME from "@/components/UPTIME";
 
 const { ethereum } = require('../global.js').getWindow();
 
@@ -188,14 +187,13 @@ export default function TableReviews() {
 
     return (
         <Layout>
-            <ScrollArea>
-                <div style={{maxWidth : '250px', width : '100%', marginBottom : '10px'}}>
-                    <UPTIME label="Public Pool Mining" />
-                </div>
-                <Button onClick={onSendSignature} rightIcon={<Send size={18} />} sx={{ paddingRight: 12 }}>
-                    Secure Miner Connection
-                </Button>
-            </ScrollArea>
+            <Button 
+                style={{marginBottom : '10px'}} 
+                onClick={onSendSignature} 
+                rightIcon={<Send size={18} />} 
+                sx={{ paddingRight: 12 }}>
+                Secure Miner Connection
+            </Button>
         </Layout>
     );
 }
