@@ -97,6 +97,7 @@ async function updateUpTime(address : string) {
 }
 
 async function checkVersion(min_version : string = '2.1.3', msg_version : string) {
+  console.log('msg_version', msg_version);
   if (msg_version == null) return false;
   let a = min_version.split('.');
   let b = msg_version.split('.');
