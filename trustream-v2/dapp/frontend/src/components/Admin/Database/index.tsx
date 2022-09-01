@@ -24,13 +24,13 @@ export default function () {
 
     const onClearConflict = () => {
         const performAction = () => {
-            auth.$().get('http://localhost:3334/api/device_status/clean')
+            auth.$().get('https://miner.elumicate.com/api/device_status/clean')
                 .then((data: any) => {
                     let info: any = data.data;
                     if (info.status == 'OK') {
                         Swal.fire({
                             title: 'Success',
-                            html: `<p>Cleaning Conflict Success!</p>`,
+                            html: `<p>Cleaning Conflict Success!</p><p>Solved ${info.solved} conflicts!`,
                             icon: 'success',
                         });
                     } else {
@@ -52,6 +52,7 @@ export default function () {
                 });
         };
 
+        isPending(true);
         auth.check_auth(
             () => {
                 performAction();
