@@ -96,9 +96,18 @@ async function updateUpTime(address : string) {
   }
 }
 
-async function onMqttData(context: ProjectContext, topic: string, payload: Buffer) {
-  
+async function checkVersion(min_version : string = '2.1.3', msg_version : string) {
+  if (msg_version == null) return false;
+  let a = min_version.split('.');
+  let b = msg_version.split('.');
+  for (let i = 0; i < 3; i++) {
+    if (~~a > ~~b) return false;
+    if (~~a < ~~b) return true;
+  }
+  return true;
+}
 
+async function onMqttData(context: ProjectContext, topic: string, payload: Buffer) {
   console.log("Received a message on topic: ", topic);
   
   // Check that the topic passed respect the format
@@ -111,6 +120,12 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   // Decode the JSON message
   let decodedPayload = eval('('+payload.toString()+')');
+
+  if (!checkVersion('2.1.3', decodedPayload.message.version)) {
+    console.log("Discard message with version error, ", decodedPayload.message.version);
+    return;
+  }
+
   // console.log("Payload:")
   // console.log(decodedPayload)
   

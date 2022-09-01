@@ -4,6 +4,7 @@ import { useStore } from '@/store/index';
 import MultipleWalletAdd from "../components/Admin/MultipleWalletAdd";
 import SingleWalletAdd from "../components/Admin/SingleWalletAdd";
 import UpdateComponent from "../components/Admin/Update";
+import Database from "@/components/Admin/Database";
 
 const useStyles = createStyles((theme) => ({
 }));
@@ -22,6 +23,9 @@ export default function TableReviews() {
                     </Tabs.Tab>
                     <Tabs.Tab label="Update" value="update">
                         <UpdateComponent/>
+                    </Tabs.Tab>
+                    <Tabs.Tab label="Database" value="database">
+                        <Database/>
                     </Tabs.Tab>
                 </Tabs>
             </ScrollArea>
