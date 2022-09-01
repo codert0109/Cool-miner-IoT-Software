@@ -139,8 +139,10 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   if (miner == undefined)
     miner = 'Not set';
 
+  let nounce = ~~(Math.random() * 100000);
+
   await deviceDataRepository.upsert({
-    id: address + '-' + decodedPayload.message.timestamp,
+    id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
     address: address,
     timestamp: decodedPayload.message.timestamp,
     pedestrains : decodedPayload.message.pedestrians,
