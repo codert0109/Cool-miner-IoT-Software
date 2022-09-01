@@ -1,5 +1,5 @@
 import ContractAddress from '../contracts/contract-address.json';
-
+import axios from 'axios';
 
 export function getAddressFormat(address) {
     return address.substring(0, 6) + '...' + address.substring(address.length - 4);

@@ -1,5 +1,5 @@
 import { FloatingLabelInput } from "@/components/FloatingLabelInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Loader, createStyles } from '@mantine/core';
 import Swal from "sweetalert2";
 import { useStore } from '../../../store/index';
@@ -24,13 +24,45 @@ export default function () {
 
     const { god, auth } = useStore();
     const [pending, isPending] = useState(false);
-    const [version, setVersion] = useState('1.0.0');
-    const [download, setDownload] = useState('https://github.com/download1.zip');
-    const [message, setMessage] = useState('We launched new project');
+    const [loading, isLoading] = useState(true);
+    const [version, setVersion] = useState('Not set');
+    const [download, setDownload] = useState('Not set');
+    const [message, setMessage] = useState('Not set');
+
+    useEffect(() => {
+        isLoading(true);
+        auth.$().get('https://miner.elumicate.com/update')
+            .then((data : any) => {
+                isLoading(false);
+                let info : any = data.data;
+                if (info.status == 'OK') {
+                    setVersion(info.version);
+                    setDownload(info.download);
+                    setMessage(info.message);
+
+                    console.log('updated value:', info.version, info.download, info.message);
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        html: `<p>Loading Error</p>`,
+                        icon: 'error',
+                    });
+                }
+            })
+            .catch((err) => {
+                isLoading(false);
+                Swal.fire({
+                    title: 'Error',
+                    html: `<p>Loading Error</p>`,
+                    icon: 'error',
+                });
+            });
+    }, []);
 
     const onUpdate = () => {
+        isPending(true);
         const performAction = () => {
-            $.post('https://miner.elumicate.com/update/create', { version, download, message })
+            auth.$().post('https://miner.elumicate.com/update/create', { version, download, message })
                 .then((data : any) => {
                     let info : any = data.data;
                     if (info.status == 'OK') {
@@ -46,6 +78,7 @@ export default function () {
                             icon: 'info',
                         });
                     }
+                    isPending(false);
                 })
                 .catch((err) => {
                     Swal.fire({
@@ -53,6 +86,7 @@ export default function () {
                         html: `<p>Errors Occured.</p>`,
                         icon: 'error',
                     });
+                    isPending(false);
                 });
         };
 
@@ -62,8 +96,10 @@ export default function () {
             icon: 'warning',
             showCancelButton: true,
         }).then((result) => {
-            if (!result.isConfirmed)
+            if (!result.isConfirmed) {
+                isPending(false);
                 return;
+            }
             auth.check_auth(
                 () => {
                     performAction();
@@ -71,12 +107,14 @@ export default function () {
                 () => {
                     Swal.fire({
                         title: 'Error',
-                        html: `<p>You need to login before setting versions.</p>`,
+                        html: `<p>You need to login to use admin functions.</p>`,
                         icon: 'error',
                         showCancelButton: true
                     }).then((result) => {
-                        if (!result.isConfirmed)
+                        if (!result.isConfirmed) {
+                            isPending(false);
                             return;
+                        }
                         auth.login(
                             () => {
                                 performAction();
@@ -87,6 +125,7 @@ export default function () {
                                     html: `<p>Errors Occured while login.</p>`,
                                     icon: 'error',
                                 });
+                                isPending(false);
                             });
                     }).catch(() => {
                         Swal.fire({
@@ -94,6 +133,7 @@ export default function () {
                             html: `<p>Updating has been cancelled.</p>`,
                             icon: 'info',
                         });
+                        isPending(false);
                     });
                 });
         }).catch((err) => {
@@ -102,8 +142,17 @@ export default function () {
                 html: `<p>Errors Occured.</p>`,
                 icon: 'error',
             });
+            isPending(false);
         });
     };
+
+    if (loading) {
+        return (
+            <div>
+                <Loader size="xs" className={classes.loader} />
+            </div>
+        )
+    }
 
     return (
         <div>

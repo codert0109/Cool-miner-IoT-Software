@@ -24,7 +24,8 @@ export class AuthStore {
             address,
             signature: session
         }).then((data: any) => {
-            if (data.status == 'OK') {
+            let info : any = data.data;
+            if (info.status == 'OK') {
                 success_callback();
             } else {
                 fail_callback();
@@ -124,5 +125,17 @@ export class AuthStore {
                     fail_callback();
                 })
         }
+    }
+
+    $() {
+        const { god } = this.rootStore;
+        let sessionID = this.loadSession();
+        if (sessionID != null) {
+            $.defaults.headers.common['Authorization'] = sessionID;
+        }
+        if (god.currentNetwork.account != null) {
+            $.defaults.headers.common['address'] = god.currentNetwork.account;
+        }
+        return $;
     }
 }

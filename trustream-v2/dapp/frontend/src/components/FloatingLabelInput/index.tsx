@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextInput, createStyles } from '@mantine/core';
 
 const useStyles = createStyles((theme, { floating }: { floating: boolean }) => ({
@@ -42,6 +42,10 @@ export function FloatingLabelInput({label, placeholder, onChange, initvalue = ''
     const [focused, setFocused] = useState(false);
     const [value, setValue] = useState(initvalue);
     const { classes } = useStyles({ floating: value.trim().length !== 0 || focused });
+
+    useEffect(() => {
+        setValue(initvalue);
+    }, [initvalue]);
 
     return (
         <TextInput
