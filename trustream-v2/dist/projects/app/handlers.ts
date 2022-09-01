@@ -68,19 +68,27 @@ async function verifyMessage(from : string, sessionID : string) {
 async function updateUpTime(address : string) {
   const UPLOAD_INTERVAL = 2;
 
+  console.log('updateUpTime called');
   try {
     let result = await deviceUptimeRepository.findOne({ where : { address } })
     if (result === null) {
       // find new miner! add data
       await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
+      return true;
     } else {
+      console.log('updatedAt', result.updatedAt);
       // update data
+
+      console.log(Date.now() - new Date(result.updatedAt).getTime());
+
       await deviceUptimeRepository.update(
         { address, uptime : result.uptime + UPLOAD_INTERVAL},
         { where : { address }});
     }
+    return true;
   } catch (err) {
     console.log(`errors occured in updateUpTime ${err}`);
+    return false;
   }
 }
 
@@ -138,20 +146,25 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   if (miner == undefined)
     miner = 'Not set';
 
-  await deviceDataRepository.upsert({
-    id: address + '-' + decodedPayload.message.timestamp,
-    address: address,
-    timestamp: decodedPayload.message.timestamp,
-    pedestrains : decodedPayload.message.pedestrians,
-    cars : decodedPayload.message.cars,
-    bus : decodedPayload.message.bus,
-    truck : decodedPayload.message.truck,
-    total : decodedPayload.message.total,
-    link : decodedPayload.message.link,
-    miner
-  })
+  let nounce = ~~(Math.random() * 100000);
 
-  await updateUpTime(address);
+  let result = await updateUpTime(address);
+
+  if (result == true) {
+    await deviceDataRepository.upsert({
+      id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
+      address: address,
+      timestamp: decodedPayload.message.timestamp,
+      pedestrains : decodedPayload.message.pedestrians,
+      cars : decodedPayload.message.cars,
+      bus : decodedPayload.message.bus,
+      truck : decodedPayload.message.truck,
+      total : decodedPayload.message.total,
+      link : decodedPayload.message.link,
+      miner
+    })
+  }
+
   // Store the data and execute some contracts (eg. rewards)
 }
 
