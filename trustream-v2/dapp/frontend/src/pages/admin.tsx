@@ -24,9 +24,9 @@ export default function TableReviews() {
                     <Tabs.Tab label="Update" value="update">
                         <UpdateComponent/>
                     </Tabs.Tab>
-                    <Tabs.Tab label="Database" value="database">
+                    {/* <Tabs.Tab label="Database" value="database">
                         <Database/>
-                    </Tabs.Tab>
+                    </Tabs.Tab> */}
                 </Tabs>
             </ScrollArea>
         </Layout>
