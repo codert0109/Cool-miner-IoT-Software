@@ -1,6 +1,6 @@
 import { FloatingLabelInput } from "@/components/FloatingLabelInput";
 import { useEffect, useState } from "react";
-import { Button, Loader, createStyles } from '@mantine/core';
+import { Button, List, Loader, Textarea, createStyles } from '@mantine/core';
 import Swal from "sweetalert2";
 import { useStore } from '../../../store/index';
 import $ from 'axios';
@@ -16,6 +16,9 @@ const useStyles = createStyles((theme) => ({
     },
     loader: {
         marginRight: '10px'
+    },
+    releaseStyle: {
+        fontSize: '0.8em'
     }
 }));
 
@@ -28,17 +31,19 @@ export default function () {
     const [version, setVersion] = useState('Not set');
     const [download, setDownload] = useState('Not set');
     const [message, setMessage] = useState('Not set');
+    const [note,    setNote] = useState('Not set');
 
     useEffect(() => {
         isLoading(true);
         auth.$().get('https://miner.elumicate.com/update')
-            .then((data : any) => {
+            .then((data: any) => {
                 isLoading(false);
-                let info : any = data.data;
+                let info: any = data.data;
                 if (info.status == 'OK') {
                     setVersion(info.version);
                     setDownload(info.download);
                     setMessage(info.message);
+                    setNote(info.note);
 
                     console.log('updated value:', info.version, info.download, info.message);
                 } else {
@@ -63,8 +68,8 @@ export default function () {
         isPending(true);
         const performAction = () => {
             auth.$().post('https://miner.elumicate.com/update/create', { version, download, message })
-                .then((data : any) => {
-                    let info : any = data.data;
+                .then((data: any) => {
+                    let info: any = data.data;
                     if (info.status == 'OK') {
                         Swal.fire({
                             title: 'Success',
@@ -176,6 +181,16 @@ export default function () {
                     label="Message"
                     initvalue={message}
                     placeholder="Input Messages" />
+            </div>
+            <div className={classes.split}>
+                <Textarea 
+                    size="xs"
+                    onChange={setNote}
+                    placeholder="Add Release Notes here."
+                    label="Release Notes"
+                    autosize
+                    minRows={2}
+                />
             </div>
             <Button disabled={pending} className={classes.gridDivBtn} onClick={onUpdate}>
                 {pending && <Loader size="xs" className={classes.loader} />}

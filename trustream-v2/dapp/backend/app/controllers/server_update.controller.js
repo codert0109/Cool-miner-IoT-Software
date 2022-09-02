@@ -10,7 +10,7 @@ function createSeed() {
 }
 
 exports.createUpdate = (req, res) => {
-    const {version, download, message} = req.body;
+    const {version, download, message, note} = req.body;
 
     if (version == null || download == null || message == null) {
         res.send({
@@ -21,7 +21,7 @@ exports.createUpdate = (req, res) => {
     }
 
     Server_Update.create({
-        version, download, message
+        version, download, message, note
     }).then(() => {
         res.send({
             status : 'OK',
@@ -72,7 +72,8 @@ exports.getUpdate = (req, res) => {
                             status : 'OK',
                             version : data.version,
                             message : data.message,
-                            download : data.download
+                            download : data.download,
+                            note     : data.note
                         });
                     })
                     .catch((err) => {
