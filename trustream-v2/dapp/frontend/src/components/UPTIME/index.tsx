@@ -27,8 +27,11 @@ const useStyles = createStyles((theme) => ({
     refresh : {
         position : 'absolute',
         top : 6,
-        right : 4,
-        cursor : 'pointer'
+        right : 6,
+        cursor : 'pointer',
+        display : 'flex',
+        alignItems : 'center',
+        justifyContent : 'center'
     },
     button: {
         position: 'relative',
@@ -71,7 +74,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function ({ label }) {
-    const INTERVAL_TIME = 5000;
+    const INTERVAL_TIME = 1000 * 60 * 5; // every 5 minute, it will
 
     const { god } = useStore();
 
@@ -111,19 +114,19 @@ export default function ({ label }) {
     };
     
     useEffect(() => {
-        // let timerID = setInterval(() => {
-        //     updateTime();
-        // }, INTERVAL_TIME);
+        let timerID = setInterval(() => {
+            updateTime();
+        }, INTERVAL_TIME);
 
-        // setTimerID(timerID);
+        setTimerID(timerID);
         updateTime();
         Router.events.on('routeChangeComplete', () => {
             updateTime();
         });
 
-        // return () => {
-        //     clearInterval(timerID);
-        // };
+        return () => {
+            clearInterval(timerID);
+        };
     }, []);
 
     const renderText = (x, y, fontsize, caption, itemvalue) => {
@@ -153,7 +156,10 @@ export default function ({ label }) {
         return (
             <>
                 {renderContent()}
-                <Refresh className={classes.refresh} onClick={updateTime}/>
+                <div className={classes.refresh} onClick={updateTime}>
+                    <Refresh size="15"/>
+                    <span style={{fontSize:'0.8em'}}>Refresh</span>
+                </div>
             </>
         );
     };

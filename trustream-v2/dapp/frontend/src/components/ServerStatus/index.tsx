@@ -29,8 +29,11 @@ const useStyles = createStyles((theme) => ({
     refresh : {
         position : 'absolute',
         top : 6,
-        right : 4,
-        cursor : 'pointer'
+        right : 6,
+        cursor : 'pointer',
+        display : 'flex',
+        alignItems : 'center',
+        justifyContent : 'center'
     },
 
     expand : {
@@ -44,7 +47,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function() {
-    const INTERVAL_TIME = 60000;
+    const INTERVAL_TIME = 1000 * 60 * 5; // every 5 minute, it will update
 
     const { classes, theme } = useStyles();
 
@@ -79,20 +82,21 @@ export default function() {
     };
 
     useEffect(() => {
-        // let timerID = setInterval(() => {
-        //     updateStatus();
-        // }, INTERVAL_TIME);
+        let timerID = setInterval(() => {
+            updateStatus();
+        }, INTERVAL_TIME);
 
-        // setTimerID(timerID);
+        setTimerID(timerID);
 
         updateStatus();
+
         Router.events.on('routeChangeComplete', () => {
             updateStatus();
         });
 
-        // return () => {
-        //     clearInterval(timerID);
-        // };
+        return () => {
+            clearInterval(timerID);
+        };
     }, []);
 
     const renderLabel = () => {
@@ -125,7 +129,11 @@ export default function() {
         return (
             <>
                 {renderLabel()}
-                <Refresh className={classes.refresh} onClick={onRefresh}/>
+                <div className={classes.refresh} onClick={onRefresh}>
+                    <Refresh size="15"/>
+                    <span style={{fontSize:'0.8em'}}>Refresh</span>
+                </div>
+
             </>
         );
     };
