@@ -6,6 +6,8 @@ module.exports = app => {
   
   router.get("",  server_update.getUpdate);
 
+  router.get("/all",  server_update.findAll);
+
   router.post("/create",  check_admin_auth, server_update.createUpdate);
 
   app.use("/update", router);

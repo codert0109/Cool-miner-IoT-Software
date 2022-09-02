@@ -35,6 +35,22 @@ exports.createUpdate = (req, res) => {
     });
 };
 
+exports.findAll = (req, res) => {
+    Server_Update.findAll()
+        .then((data) => {
+            res.send({
+                status : 'OK',
+                data 
+            });
+        })
+        .catch((err) => {
+            res.send({
+                status : 'ERR',
+                message : 'Internal Server Error'
+            });
+        });
+};
+
 exports.getUpdate = (req, res) => {
     Server_Update.count()
         .then((data) => {
