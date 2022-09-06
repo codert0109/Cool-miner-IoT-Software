@@ -1,5 +1,6 @@
 const { recoverPersonalSignature } = require('eth-sig-util')
 const { isActive } = require('./device_data.controller')
+const { CENTRAL_WALLET } = require('../config/db.config');
 
 const db = require('../models')
 const Device_Auth = db.device_auth
@@ -100,6 +101,41 @@ exports.getNounce = (req, res) => {
     },
   )
 }
+
+exports.verifyFunction = (address, signature, success_callback, fail_callback) => {
+  if (address == undefined || signature == undefined) {
+    fail_callback();
+    return;
+  }
+
+  Device_Auth.findOne({ where : { address,  session_id : signature }})
+    .then((data) => {
+      if (data === null) {
+        fail_callback();
+      } else {
+        success_callback();
+      }
+    })
+    .catch((err) => {
+      fail_callback();
+    })
+};
+
+exports.verifyAdminFunction = (address, signature, success_callback, fail_callback) => {
+  exports.verifyFunction(address, signature,
+    function() {
+      console.log('checking more', address, CENTRAL_WALLET.address);
+      if (address == CENTRAL_WALLET.address) {
+        success_callback();
+      } else {
+        fail_callback();
+      }
+    },
+    function() {
+      console.log('checking fail');
+      fail_callback();
+    });
+};
 
 exports.verify = (req, res) => {
   console.log('verify', req.body.address, req.body.signature);

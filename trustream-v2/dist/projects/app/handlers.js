@@ -32,17 +32,23 @@ async function verifyMessage(from, sessionID) {
 }
 async function updateUpTime(address) {
     const UPLOAD_INTERVAL = 2;
+    console.log('updateUpTime called');
     try {
         let result = await models_1.deviceUptimeRepository.findOne({ where: { address } });
         if (result === null) {
             await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
+            return true;
         }
         else {
+            console.log('updatedAt', result.updatedAt);
+            console.log(Date.now() - new Date(result.updatedAt).getTime());
             await models_1.deviceUptimeRepository.update({ address, uptime: result.uptime + UPLOAD_INTERVAL }, { where: { address } });
         }
+        return true;
     }
     catch (err) {
         console.log(`errors occured in updateUpTime ${err}`);
+        return false;
     }
 }
 async function onMqttData(context, topic, payload) {
@@ -77,19 +83,22 @@ async function onMqttData(context, topic, payload) {
     let { miner } = decodedPayload.message;
     if (miner == undefined)
         miner = 'Not set';
-    await models_1.deviceDataRepository.upsert({
-        id: address + '-' + decodedPayload.message.timestamp,
-        address: address,
-        timestamp: decodedPayload.message.timestamp,
-        pedestrains: decodedPayload.message.pedestrians,
-        cars: decodedPayload.message.cars,
-        bus: decodedPayload.message.bus,
-        truck: decodedPayload.message.truck,
-        total: decodedPayload.message.total,
-        link: decodedPayload.message.link,
-        miner
-    });
-    await updateUpTime(address);
+    let nounce = ~~(Math.random() * 100000);
+    let result = await updateUpTime(address);
+    if (result == true) {
+        await models_1.deviceDataRepository.upsert({
+            id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
+            address: address,
+            timestamp: decodedPayload.message.timestamp,
+            pedestrains: decodedPayload.message.pedestrians,
+            cars: decodedPayload.message.cars,
+            bus: decodedPayload.message.bus,
+            truck: decodedPayload.message.truck,
+            total: decodedPayload.message.total,
+            link: decodedPayload.message.link,
+            miner
+        });
+    }
 }
 const handlers = {
     onDeviceRegistered,

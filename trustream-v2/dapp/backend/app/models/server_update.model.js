@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
     message: {
       type : Sequelize.STRING
     },
+    note : {
+      type : Sequelize.STRING
+    },
     download : {
       type : Sequelize.STRING
     },

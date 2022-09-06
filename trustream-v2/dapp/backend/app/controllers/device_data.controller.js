@@ -121,3 +121,47 @@ exports.findAll = (req, res) => {
       });
     })
 };
+
+exports.clean = (req, res) => {
+  Device_Data.findAll({
+    attributes : ["address"],
+    group : "address"
+  }).then(async (data) => {
+    let removeIDs = [];
+    for (let i = 0; i < data.length; i++) {
+      let alldata = await Device_Data.findAll( 
+        { 
+          attributes : ["timestamp", "id"],
+          where : { 
+            address : data[i].address 
+          },
+          order: [['timestamp', 'ASC']]
+        }
+      );
+
+      console.log('receive data', alldata.length, data[i].address);
+      let n = alldata.length;
+      let last_timestamp = 0;
+      for (let j = 0; j < n; j++) {
+        if (alldata[j].timestamp - last_timestamp < 2) {
+          removeIDs.push(alldata[j].id);
+        } else {
+          last_timestamp = alldata[j].timestamp;
+        }
+      }
+    }
+
+    await Device_Data.destroy({ where: { id: removeIDs }})
+
+    res.send({
+      status : 'OK',
+      solved : removeIDs.length
+    });
+
+  }).catch((err) => {
+    res.send({
+      status : 'ERR',
+      message : 'Internal Server Error'
+    })
+  })
+};
