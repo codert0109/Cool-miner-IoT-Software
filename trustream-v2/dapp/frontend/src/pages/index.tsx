@@ -13,6 +13,7 @@ import MyAccount from "@/components/MyAccount";
 import UPTIME from "@/components/UPTIME";
 import ServerStatus from "@/components/ServerStatus";
 import UpdateInfoTable from "@/components/UpdateInfoTable";
+import Box from "@/components/Container/Box";
 
 
 export default function () {
@@ -34,7 +35,9 @@ export default function () {
           </Grid.Col>
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
-          <UpdateInfoTable/>
+          <Box label="Release Updates">
+            <UpdateInfoTable/>
+          </Box>
         </Grid.Col>
       </Grid>
       {/* <Grid>

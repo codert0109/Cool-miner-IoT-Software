@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { createStyles, Table, ScrollArea, Anchor } from '@mantine/core';
-import { helper } from '@/lib/helper';
+import { createStyles, Table, ScrollArea, Anchor, Button, Container } from '@mantine/core';
 import { useStore } from '../../store/index';
 import { Download } from "tabler-icons-react";
 import $ from 'axios';
+import Swal from 'sweetalert2';
 
 const useStyles = createStyles((theme) => ({
     header: {
@@ -27,19 +27,43 @@ const useStyles = createStyles((theme) => ({
         boxShadow: theme.shadows.sm,
     },
 
-    textcolor : {
-        color : theme.colorScheme === 'dark' ? 'white' : 'black'
+    textcolor: {
+        color : 'black'
+    },
+
+    messagediv : {
+        display : 'flex',
+        height : 42,
+        overflow : 'hidden'
+    },
+
+    messagetext : {
+        // overflow : 'hidden',
+        // whiteSpace : 'nowrap',
+        // textOverflow : 'ellipsis'
+    },
+
+    center : {
+        display : 'flex',
+        alignItems : 'center',
+        justifyContent : 'center'
+    },
+
+    releaseBTN : {
+        color : 'black', 
+        borderColor : 'black'
     }
 }));
 
 interface TableScrollAreaProps {
     data: {
-        id          : string;
-        version     : string;
-        message     : number;
-        download    : string;
-        createdAt   : string;
-        updatedAt   : string;
+        id: string;
+        version: string;
+        message: number;
+        note: string;
+        download: string;
+        createdAt: string;
+        updatedAt: string;
     }[];
 }
 
@@ -59,28 +83,73 @@ export default function TableScrollArea() {
             });
     }, []);
 
-    const rows = data.map((row) => (
-        <tr key={row.id}>
+    const showRelease = (index) => {
+        if (data[index].note === null) {
+            Swal.fire(
+                'Info',
+                `<p>This update does not include release notes.</p>`,
+                'info'
+            );
+        } else {
+            let noteList = data[index].note.split('\n');
+            let noteInfo = '';
+            for (let i = 0; i < noteList.length; i++) {
+                noteInfo += `<p style="text-align:left;">${noteList[i]}</p>`;
+            }
+            Swal.fire(
+                'Release Notes',
+                `${noteInfo}`,
+                'success'
+            );
+        }
+    };
+
+    const rows = data.map((row, index) => (
+        <tr key={row.id} style={{height : 60}}>
             <td>{row.version}</td>
-            <td>{row.message}</td>
             <td>
-                <a href={row.download} className={classes.textcolor}>
-                    <Download/>
-                </a>
+                <div className={classes.messagediv}>
+                    <div className={classes.messagetext}>
+                        {index == 0 && row.message}
+                    </div>
+                    <div className={classes.center}>
+                        <Button 
+                            onClick={() => showRelease(index)}
+                            className={classes.releaseBTN} 
+                            variant="white" 
+                            size="xs">
+                            Click for release notes
+                        </Button>
+                    </div>
+                </div>
             </td>
             <td>{new Date(row.createdAt).toLocaleString()}</td>
+            <td>
+                <div className={classes.center}>
+                    {
+                        index == 0 && row.download !== '' && 
+                        <a href={row.download} className={classes.textcolor}>
+                            <Download />
+                        </a>
+                    }
+                    {
+                        index == 0 && row.download === '' && 
+                        <span>Not Yet</span>
+                    }
+                </div>
+            </td>
         </tr>
     ));
 
     return (
         <ScrollArea onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-            <Table sx={{ minWidth: 700 }}>
-                <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
+            <Table style={{backgroundColor : 'white', color : 'black'}}>
+                <thead>
                     <tr>
-                        <th>Version</th>
-                        <th>Message</th>
-                        <th>Download</th>
-                        <th>Time</th>
+                        <th style={{color : 'black'}}>Version</th>
+                        <th style={{color : 'black'}}>Information</th>
+                        <th style={{color : 'black'}}>Time</th>
+                        <th style={{color : 'black'}}>Download</th>
                     </tr>
                 </thead>
                 <tbody>{rows}</tbody>

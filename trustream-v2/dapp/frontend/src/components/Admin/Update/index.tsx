@@ -67,7 +67,7 @@ export default function () {
     const onUpdate = () => {
         isPending(true);
         const performAction = () => {
-            auth.$().post('https://miner.elumicate.com/update/create', { version, download, message })
+            auth.$().post('https://miner.elumicate.com/update/create', { version, download, message, note })
                 .then((data: any) => {
                     let info: any = data.data;
                     if (info.status == 'OK') {
@@ -185,7 +185,8 @@ export default function () {
             <div className={classes.split}>
                 <Textarea 
                     size="xs"
-                    onChange={setNote}
+                    value={note}
+                    onChange={(event) => setNote(event.currentTarget.value)}
                     placeholder="Add Release Notes here."
                     label="Release Notes"
                     autosize
