@@ -130,8 +130,8 @@ export default function() {
             <>
                 {renderLabel()}
                 <div className={classes.refresh} onClick={onRefresh}>
-                    <Refresh size="15"/>
-                    <span style={{fontSize:'0.8em'}}>Refresh</span>
+                    <Refresh size="19"/>
+                    <span>Refresh</span>
                 </div>
 
             </>

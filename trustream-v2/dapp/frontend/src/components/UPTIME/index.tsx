@@ -157,8 +157,8 @@ export default function ({ label }) {
             <>
                 {renderContent()}
                 <div className={classes.refresh} onClick={updateTime}>
-                    <Refresh size="15"/>
-                    <span style={{fontSize:'0.8em'}}>Refresh</span>
+                    <Refresh size="19"/>
+                    <span>Refresh</span>
                 </div>
             </>
         );
