@@ -66,7 +66,7 @@ async function verifyMessage(from : string, sessionID : string) {
 }
 
 async function updateUpTime(address : string) {
-  const UPLOAD_INTERVAL = 5 * 60 * 1000;
+  const UPLOAD_INTERVAL = 5 * 60;
   const UPLOAD_THRESMS = 1500;
 
 
