@@ -86,10 +86,9 @@ async function onMqttData(context, topic, payload) {
     let nounce = ~~(Math.random() * 100000);
     let result = await updateUpTime(address);
     if (result == true) {
-        await models_1.deviceDataRepository.upsert({
-            id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
+        await models_1.deviceDataRepository.insert({
             address: address,
-            timestamp: decodedPayload.message.timestamp,
+            epoch_creation_time: decodedPayload.message.timestamp,
             pedestrains: decodedPayload.message.pedestrians,
             cars: decodedPayload.message.cars,
             bus: decodedPayload.message.bus,

@@ -30,7 +30,7 @@ interface TableScrollAreaProps {
     data: {
         id: string;
         miner : string;
-        timestamp: number;
+        epoch_creation_time: number;
         address: string;
         pedestrains: string;
         cars: string;
@@ -80,7 +80,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
 
     const rows = data.map((row) => (
         <tr key={row.id}>
-            <td>{new Date(row.timestamp * 1000).toLocaleString()}</td>
+            <td>{new Date(row.epoch_creation_time * 1000).toLocaleString()}</td>
             <td>{row.miner}</td>
             <td>{helper.string.truncate(row.address || '0x......', 12, '...')}</td>
             {/* <td>{row.pedestrains}</td>
@@ -112,7 +112,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
             <Table sx={{ minWidth: 700 }}>
                 <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <tr>
-                        <th>Timestamp</th>
+                        <th>Epoch Creation Time</th>
                         <th>Name</th>
                         <th>Wallet</th>
                         {/* <th>Pedestrians</th>
