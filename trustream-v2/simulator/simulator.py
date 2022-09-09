@@ -37,9 +37,10 @@ class Message:
       self.truck = random.randint(0, 5)
       self.total = self.pedestrians + self.cars + self.bus + self.truck
       self.link = 'testing'
-      self.timestamp = int(time.time())
+      self.start_time = int(time.time())
+      self.stop_time = self.start_time + 2
       self.miner = 'testminer'
-      self.version = '2.1.3'
+      self.version = '2.1.4'
 
 class Signature:
     def __init__(self, message: Message, privKey: bytes):

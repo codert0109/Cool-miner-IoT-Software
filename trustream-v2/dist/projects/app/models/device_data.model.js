@@ -49,6 +49,12 @@ __decorate([
         allowNull: false
     }),
     __metadata("design:type", Number)
+], DeviceDataModel.prototype, "end_time", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Number)
 ], DeviceDataModel.prototype, "pedestrians", void 0);
 __decorate([
     sequelize_typescript_1.Column({

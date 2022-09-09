@@ -174,7 +174,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     await deviceDataRepository.upsert({
       address             : address,
       start_time          : decodedPayload.message.start_time,
-      end_time            : decodedPayload.message.end_time,
+      end_time            : decodedPayload.message.stop_time,
       pedestrians         : decodedPayload.message.pedestrians,
       cars                : decodedPayload.message.cars,
       buses               : decodedPayload.message.bus,
