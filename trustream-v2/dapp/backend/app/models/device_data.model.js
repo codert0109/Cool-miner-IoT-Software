@@ -29,9 +29,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     link: {
       type : Sequelize.STRING
-    },
-    createdAt : true,
-    updatedAt : false
+    }
+  }, { 
+    timestamps : false,
+    createdAt : false,
+    updatedAt : false 
   });
 
   return Device_Data;
