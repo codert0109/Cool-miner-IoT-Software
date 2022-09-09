@@ -30,7 +30,7 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   @Column({
     allowNull: false
   })
-  public epoch_creation_time!: number;
+  public start_time!: number;
 
   @Column({
     allowNull: false

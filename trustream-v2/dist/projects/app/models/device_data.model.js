@@ -43,7 +43,7 @@ __decorate([
         allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceDataModel.prototype, "epoch_creation_time", void 0);
+], DeviceDataModel.prototype, "start_time", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false

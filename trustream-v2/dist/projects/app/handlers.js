@@ -111,7 +111,7 @@ async function onMqttData(context, topic, payload) {
     if (result == true) {
         await models_1.deviceDataRepository.upsert({
             address: address,
-            epoch_creation_time: decodedPayload.message.timestamp,
+            start_time: decodedPayload.message.timestamp,
             pedestrians: decodedPayload.message.pedestrians,
             cars: decodedPayload.message.cars,
             buses: decodedPayload.message.bus,

@@ -5,12 +5,12 @@ const MINER_CONFIG = require('../config/miner.config');
 
 // Core API Functions for Device_Data
 const checkActive = (address, callback) => {
-  Device_Data.findOne({ where : { address}, order: [['epoch_creation_time', 'DESC']]})
+  Device_Data.findOne({ where : { address}, order: [['start_time', 'DESC']]})
     .then((data) => {
       if (data === null)
         callback(false);
       else {
-        if (Date.now() - new Date(data.epoch_creation_time * 1000) > MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
+        if (Date.now() - new Date(data.start_time * 1000) > MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
           callback(false);
         } else {
           callback(true);
@@ -98,7 +98,7 @@ exports.findAll = (req, res) => {
 
   Device_Data.count()
     .then(cnt => {
-      Device_Data.findAll({offset, limit, order: [['epoch_creation_time', 'DESC']]})
+      Device_Data.findAll({offset, limit, order: [['start_time', 'DESC']]})
         .then(data => {
           res.send({
             offset,
@@ -131,22 +131,22 @@ exports.clean = (req, res) => {
     for (let i = 0; i < data.length; i++) {
       let alldata = await Device_Data.findAll( 
         { 
-          attributes : ["epoch_creation_time", "id"],
+          attributes : ["start_time", "id"],
           where : { 
             address : data[i].address 
           },
-          order: [['epoch_creation_time', 'ASC']]
+          order: [['start_time', 'ASC']]
         }
       );
 
       console.log('receive data', alldata.length, data[i].address);
       let n = alldata.length;
-      let last_epoch_creation_time = 0;
+      let last_start_time = 0;
       for (let j = 0; j < n; j++) {
-        if (alldata[j].epoch_creation_time - last_epoch_creation_time < 2) {
+        if (alldata[j].start_time - last_start_time < 2) {
           removeIDs.push(alldata[j].id);
         } else {
-          last_epoch_creation_time = alldata[j].epoch_creation_time;
+          last_start_time = alldata[j].start_time;
         }
       }
     }

@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
     miner: {
       type : Sequelize.STRING
     },
-    epoch_creation_time: {
+    start_time: {
       type : Sequelize.DATE
     },
     pedestrians: {
