@@ -9,19 +9,19 @@ module.exports = (sequelize, Sequelize) => {
     miner: {
       type : Sequelize.STRING
     },
-    timestamp: {
+    epoch_creation_time: {
       type : Sequelize.DATE
     },
-    pedestrains: {
+    pedestrians: {
       type : Sequelize.INTEGER
     },
     cars: {
       type : Sequelize.INTEGER
     },
-    bus: {
+    buses: {
       type : Sequelize.INTEGER
     },
-    truck: {
+    trucks: {
       type : Sequelize.INTEGER
     },
     total: {
@@ -30,12 +30,8 @@ module.exports = (sequelize, Sequelize) => {
     link: {
       type : Sequelize.STRING
     },
-    created_at: {
-      type: Sequelize.DATE
-    },
-    updated_at : {
-      type: Sequelize.DATE
-    }
+    createdAt : true,
+    updatedAt : false
   });
 
   return Device_Data;
