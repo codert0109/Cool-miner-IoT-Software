@@ -66,7 +66,9 @@ async function verifyMessage(from : string, sessionID : string) {
 }
 
 async function updateUpTime(address : string) {
-  const UPLOAD_INTERVAL = 2;
+  const UPLOAD_INTERVAL = 5 * 60;
+  const UPLOAD_THRESMS = 1500;
+
 
   console.log('updateUpTime called');
   try {
@@ -78,23 +80,35 @@ async function updateUpTime(address : string) {
     } else {
       console.log('updatedAt', result.updatedAt);
       // update data
-
-      console.log(Date.now() - new Date(result.updatedAt).getTime());
-
-      await deviceUptimeRepository.update(
-        { address, uptime : result.uptime + UPLOAD_INTERVAL},
-        { where : { address }});
+      let elapsedTime = Date.now() - new Date(result.updatedAt).getTime();
+      if (true || elapsedTime > UPLOAD_THRESMS) {
+        await deviceUptimeRepository.update(
+          { address, uptime : result.uptime + UPLOAD_INTERVAL},
+          { where : { address }});
+        return true;
+      } else {
+        return false;
+      }
     }
-    return true;
   } catch (err) {
     console.log(`errors occured in updateUpTime ${err}`);
     return false;
   }
 }
 
-async function onMqttData(context: ProjectContext, topic: string, payload: Buffer) {
-  
+function checkVersion(min_version : string = '2.1.3', msg_version : string) {
+  if (msg_version == null || msg_version == undefined) 
+    return false;
+  let a = min_version.split('.');
+  let b = msg_version.split('.');
+  for (let i = 0; i < 3; i++) {
+    if (~~a > ~~b) return false;
+    if (~~a < ~~b) return true;
+  }
+  return true;
+}
 
+async function onMqttData(context: ProjectContext, topic: string, payload: Buffer) {
   console.log("Received a message on topic: ", topic);
   
   // Check that the topic passed respect the format
@@ -107,6 +121,12 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   // Decode the JSON message
   let decodedPayload = eval('('+payload.toString()+')');
+
+  if (!checkVersion('2.1.3', decodedPayload.message.version)) {
+    console.log("Discard message with version error, ", decodedPayload.message.version);
+    return;
+  }
+
   // console.log("Payload:")
   // console.log(decodedPayload)
   
@@ -152,15 +172,15 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   if (result == true) {
     await deviceDataRepository.upsert({
-      id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
-      address: address,
-      timestamp: decodedPayload.message.timestamp,
-      pedestrains : decodedPayload.message.pedestrians,
-      cars : decodedPayload.message.cars,
-      bus : decodedPayload.message.bus,
-      truck : decodedPayload.message.truck,
-      total : decodedPayload.message.total,
-      link : decodedPayload.message.link,
+      address             : address,
+      epoch_creation_time : decodedPayload.message.timestamp,
+      pedestrians         : decodedPayload.message.pedestrians,
+      cars                : decodedPayload.message.cars,
+      buses               : decodedPayload.message.bus,
+      trucks              : decodedPayload.message.truck,
+      total               : decodedPayload.message.total,
+      link                : decodedPayload.message.link,
+      upload_time         : Date.now(),
       miner
     })
   }

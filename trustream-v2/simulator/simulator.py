@@ -39,6 +39,7 @@ class Message:
       self.link = 'testing'
       self.timestamp = int(time.time())
       self.miner = 'testminer'
+      self.version = '2.1.3'
 
 class Signature:
     def __init__(self, message: Message, privKey: bytes):

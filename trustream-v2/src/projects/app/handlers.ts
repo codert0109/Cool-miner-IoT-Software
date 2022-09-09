@@ -172,15 +172,15 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   if (result == true) {
     await deviceDataRepository.upsert({
-      id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
-      address: address,
-      timestamp: decodedPayload.message.timestamp,
-      pedestrains : decodedPayload.message.pedestrians,
-      cars : decodedPayload.message.cars,
-      bus : decodedPayload.message.bus,
-      truck : decodedPayload.message.truck,
-      total : decodedPayload.message.total,
-      link : decodedPayload.message.link,
+      address             : address,
+      epoch_creation_time : decodedPayload.message.timestamp,
+      pedestrians         : decodedPayload.message.pedestrians,
+      cars                : decodedPayload.message.cars,
+      buses               : decodedPayload.message.bus,
+      trucks              : decodedPayload.message.truck,
+      total               : decodedPayload.message.total,
+      link                : decodedPayload.message.link,
+      upload_time         : Date.now(),
       miner
     })
   }

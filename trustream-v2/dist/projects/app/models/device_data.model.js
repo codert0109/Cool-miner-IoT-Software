@@ -20,9 +20,9 @@ let DeviceDataModel = class DeviceDataModel extends base_1.default {
 __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.INTEGER
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], DeviceDataModel.prototype, "id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
@@ -43,13 +43,13 @@ __decorate([
         allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceDataModel.prototype, "timestamp", void 0);
+], DeviceDataModel.prototype, "epoch_creation_time", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceDataModel.prototype, "pedestrains", void 0);
+], DeviceDataModel.prototype, "pedestrians", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false
@@ -61,13 +61,13 @@ __decorate([
         allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceDataModel.prototype, "bus", void 0);
+], DeviceDataModel.prototype, "buses", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceDataModel.prototype, "truck", void 0);
+], DeviceDataModel.prototype, "trucks", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false
@@ -80,9 +80,16 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], DeviceDataModel.prototype, "link", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Date)
+], DeviceDataModel.prototype, "upload_time", void 0);
 DeviceDataModel = __decorate([
     sequelize_typescript_1.Table({
-        tableName: 'device_data'
+        tableName: 'device_data',
+        timestamps: false
     })
 ], DeviceDataModel);
 exports.DeviceDataModel = DeviceDataModel;

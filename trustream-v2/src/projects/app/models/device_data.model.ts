@@ -61,4 +61,9 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
     allowNull: false
   })
   public link!: string;
+
+  @Column({
+    allowNull: false
+  })
+  public upload_time!: Date;
 }

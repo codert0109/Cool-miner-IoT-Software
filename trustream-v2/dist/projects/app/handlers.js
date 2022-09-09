@@ -31,7 +31,8 @@ async function verifyMessage(from, sessionID) {
     }
 }
 async function updateUpTime(address) {
-    const UPLOAD_INTERVAL = 2;
+    const UPLOAD_INTERVAL = 5 * 60;
+    const UPLOAD_THRESMS = 1500;
     console.log('updateUpTime called');
     try {
         let result = await models_1.deviceUptimeRepository.findOne({ where: { address } });
@@ -41,15 +42,33 @@ async function updateUpTime(address) {
         }
         else {
             console.log('updatedAt', result.updatedAt);
-            console.log(Date.now() - new Date(result.updatedAt).getTime());
-            await models_1.deviceUptimeRepository.update({ address, uptime: result.uptime + UPLOAD_INTERVAL }, { where: { address } });
+            let elapsedTime = Date.now() - new Date(result.updatedAt).getTime();
+            if (true || elapsedTime > UPLOAD_THRESMS) {
+                await models_1.deviceUptimeRepository.update({ address, uptime: result.uptime + UPLOAD_INTERVAL }, { where: { address } });
+                return true;
+            }
+            else {
+                return false;
+            }
         }
-        return true;
     }
     catch (err) {
         console.log(`errors occured in updateUpTime ${err}`);
         return false;
     }
+}
+function checkVersion(min_version = '2.1.3', msg_version) {
+    if (msg_version == null || msg_version == undefined)
+        return false;
+    let a = min_version.split('.');
+    let b = msg_version.split('.');
+    for (let i = 0; i < 3; i++) {
+        if (~~a > ~~b)
+            return false;
+        if (~~a < ~~b)
+            return true;
+    }
+    return true;
 }
 async function onMqttData(context, topic, payload) {
     console.log("Received a message on topic: ", topic);
@@ -60,6 +79,10 @@ async function onMqttData(context, topic, payload) {
     }
     const address = values[1];
     let decodedPayload = eval('(' + payload.toString() + ')');
+    if (!checkVersion('2.1.3', decodedPayload.message.version)) {
+        console.log("Discard message with version error, ", decodedPayload.message.version);
+        return;
+    }
     const message = JSON.stringify(decodedPayload.message);
     console.log('message', message);
     const signature = decodedPayload.signature;
@@ -86,15 +109,16 @@ async function onMqttData(context, topic, payload) {
     let nounce = ~~(Math.random() * 100000);
     let result = await updateUpTime(address);
     if (result == true) {
-        await models_1.deviceDataRepository.insert({
+        await models_1.deviceDataRepository.upsert({
             address: address,
             epoch_creation_time: decodedPayload.message.timestamp,
-            pedestrains: decodedPayload.message.pedestrians,
+            pedestrians: decodedPayload.message.pedestrians,
             cars: decodedPayload.message.cars,
-            bus: decodedPayload.message.bus,
-            truck: decodedPayload.message.truck,
+            buses: decodedPayload.message.bus,
+            trucks: decodedPayload.message.truck,
             total: decodedPayload.message.total,
             link: decodedPayload.message.link,
+            upload_time: Date.now(),
             miner
         });
     }
