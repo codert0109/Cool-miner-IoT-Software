@@ -35,6 +35,11 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   @Column({
     allowNull: false
   })
+  public end_time!: number;
+
+  @Column({
+    allowNull: false
+  })
   public pedestrians!: number;
 
   @Column({
