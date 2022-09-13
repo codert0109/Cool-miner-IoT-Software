@@ -65,28 +65,38 @@ async function verifyMessage(from : string, sessionID : string) {
   }
 }
 
-async function updateUpTime(address : string) {
+async function updateUpTime(address : string, nftID : string) {
   const UPLOAD_INTERVAL = 5 * 60;
-  const UPLOAD_THRESMS = 1500;
-
+  // const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
+  const UPLOAD_THRESMS = 200000;
 
   console.log('updateUpTime called');
+
   try {
-    let result = await deviceUptimeRepository.findOne({ where : { address } })
+    let result = await deviceDataRepository.findOne({ where : { nft_id : nftID }, order : [['upload_time', 'DESC']] })
+
     if (result === null) {
       // find new miner! add data
       await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
       return true;
     } else {
-      console.log('updatedAt', result.updatedAt);
       // update data
-      let elapsedTime = Date.now() - new Date(result.updatedAt).getTime();
-      if (true || elapsedTime > UPLOAD_THRESMS) {
-        await deviceUptimeRepository.update(
-          { address, uptime : result.uptime + UPLOAD_INTERVAL},
-          { where : { address }});
+      let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+
+      console.log('elapsedTime', elapsedTime);
+
+      if (elapsedTime > UPLOAD_THRESMS) {
+        let result = await deviceUptimeRepository.findOne({ where : { address }});
+        if (result === null) {
+          await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
+        } else {
+          await deviceUptimeRepository.update(
+            { address, uptime : result.uptime + UPLOAD_INTERVAL},
+            { where : { address }});
+        }
         return true;
       } else {
+        console.log('blocked: data is uploading too fast.');
         return false;
       }
     }
@@ -159,7 +169,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   console.log("Device has NFT. Processing data")
   console.log(`Device address: ${address}`)
-  console.log(`Timestamp: ${decodedPayload.message.timestamp}`)
+  console.log(`Stop time: ${decodedPayload.message.stop_time}`)
 
   let { miner } = decodedPayload.message;
 
@@ -168,7 +178,16 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   let nounce = ~~(Math.random() * 100000);
 
-  let result = await updateUpTime(address);
+  let nftID = decodedPayload.message.nftID;
+
+  console.log(`NFT ID: ${nftID}`);
+  let result = true;
+
+  if (nftID !== undefined) {
+    result = await updateUpTime(address, nftID);
+  } else {
+    nftID = -1;
+  }
 
   if (result == true) {
     await deviceDataRepository.upsert({
@@ -182,7 +201,8 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
       total               : decodedPayload.message.total,
       link                : decodedPayload.message.link,
       upload_time         : Date.now(),
-      miner
+      miner,
+      nft_id              : nftID
     })
   }
 

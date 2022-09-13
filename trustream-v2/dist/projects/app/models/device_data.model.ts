@@ -71,4 +71,9 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
     allowNull: false
   })
   public upload_time!: Date;
+
+  @Column({
+    allowNull: false
+  })
+  public nft_id!: number;
 }

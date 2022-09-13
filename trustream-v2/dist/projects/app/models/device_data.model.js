@@ -92,6 +92,12 @@ __decorate([
     }),
     __metadata("design:type", Date)
 ], DeviceDataModel.prototype, "upload_time", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Number)
+], DeviceDataModel.prototype, "nft_id", void 0);
 DeviceDataModel = __decorate([
     sequelize_typescript_1.Table({
         tableName: 'device_data',
