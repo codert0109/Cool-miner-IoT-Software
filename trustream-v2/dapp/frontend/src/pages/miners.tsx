@@ -11,8 +11,11 @@ import NFTContractABI from '../contracts/NFT.json';
 import ContractAddress from '../contracts/contract-address.json';
 import { useEffect, useState } from "react";
 import Box from "@/components/Container/Box";
+import { getNFTIDFromAddress } from "../utils";
+import { observer } from 'mobx-react-lite';
 
 const { ethereum } = require('../global.js').getWindow();
+const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
     progressBar: {
@@ -21,23 +24,87 @@ const useStyles = createStyles((theme) => ({
         },
     },
 
-    NFTTable : {
-        background : 'white',
-        color : 'black',
-        width : '100%'
+    NFTTable: {
+        background: 'white',
+        color: 'black',
+        width: '100%'
+    },
+
+    green: {
+        color: 'green'
+    },
+
+    center: {
+        textAlign: 'center'
+    },
+
+    button : {
+        color : 'black', 
+        borderColor : 'black',
+        marginLeft : 10,
+        marginRight : 10
+    },
+
+    thead : {
+        borderBottom : '1px solid black'
+    },
+
+    th : {
+        borderBottom : '1px solid black'
     }
 }));
 
-export default function TableReviews() {
+export default observer(() => {
     const { classes, theme } = useStyles();
     const { god, lang } = useStore();
 
     const [nftOwner, setNFTOwner] = useState(false);
+    const [minerName, setMinerName] = useState(' ');
+    const [nftID, setNFTID] = useState(-1);
+    const [is_working, setWorkStatus] = useState(false);
 
     useEffect(() => {
-        hasNFT().then((data) => { setNFTOwner(data); }).catch((err) => { setNFTOwner(false) });
-    }, []);
-    
+        if (god.currentNetwork.account !== undefined) {
+            setNFTID(getNFTIDFromAddress(god.currentNetwork.account));
+            isActive().then((data) => setWorkStatus(data));
+        }
+    }, [god.currentNetwork.account]);
+
+    useEffect(() => {
+        if (god.currentNetwork.account === undefined)
+            return;
+        hasNFT()
+            .then((data) => {
+                setNFTOwner(data);
+                if (data === true) {
+                    const url = `${BACKEND_URL}/api/device_status/miner?address=${god.currentNetwork.account}`;
+                    $.get(url)
+                        .then((data) => {
+                            let info: any = data.data;
+                            if (info.status === 'ERR') {
+                                Swal.fire(
+                                    'Error',
+                                    `<p>${info.message}</p>`,
+                                    'error'
+                                )
+                            } else {
+                                setMinerName(info.miner)
+                            }
+                        })
+                        .catch((err) => {
+                            Swal.fire(
+                                'Error',
+                                '<p>Connection Error</p>',
+                                'error'
+                            )
+                        });
+                }
+            })
+            .catch((err) => {
+                setNFTOwner(false)
+            });
+    }, [god.currentNetwork.account]);
+
     const signMessage = async (message) => {
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
@@ -57,10 +124,10 @@ export default function TableReviews() {
         const NFTContractAddress = ContractAddress.NFT;
         try {
             let data = await god.currentNetwork.execContract({
-                address : NFTContractAddress,
-                abi     : NFTContractABI.abi,
-                method  : 'balanceOf',
-                params  : [god.currentNetwork.account]
+                address: NFTContractAddress,
+                abi: NFTContractABI.abi,
+                method: 'balanceOf',
+                params: [god.currentNetwork.account]
             });
             if (data[0] > 0)
                 return true;
@@ -72,7 +139,7 @@ export default function TableReviews() {
 
     const isActive = async () => {
         try {
-            let ret = await $.get(`https://miner.elumicate.com/api/device_status/isActive?address=${god.currentNetwork.account}`);
+            let ret = await $.get(`${BACKEND_URL}/api/device_status/isActive?address=${god.currentNetwork.account}`);
             return ret.data.active;
         } catch (err) {
             return false;
@@ -82,7 +149,7 @@ export default function TableReviews() {
     const getNounce = async () => {
         try {
             let ret = await $.post('https://miner.elumicate.com/api/device_auth/getNounce', {
-                address : god.currentNetwork.account
+                address: god.currentNetwork.account
             });
             return ret.data.nounce;
         } catch (err) {
@@ -93,8 +160,8 @@ export default function TableReviews() {
     const getSessionID = async (password) => {
         try {
             let ret = await $.post('https://miner.elumicate.com/api/device_auth/login', {
-                address : god.currentNetwork.account,
-                password : password
+                address: god.currentNetwork.account,
+                password: password
             });
             return ret.data.session;
         } catch (err) {
@@ -131,7 +198,7 @@ export default function TableReviews() {
 
             if (signature !== null) {
                 verifyMessage(signature, nounce);
-                
+
                 let sessionID = await getSessionID(signature);
 
                 if (sessionID == null) {
@@ -143,10 +210,10 @@ export default function TableReviews() {
                     return false;
                 }
 
-                const wallet = god.currentNetwork.account;            
+                const wallet = god.currentNetwork.account;
                 const nftID = wallet;
 
-                $.post(url, { signature : sessionID, nftID, wallet }, {
+                $.post(url, { signature: sessionID, nftID : getNFTIDFromAddress(nftID), wallet }, {
 
                 });
             } else {
@@ -161,22 +228,22 @@ export default function TableReviews() {
         const active = await isActive();
 
         // we don't need to show error messages.
-        processLogin();
+        // processLogin();
 
-        // if (active == true) {
-        //     Swal.fire({
-        //         title : 'Warning',
-        //         html : `<p>Do you want to disconnect old session and start new mining?</p>`,
-        //         icon : 'warning',
-        //         showCancelButton: true,
-        //     }).then((result) => {
-        //         if (!result.isConfirmed) 
-        //             return;
-                
-        //     });
-        // } else {
-        //     processLogin();
-        // }
+        if (active == true) {
+            Swal.fire({
+                title : 'Warning',
+                html : `<p>This NFT is already assigned to a different miner, continuing will replace the existing connection.</p>`,
+                icon : 'warning',
+                showCancelButton: true,
+            }).then((result) => {
+                if (!result.isConfirmed) 
+                    return;
+                processLogin();
+            });
+        } else {
+            processLogin();
+        }
     };
 
     const verifyMessage = (signature, message) => {
@@ -211,18 +278,37 @@ export default function TableReviews() {
 
             <Box label="My Miners">
                 <table className={classes.NFTTable}>
-                    <thead>
+                    <thead className={classes.thead}>
                         <tr>
-                            <th>Miner Name</th>
-                            <th>NFT</th>
-                            <th>Connection Status</th>
+                            <th className={classes.th} key="1">Miner Name</th>
+                            <th className={classes.th} key="2">NFT</th>
+                            <th className={classes.th} key="3">Connection Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        <tr>
+                            <td className={classes.center} key="1">
+                                {minerName}
+                            </td>
+                            <td className={`${classes.green} ${classes.center}`} key="2">
+                                <div>
+                                    {nftID}
+                                    <Button
+                                        onClick={onSendSignature}
+                                        className={classes.button}
+                                        variant="white"
+                                        size="xs">
+                                        {is_working ? 'Remove Connection' : 'Secure Connection'}
+                                    </Button>
+                                </div>
+                            </td>
+                            <td className={`${classes.green} ${classes.center}`} key="3">
+                                Valid
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </Box>
         </Layout>
     );
-}
+});
