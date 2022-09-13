@@ -45,6 +45,37 @@ exports.isActive = (req, res) => {
   });
 }
 
+exports.getMinerName = (req, res) => {
+  let address = req.query.address;
+  if (address == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+  } else {
+    Device_Data.findOne({ where : { address}, order: [['start_time', 'DESC']]})
+    .then((data) => {
+      if (data === null) {
+        res.send({
+          status : 'OK',
+          miner : 'Not set'
+        })
+      } else {
+        res.send({
+          status : 'OK',
+          miner : data.miner
+        })
+      }
+    })
+    .catch((err) => {
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      });
+    });
+  }
+}
+
 // exports.getUploadCnt = (req, res) => {
 //   // const { address, signature } = req.body;
 //   const { address, startTime, endTime } = req.body;

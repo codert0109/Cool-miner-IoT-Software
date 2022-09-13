@@ -9,6 +9,8 @@ import { recoverPersonalSignature } from "eth-sig-util";
 import Swal from 'sweetalert2';
 import NFTContractABI from '../contracts/NFT.json';
 import ContractAddress from '../contracts/contract-address.json';
+import { useEffect, useState } from "react";
+import Box from "@/components/Container/Box";
 
 const { ethereum } = require('../global.js').getWindow();
 
@@ -18,11 +20,23 @@ const useStyles = createStyles((theme) => ({
             borderLeft: `3px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white}`,
         },
     },
+
+    NFTTable : {
+        background : 'white',
+        color : 'black',
+        width : '100%'
+    }
 }));
 
 export default function TableReviews() {
     const { classes, theme } = useStyles();
     const { god, lang } = useStore();
+
+    const [nftOwner, setNFTOwner] = useState(false);
+
+    useEffect(() => {
+        hasNFT().then((data) => { setNFTOwner(data); }).catch((err) => { setNFTOwner(false) });
+    }, []);
     
     const signMessage = async (message) => {
         const globalAccount = (god.currentNetwork as NetworkState).account;
@@ -187,13 +201,28 @@ export default function TableReviews() {
 
     return (
         <Layout>
-            <Button 
+            {/* <Button 
                 style={{marginBottom : '10px'}} 
                 onClick={onSendSignature} 
                 rightIcon={<Send size={18} />} 
                 sx={{ paddingRight: 12 }}>
                 Secure Miner Connection
-            </Button>
+            </Button> */}
+
+            <Box label="My Miners">
+                <table className={classes.NFTTable}>
+                    <thead>
+                        <tr>
+                            <th>Miner Name</th>
+                            <th>NFT</th>
+                            <th>Connection Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </Box>
         </Layout>
     );
 }
