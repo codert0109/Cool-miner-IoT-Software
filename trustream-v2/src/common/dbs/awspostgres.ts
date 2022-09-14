@@ -6,11 +6,12 @@ import {
   DB_PORT,
   DB_USERNAME,
   DB_PASSWORD,
-  DB_NAME
+  DB_NAME,
+  DB_SCHEMA
 } from '@config/env';
 
 export function getDB(project: string) {
-  console.log(`[DB] Connecting to ${project}, DB: ${DB_HOST}, DB_PORT: ${DB_PORT}, DB_USERNAME: ${DB_USERNAME}, DB_PASSWORD: ${DB_PASSWORD}, DB_NAME: ${DB_NAME}`);
+  console.log(`[DB] Connecting to ${DB_SCHEMA}, DB: ${DB_HOST}, DB_PORT: ${DB_PORT}, DB_USERNAME: ${DB_USERNAME}, DB_PASSWORD: ${DB_PASSWORD}, DB_NAME: ${DB_NAME}`);
   return new Sequelize({
     dialect: 'postgres',
     host: DB_HOST,
@@ -34,7 +35,7 @@ export function getDB(project: string) {
       paranoid: false,
       underscored: true,
       charset: 'utf8',
-      schema: project
+      schema: DB_SCHEMA
     },
 
     pool: {
