@@ -67,7 +67,7 @@ async function verifyMessage(from : string, sessionID : string) {
 
 async function updateUpTime(address : string, nftID : string) {
   const UPLOAD_INTERVAL = 5 * 60;
-  // const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
+  const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
 
   console.log('updateUpTime called');
 
