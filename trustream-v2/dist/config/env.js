@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MQTT_NODE = exports.CA = exports.TLS_CERT = exports.TLS_KEY = exports.TLS_ENABLED = exports.ETH_ENDPOINT = exports.DB_LOG = exports.LOG_LEVEL = exports.WORKER_QUEUE = exports.SYSLOG_TAG = exports.SYSLOG_PROTOCOL = exports.SYSLOG_PORT = exports.SYSLOG_HOST = exports.DB_NAME = exports.DB_PASSWORD = exports.DB_USERNAME = exports.DB_PORT = exports.DB_HOST = exports.DB_DIALECT = exports.PROJECT = exports.NODE_ENV = void 0;
+exports.MQTT_NODE = exports.CA = exports.TLS_CERT = exports.TLS_KEY = exports.TLS_ENABLED = exports.ETH_ENDPOINT = exports.DB_LOG = exports.LOG_LEVEL = exports.WORKER_QUEUE = exports.SYSLOG_TAG = exports.SYSLOG_PROTOCOL = exports.SYSLOG_PORT = exports.SYSLOG_HOST = exports.DB_SCHEMA = exports.DB_NAME = exports.DB_PASSWORD = exports.DB_USERNAME = exports.DB_PORT = exports.DB_HOST = exports.DB_DIALECT = exports.PROJECT = exports.NODE_ENV = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const { env } = process;
 const get = (name, _default = '') => {
@@ -22,6 +22,7 @@ exports.DB_PORT = getNumber('DB_PORT', 5432);
 exports.DB_USERNAME = get('DB_USERNAME', 'postgres');
 exports.DB_PASSWORD = get('DB_PASSWORD', 'admin');
 exports.DB_NAME = get('DB_NAME', "datalayerdb");
+exports.DB_SCHEMA = get('DB_SCHEMA', "app");
 exports.SYSLOG_HOST = get('SYSLOGD_HOST');
 exports.SYSLOG_PORT = getNumber('SYSLOGD_PORT', 514);
 exports.SYSLOG_PROTOCOL = get('SYSLOGD_PROTOCOL', 'U');

@@ -67,8 +67,7 @@ async function verifyMessage(from : string, sessionID : string) {
 
 async function updateUpTime(address : string, nftID : string) {
   const UPLOAD_INTERVAL = 5 * 60;
-  // const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
-  const UPLOAD_THRESMS = 200000;
+  const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
 
   console.log('updateUpTime called');
 
@@ -187,6 +186,8 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     result = await updateUpTime(address, nftID);
   } else {
     nftID = -1;
+    console.log(`WARNING: Dropping data message: message does not include NFT ID.`)
+    return null;
   }
 
   if (result == true) {

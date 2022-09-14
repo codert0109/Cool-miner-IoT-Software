@@ -8,7 +8,7 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const path_1 = __importDefault(require("path"));
 const env_1 = require("@config/env");
 function getDB(project) {
-    console.log(`[DB] Connecting to ${project}, DB: ${env_1.DB_HOST}, DB_PORT: ${env_1.DB_PORT}, DB_USERNAME: ${env_1.DB_USERNAME}, DB_PASSWORD: ${env_1.DB_PASSWORD}, DB_NAME: ${env_1.DB_NAME}`);
+    console.log(`[DB] Connecting to ${env_1.DB_SCHEMA}, DB: ${env_1.DB_HOST}, DB_PORT: ${env_1.DB_PORT}, DB_USERNAME: ${env_1.DB_USERNAME}, DB_PASSWORD: ${env_1.DB_PASSWORD}, DB_NAME: ${env_1.DB_NAME}`);
     return new sequelize_typescript_1.Sequelize({
         dialect: 'postgres',
         host: env_1.DB_HOST,
@@ -30,7 +30,7 @@ function getDB(project) {
             paranoid: false,
             underscored: true,
             charset: 'utf8',
-            schema: project
+            schema: env_1.DB_SCHEMA
         },
         pool: {
             max: 15,

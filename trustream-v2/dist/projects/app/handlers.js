@@ -32,7 +32,7 @@ async function verifyMessage(from, sessionID) {
 }
 async function updateUpTime(address, nftID) {
     const UPLOAD_INTERVAL = 5 * 60;
-    const UPLOAD_THRESMS = 200000;
+    const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
     console.log('updateUpTime called');
     try {
         let result = await models_1.deviceDataRepository.findOne({ where: { nft_id: nftID }, order: [['upload_time', 'DESC']] });
@@ -122,6 +122,8 @@ async function onMqttData(context, topic, payload) {
     }
     else {
         nftID = -1;
+        console.log(`WARNING: Dropping data message: message does not include NFT ID.`);
+        return null;
     }
     if (result == true) {
         await models_1.deviceDataRepository.upsert({
