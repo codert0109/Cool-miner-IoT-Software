@@ -31,6 +31,7 @@ interface TableScrollAreaProps {
         id: string;
         miner : string;
         start_time: number;
+        end_time: number;
         address: string;
         pedestrains: string;
         cars: string;
@@ -80,7 +81,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
 
     const rows = data.map((row) => (
         <tr key={row.id}>
-            <td>{new Date(row.start_time * 1000).toLocaleString()}</td>
+            <td>{new Date(row.end_time * 1000).toLocaleString()}</td>
             <td>{row.miner}</td>
             <td>{helper.string.truncate(row.address || '0x......', 12, '...')}</td>
             {/* <td>{row.pedestrains}</td>

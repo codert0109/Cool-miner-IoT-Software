@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
     start_time: {
       type : Sequelize.DATE
     },
+    end_time: {
+      type : Sequelize.DATE
+    },
     pedestrians: {
       type : Sequelize.INTEGER
     },
