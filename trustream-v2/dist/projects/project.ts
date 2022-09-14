@@ -191,15 +191,18 @@ abstract class Project implements ProjectContext {
   async portOpen() {
     var net = require('net');
     var server = net.createServer();
-    if (this.port !== null)
+    if (this.port !== null) {
       server.listen(this.port);
+    }
   }
 
   async run() {
+    console.log('run called');
     if (this.useMqtt)
       this.mqtt = await this.startMqtt()
-    if (this.useBlockchain)
-      await this.startBlockchain()
+    // Block currently
+    // if (this.useBlockchain)
+    //   await this.startBlockchain()
     this.portOpen()     // to check status
   }
 }
