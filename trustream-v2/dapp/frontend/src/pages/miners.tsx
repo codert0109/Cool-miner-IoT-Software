@@ -161,7 +161,8 @@ export default observer(() => {
         try {
             let ret = await $.post(`${BACKEND_URL}/api/device_auth/login`, {
                 address: god.currentNetwork.account,
-                password: password
+                password: password,
+                remove_flag : false
             });
             return ret.data.session;
         } catch (err) {
