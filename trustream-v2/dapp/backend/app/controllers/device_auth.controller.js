@@ -245,27 +245,21 @@ exports.login = (req, res) => {
             }
 
             const removeSession = () => {
-              Device_Auth.update(
-                {
-                  session_id: null,
-                  session_start: Date.now(),
-                },
-                { where: { id: data.id } },
-              )
-                .then((data) => {
+              data.destroy()
+                .then(() => {
                   res.send({
                     status: 'OK',
-                    message: 'Session Remove Success!',
+                    message: 'Session Removed',
                     session: sessionID,
                   })
                 })
-                .catch((err) => {
+                .catch(() => {
                   res.send({
                     status: 'ERR',
                     message: 'Internal Server Error',
                     detail: 'Removing Session failed',
                   })
-                })
+                });
             }
             
             if (remove_flag === false) {
