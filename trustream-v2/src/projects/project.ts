@@ -197,7 +197,6 @@ abstract class Project implements ProjectContext {
   }
 
   async run() {
-    console.log('run called');
     if (this.useMqtt)
       this.mqtt = await this.startMqtt()
     // Block currently

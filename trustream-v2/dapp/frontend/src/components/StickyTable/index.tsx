@@ -112,7 +112,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
             <Table sx={{ minWidth: 700 }}>
                 <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <tr>
-                        <th>Epoch Creation Time</th>
+                        <th>Epoch Time</th>
                         <th>Name</th>
                         <th>Wallet</th>
                         {/* <th>Pedestrians</th>
