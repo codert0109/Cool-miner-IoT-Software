@@ -189,7 +189,12 @@ exports.login = (req, res) => {
     return
   }
 
-  const { address, password } = req.body
+  if (req.body.remove_flag === undefined) {
+    res.send('Bad request')
+    return
+  }
+
+  const { address, password, remove_flag } = req.body
 
   Device_Auth.findOne({ where: { address } })
     .then((data) => {
@@ -238,8 +243,36 @@ exports.login = (req, res) => {
                   })
                 })
             }
+
+            const removeSession = () => {
+              Device_Auth.update(
+                {
+                  session_id: null,
+                  session_start: Date.now(),
+                },
+                { where: { id: data.id } },
+              )
+                .then((data) => {
+                  res.send({
+                    status: 'OK',
+                    message: 'Session Remove Success!',
+                    session: sessionID,
+                  })
+                })
+                .catch((err) => {
+                  res.send({
+                    status: 'ERR',
+                    message: 'Internal Server Error',
+                    detail: 'Removing Session failed',
+                  })
+                })
+            }
             
-            processNewSession();
+            if (remove_flag === false) {
+              processNewSession();
+            } else {
+              removeSession();
+            }
           } else {
             res.send({
               status: 'ERR',

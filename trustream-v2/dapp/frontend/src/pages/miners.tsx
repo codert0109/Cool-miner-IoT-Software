@@ -148,7 +148,7 @@ export default observer(() => {
 
     const getNounce = async () => {
         try {
-            let ret = await $.post('https://miner.elumicate.com/api/device_auth/getNounce', {
+            let ret = await $.post(`${BACKEND_URL}/api/device_auth/getNounce`, {
                 address: god.currentNetwork.account
             });
             return ret.data.nounce;
@@ -159,7 +159,7 @@ export default observer(() => {
 
     const getSessionID = async (password) => {
         try {
-            let ret = await $.post('https://miner.elumicate.com/api/device_auth/login', {
+            let ret = await $.post(`${BACKEND_URL}/api/device_auth/login`, {
                 address: god.currentNetwork.account,
                 password: password
             });
@@ -198,9 +198,7 @@ export default observer(() => {
 
             if (signature !== null) {
                 verifyMessage(signature, nounce);
-
                 let sessionID = await getSessionID(signature);
-
                 if (sessionID == null) {
                     Swal.fire(
                         'Error',
@@ -209,7 +207,7 @@ export default observer(() => {
                     );
                     return false;
                 }
-
+                
                 const wallet = god.currentNetwork.account;
                 const nftID = wallet;
 
@@ -246,12 +244,11 @@ export default observer(() => {
         }
     };
 
+    // for testing purpose
     const verifyMessage = (signature, message) => {
-        // const message = 'Very Message Such Wow';
         const globalAccount = (god.currentNetwork as NetworkState).account;
         try {
             const from = globalAccount;
-            // const msg = `0x${bops.from(message, 'utf8').toString('hex')}`;
             const msg = message;
             const recoveredAddr = recoverPersonalSignature({ data: msg, sig: signature });
             if (recoveredAddr.toLowerCase() === from.toLowerCase()) {
@@ -268,14 +265,6 @@ export default observer(() => {
 
     return (
         <Layout>
-            {/* <Button 
-                style={{marginBottom : '10px'}} 
-                onClick={onSendSignature} 
-                rightIcon={<Send size={18} />} 
-                sx={{ paddingRight: 12 }}>
-                Secure Miner Connection
-            </Button> */}
-
             <Box label="My Miners">
                 <table className={classes.NFTTable}>
                     <thead className={classes.thead}>

@@ -12,7 +12,7 @@ module.exports = {
     acquire: 30000,
     idle: 10000
   },
-  project : env.getProject(),
+  project : env.project,
 
   CENTRAL_WALLET : {
     address : '0x78D0e460f234efbFc235152d32AB5e31b30B2171',
