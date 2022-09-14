@@ -4,6 +4,8 @@ import { useStore } from '../../store/index';
 import { Download } from "tabler-icons-react";
 import $ from 'axios';
 import Swal from 'sweetalert2';
+import { publicConfig } from "../../config/public";
+const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
     header: {
@@ -74,7 +76,7 @@ export default function TableScrollArea() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        $.get('https://miner.elumicate.com/update/all')
+        $.get(`${BACKEND_URL}/update/all`)
             .then((data) => {
                 setData(data.data.data.reverse());
             })

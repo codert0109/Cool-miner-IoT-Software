@@ -2,11 +2,11 @@ import Layout from "@/components/EntireLayout";
 import { createStyles, Container, Text, Button, Pagination, Grid, Table, Progress, ScrollArea, Group, Skeleton, useMantineTheme, Anchor } from '@mantine/core';
 import axios from "axios";
 import { useEffect, useState } from "react";
-
 import StickyTable from "../components/StickyTable";
 import Loading from "../components/Loading";
-
 import Router, { useRouter } from 'next/router';
+import { publicConfig } from "../config/public";
+const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
     table_header_button: {
@@ -38,8 +38,7 @@ export default function TableReviews() {
     const onRefresh = () => {
         setTableData([]);
         setLoading(true);
-        axios.get('https://miner.elumicate.com/api/device_status')
-            // axios.get('https://localhost:3333/api/device_status')
+        axios.get(`${BACKEND_URL}/api/device_status`)
             .then((data) => {
                 // console.log('data', data);
                 setTableData(data.data.data);

@@ -10,6 +10,8 @@ import NFTMinerNode from "@/components/NFTMinerNode";
 import NFTStatus from "@/components/NFTMinerNode/NFTStatus";
 import { observer } from 'mobx-react-lite';
 import Router, { useRouter } from 'next/router';
+import { publicConfig } from "../config/public";
+const { BACKEND_URL } = publicConfig;
 
 const BigNumber = require("bignumber.js");
 let window = require('../global.js');
@@ -227,7 +229,7 @@ export default observer(() => {
             )
             return;
         }
-        axios.post(`https://miner.elumicate.com/api/claim_tokens`, { account })
+        axios.post(`${BACKEND_URL}/api/claim_tokens`, { account })
             .then((data) => {
                 if (data.data == 'success') {
                     god.pollingData();

@@ -4,6 +4,7 @@ import { makeAutoObservable } from 'mobx';
 import RootStore from './root';
 import { publicConfig } from "../config/public";
 import { NetworkState } from './lib/NetworkState';
+const { BACKEND_URL } = publicConfig;
 
 const SESSION_NAME = 'elum_session';
 const { ethereum } = require('../global.js').getWindow();
@@ -20,7 +21,7 @@ export class AuthStore {
     }
 
     check_session(address, session, success_callback, fail_callback) {
-        $.post('https://miner.elumicate.com/api/device_auth/verify', {
+        $.post(`${BACKEND_URL}/api/device_auth/verify`, {
             address,
             signature: session
         }).then((data: any) => {
@@ -40,7 +41,7 @@ export class AuthStore {
 
         const getNounce = async () => {
             try {
-                let ret = await $.post('https://miner.elumicate.com/api/device_auth/getNounce', {
+                let ret = await $.post(`${BACKEND_URL}/api/device_auth/getNounce`, {
                     address: god.currentNetwork.account
                 });
                 return ret.data.nounce;
@@ -51,7 +52,7 @@ export class AuthStore {
 
         const getSessionID = async (password) => {
             try {
-                let ret = await $.post('https://miner.elumicate.com/api/device_auth/login', {
+                let ret = await $.post(`${BACKEND_URL}/api/device_auth/login`, {
                     address: god.currentNetwork.account,
                     password: password
                 });
