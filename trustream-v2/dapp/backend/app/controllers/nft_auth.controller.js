@@ -155,5 +155,53 @@ exports.getStatus = (req, res) => {
     });
 }
 
+exports.verify = (req, res) => {
+  console.log('verify', req.body.address, req.body.signature, req.body.nft_id);
+  if (req.body.address === undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+    return;
+  }
+
+  if (req.body.signature === undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+  }
+
+  if (req.body.nft_id === undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+  }
+
+  const { address, signature, nft_id } = req.body;
+
+  NFT_Auth.findOne({ where : { address,  session_id : signature, nft_id }})
+    .then((data) => {
+      if (data === null) {
+        res.send({
+          status : 'ERR',
+          message : 'Invalid signature'
+        })
+      } else {
+        res.send({
+          status : 'OK',
+          message : 'Signature is valid.'
+        })
+      }
+    })
+    .catch((err) => {
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      })
+    })
+}
+
 exports.createNFTSession = createNFTSession;
 exports.removeNFTSession = removeNFTSession;

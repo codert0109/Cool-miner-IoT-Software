@@ -119,10 +119,8 @@ exports.verifyAdminFunction = (address, signature, success_callback, fail_callba
     });
 };
 
-// This should be nft_auth.controller, but keep it now.
-// We will move in near future.
 exports.verify = (req, res) => {
-  console.log('verify', req.body.address, req.body.signature, req.body.nft_id);
+  console.log('verify', req.body.address, req.body.signature);
   if (req.body.address === undefined) {
     res.send({
       status : 'ERR',
@@ -138,16 +136,9 @@ exports.verify = (req, res) => {
     })
   }
 
-  if (req.body.nft_id === undefined) {
-    res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    })
-  }
+  const { address, signature } = req.body;
 
-  const { address, signature, nft_id } = req.body;
-
-  NFT_Auth.findOne({ where : { address,  session_id : signature, nft_id }})
+  Device_Auth.findOne({ where : { address,  session_id : signature }})
     .then((data) => {
       if (data === null) {
         res.send({

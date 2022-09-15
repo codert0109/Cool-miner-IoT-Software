@@ -7,6 +7,7 @@ module.exports = app => {
   router.post("/status",      nft_auth.getStatus);
   router.post("/create",      check_auth,   nft_auth.create);
   router.post("/remove",      check_auth,   nft_auth.remove);
+  router.post("/verify",      nft_auth.verify);
 
   app.use("/api/nft_auth", router);
 };
