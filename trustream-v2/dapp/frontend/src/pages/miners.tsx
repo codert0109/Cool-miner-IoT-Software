@@ -119,13 +119,23 @@ export default observer(() => {
                     auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
                         nft_id: item
                     }).then((data) => {
-                        console.log('data', data.data.data);
-                        setNFTStatus([{
-                            NFT: data.data.data.nft_id,
-                            Miner: data.data.data.miner ? data.data.data.miner : 'Not set',
-                            // This session is random fake session. Just check if it is null or not.
-                            Connection: data.data.data.session ? 'Assigned' : 'Not assigned'
-                        }]);
+                        let info = data.data.data;
+                        
+                        if (info.session) {
+                            setNFTStatus([{
+                                NFT: info.nft_id,
+                                Miner: info.miner ? info.miner : 'Not set',
+                                // This session is random fake session. Just check if it is null or not.
+                                Connection: info.session ? 'Assigned' : 'Not assigned'
+                            }]);
+                        } else {
+                            setNFTStatus([]);
+                            Swal.fire({
+                                title: 'Warning',
+                                html: `<p>No miners currently assigned.</p>`,
+                                icon: 'warning',
+                            });
+                        }
                     }).catch((err) => {
                         console.log(err);
                     });
