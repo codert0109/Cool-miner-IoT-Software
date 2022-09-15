@@ -11,7 +11,7 @@ function createNFTSession(address, nft_id, miner, success_callback, error_callba
       if (data === null) { // No data exist for that NFT_ID
         let session_id = getRandomSessionID();
         let session_start = Date.now();
-        NFT_Auth.create( { nft_id, session_id, session_start })
+        NFT_Auth.create( { address, nft_id, session_id, session_start })
           .then((data) => {
             success_callback(session_id);
           })
