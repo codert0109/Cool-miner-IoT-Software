@@ -151,6 +151,12 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     useEffect(() => {
+        setInterval(() => {
+            UpdateLocalMinerInfo();
+        }, 2000);
+    }, []);
+
+    useEffect(() => {
         UpdateNFTStatus();
     }, [god.currentNetwork.account]);
 
