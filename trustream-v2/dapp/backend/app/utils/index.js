@@ -1,6 +1,6 @@
 const nounce_length = 40;
 
-module.exports.randomString = function(length) {
+function randomString(length) {
   let chars = 'abcdefghijklmnopqrstuvwxyz'
   let ret = ''
 
@@ -10,10 +10,17 @@ module.exports.randomString = function(length) {
   return ret
 }
 
-module.exports.getRandomNounce = function() {
+function getRandomNounce() {
   return randomString(nounce_length)
 }
 
-module.exports.getRandomSessionID = function() {
+function getRandomSessionID() {
   return randomString(nounce_length)
 }
+
+module.exports = {
+  randomString,
+  getRandomNounce,
+  getRandomSessionID,
+  nounce_length
+};

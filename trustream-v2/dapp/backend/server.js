@@ -57,6 +57,7 @@ require('./app/routes/device_uptime.routes')(app)
 require('./app/routes/claim_token.routes')(app)
 require('./app/routes/server_status.routes')(app)
 require('./app/routes/server_update.routes')(app)
+require('./app/routes/nft_auth.routes')(app)
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3333

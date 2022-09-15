@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Box from "@/components/Container/Box";
 import { getNFTIDFromAddress } from "../utils";
 import { observer } from 'mobx-react-lite';
+import { CLEANUP_LEAKED_REACTIONS_AFTER_MILLIS } from "mobx-react-lite/dist/utils/reactionCleanupTrackingCommon";
 
 const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
@@ -38,89 +39,74 @@ const useStyles = createStyles((theme) => ({
         textAlign: 'center'
     },
 
-    button : {
-        color : 'black', 
-        borderColor : 'black',
-        marginLeft : 10,
-        marginRight : 10
+    button: {
+        color: 'black',
+        borderColor: 'black',
+        marginLeft: 10,
+        marginRight: 10
     },
 
-    thead : {
-        borderBottom : '1px solid black'
+    thead: {
+        borderBottom: '1px solid black'
     },
 
-    th : {
-        borderBottom : '1px solid black'
+    th: {
+        borderBottom: '1px solid black'
     }
 }));
 
 export default observer(() => {
-    const { classes, theme } = useStyles();
-    const { god, lang } = useStore();
+    const { classes } = useStyles();
+    const { god, auth, nft } = useStore();
 
-    const [nftOwner, setNFTOwner] = useState(false);
-    const [minerName, setMinerName] = useState(' ');
-    const [nftID, setNFTID] = useState(-1);
-    const [is_working, setWorkStatus] = useState(false);
+    const [hasNFT, setHasNFT] = useState(false);
+    const [NFTLists, setNFTLists] = useState([]);
+    const [NFTStatus, setNFTStatus] = useState([]);
 
-    useEffect(() => {
-        if (god.currentNetwork.account !== undefined) {
-            setNFTID(getNFTIDFromAddress(god.currentNetwork.account));
-            isActive().then((data) => setWorkStatus(data));
-        }
-    }, [god.currentNetwork.account]);
-
-    useEffect(() => {
-        if (god.currentNetwork.account === undefined)
-            return;
-        hasNFT()
+    const UpdateNFTStatus = () => {
+        nft.getNFTLists()
             .then((data) => {
-                setNFTOwner(data);
-                if (data === true) {
-                    const url = `${BACKEND_URL}/api/device_status/miner?address=${god.currentNetwork.account}`;
-                    $.get(url)
-                        .then((data) => {
-                            let info: any = data.data;
-                            if (info.status === 'ERR') {
-                                Swal.fire(
-                                    'Error',
-                                    `<p>${info.message}</p>`,
-                                    'error'
-                                )
-                            } else {
-                                setMinerName(info.miner)
-                            }
-                        })
-                        .catch((err) => {
-                            Swal.fire(
-                                'Error',
-                                '<p>Connection Error</p>',
-                                'error'
-                            )
-                        });
-                }
+                setNFTLists(data);
+                let curNFTStatus = [];
+                data.forEach(item => {
+                    curNFTStatus.push({
+                        NFT: item,
+                        Miner: 'Loading',
+                        Connection: 'Loading'
+                    });
+                });
+
+                setNFTStatus((e) => curNFTStatus);
+
+                data.forEach(item => {
+                    auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
+                        nft_id: item
+                    }).then((data) => {
+                        console.log('data', data.data.data);
+                        setNFTStatus([{
+                            NFT: data.data.data.nft_id,
+                            Miner: data.data.data.miner ? data.data.data.miner : 'Not set',
+                            Connection: data.data.data.session ? 'Secure' : 'Not Secure'
+                        }]);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                });
             })
             .catch((err) => {
-                setNFTOwner(false)
-            });
+                setNFTLists([]);
+            })
+    };
+
+    const Refresh = () => {
+        UpdateNFTStatus();
+    };
+
+    useEffect(() => {
+        UpdateNFTStatus();
     }, [god.currentNetwork.account]);
 
-    const signMessage = async (message) => {
-        const globalAccount = (god.currentNetwork as NetworkState).account;
-        try {
-            const from = globalAccount;
-            const sign = await ethereum.request({
-                method: 'personal_sign',
-                params: [message, from, 'Random text'],
-            });
-            return sign;
-        } catch (err) {
-            console.error(err);
-            return null;
-        }
-    }
-
-    const hasNFT = async () => {
+    const checkNFT = async () => {
         const NFTContractAddress = ContractAddress.NFT;
         try {
             let data = await god.currentNetwork.execContract({
@@ -137,42 +123,18 @@ export default observer(() => {
         }
     }
 
-    const isActive = async () => {
-        try {
-            let ret = await $.get(`${BACKEND_URL}/api/device_status/isActive?address=${god.currentNetwork.account}`);
-            return ret.data.active;
-        } catch (err) {
-            return false;
-        }
-    }
-
-    const getNounce = async () => {
-        try {
-            let ret = await $.post(`${BACKEND_URL}/api/device_auth/getNounce`, {
-                address: god.currentNetwork.account
+    useEffect(() => {
+        checkNFT()
+            .then((data) => {
+                setHasNFT(true);
+            })
+            .catch((err) => {
+                setHasNFT(false);
             });
-            return ret.data.nounce;
-        } catch (err) {
-            return null;
-        }
-    }
+    }, [god.currentNetwork.account]);
 
-    const getSessionID = async (password) => {
-        try {
-            let ret = await $.post(`${BACKEND_URL}/api/device_auth/login`, {
-                address: god.currentNetwork.account,
-                password: password,
-                remove_flag : false
-            });
-            return ret.data.session;
-        } catch (err) {
-            return null;
-        }
-    }
-
-    const onSendSignature = async () => {
-        const nft_flg = await hasNFT();
-        if (nft_flg === false) {
+    const onSecureMinerConnection = () => {
+        if (hasNFT === false) {
             Swal.fire(
                 'Error',
                 `<p>You do not have an NFT to secure your Mining Connection.</p>
@@ -180,92 +142,156 @@ export default observer(() => {
                  <p><a href="/nft/">Buy NFT</a></p>`,
                 'warning'
             )
-            return false;
+            return;
         }
 
-        const processLogin = async () => {
-            const nounce = await getNounce();
-            if (nounce == null) {
-                Swal.fire(
-                    'Error',
-                    `<p>Connection Error!</p>`,
-                    'error'
-                );
-                return false;
-            }
+        const performAction = () => {
+            auth.$().post(`${BACKEND_URL}/api/nft_auth/create`, {
+                address: god.currentNetwork.account,
+                nft_id: getNFTIDFromAddress(god.currentNetwork.account),
+                miner: 'unknown' // we should upgrade this one
+            }).then((data) => {
+                console.log('onSecureMinerConnection', data);
+                Swal.fire({
+                    title: 'Success',
+                    html: `<p>Secure Miner Connection Success</p>`,
+                    icon: 'success',
+                });
+                Refresh();
 
-            const url = `${publicConfig.DEVICE_URL}/set_signature`;
-            const signature = await signMessage(nounce);
-
-            if (signature !== null) {
-                verifyMessage(signature, nounce);
-                let sessionID = await getSessionID(signature);
-                if (sessionID == null) {
-                    Swal.fire(
-                        'Error',
-                        `<p>Connection Error!</p>`,
-                        'error'
-                    );
-                    return false;
-                }
+                const url = `${publicConfig.DEVICE_URL}/set_signature`;
                 
-                const wallet = god.currentNetwork.account;
-                const nftID = wallet;
+                const wallet = god.currentNetwork.account;            
+                const nftID =  getNFTIDFromAddress(wallet);
 
-                $.post(url, { signature: sessionID, nftID : getNFTIDFromAddress(nftID), wallet }, {
+                $.post(url, { signature : data.data.session, nftID, wallet }, {
 
                 });
-            } else {
-                Swal.fire(
-                    'Error!',
-                    'Errors occured while creating signature',
-                    'error'
-                )
-            }
+            }).catch((err) => {
+                Swal.fire({
+                    title: 'Error',
+                    html: `<p>Errors occured while securing miner connection</p>`,
+                    icon: 'error',
+                });
+            });
         };
 
-        const active = await isActive();
-
-        // we don't need to show error messages.
-        // processLogin();
-
-        if (active == true) {
-            Swal.fire({
-                title : 'Warning',
-                html : `<p>This NFT is already assigned to a different miner, continuing will replace the existing connection.</p>`,
-                icon : 'warning',
-                showCancelButton: true,
-            }).then((result) => {
-                if (!result.isConfirmed) 
-                    return;
-                processLogin();
-            });
-        } else {
-            processLogin();
-        }
+        auth.check_auth(
+            () => {
+                performAction();
+            },
+            () => {
+                Swal.fire({
+                    title: 'Error',
+                    html: `<p>You need to login to secure miner connection.</p>`,
+                    icon: 'error',
+                    showCancelButton: true
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        // isPendingUptime(false);
+                        return;
+                    }
+                    auth.login(
+                        () => {
+                            performAction();
+                        },
+                        () => {
+                            Swal.fire({
+                                title: 'Error',
+                                html: `<p>Errors Occured while login.</p>`,
+                                icon: 'error',
+                            });
+                            // isPendingUptime(false);
+                        });
+                }).catch(() => {
+                    Swal.fire({
+                        title: 'Info',
+                        html: `<p>Securing Miner Connection has been failed.</p>`,
+                        icon: 'info',
+                    });
+                    // isPendingUptime(false);
+                });
+            }
+        );
     };
 
-    // for testing purpose
-    const verifyMessage = (signature, message) => {
-        const globalAccount = (god.currentNetwork as NetworkState).account;
-        try {
-            const from = globalAccount;
-            const msg = message;
-            const recoveredAddr = recoverPersonalSignature({ data: msg, sig: signature });
-            if (recoveredAddr.toLowerCase() === from.toLowerCase()) {
-                console.log(`Successfully ecRecovered signer as ${recoveredAddr}`);
-            } else {
-                console.log(
-                    `Failed to verify signer when comparing ${recoveredAddr} to ${from}`,
-                );
+    const onRemoveConnection = (nft_id) => {
+        const performAction = () => {
+            auth.$().post(`${BACKEND_URL}/api/nft_auth/remove`, {
+                address: god.currentNetwork.account,
+                nft_id
+            }).then((data) => {
+                if (data.data.status === 'success') {
+                    Swal.fire({
+                        title: 'Success',
+                        html: `<p>Connection Removed!</p>`,
+                        icon: 'success',
+                    });
+                    Refresh();
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        html: `<p>Errors Occured while removing connection.</p>`,
+                        icon: 'error',
+                    });
+                }
+            }).catch((err) => {
+                Swal.fire({
+                    title: 'Error',
+                    html: `<p>Errors Occured while removing connection.</p>`,
+                    icon: 'error',
+                });
+            });
+        };
+
+        auth.check_auth(
+            () => {
+                performAction();
+            },
+            () => {
+                Swal.fire({
+                    title: 'Error',
+                    html: `<p>You need to login to secure miner connection.</p>`,
+                    icon: 'error',
+                    showCancelButton: true
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        // isPendingUptime(false);
+                        return;
+                    }
+                    auth.login(
+                        () => {
+                            performAction();
+                        },
+                        () => {
+                            Swal.fire({
+                                title: 'Error',
+                                html: `<p>Errors Occured while login.</p>`,
+                                icon: 'error',
+                            });
+                            // isPendingUptime(false);
+                        });
+                }).catch(() => {
+                    Swal.fire({
+                        title: 'Info',
+                        html: `<p>Securing Miner Connection has been failed.</p>`,
+                        icon: 'info',
+                    });
+                    // isPendingUptime(false);
+                });
             }
-        } catch (err) {
-            console.error(err);
-        }
-    }
+        );
+    };
 
     return (
         <Layout>
+            <Button
+                style={{ marginBottom: '10px' }}
+                onClick={onSecureMinerConnection}
+                rightIcon={<Send size={18} />}
+                sx={{ paddingRight: 12 }}>
+                Secure Miner Connection
+            </Button>
             <Box label="My Miners">
                 <table className={classes.NFTTable}>
                     <thead className={classes.thead}>
@@ -276,26 +302,32 @@ export default observer(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className={classes.center} key="1">
-                                {minerName}
-                            </td>
-                            <td className={`${classes.green} ${classes.center}`} key="2">
-                                <div>
-                                    {nftID}
-                                    <Button
-                                        onClick={onSendSignature}
-                                        className={classes.button}
-                                        variant="white"
-                                        size="xs">
-                                        {is_working ? 'Remove Connection' : 'Secure Connection'}
-                                    </Button>
-                                </div>
-                            </td>
-                            <td className={`${classes.green} ${classes.center}`} key="3">
-                                Valid
-                            </td>
-                        </tr>
+                        {
+                            NFTStatus.map((item, index) =>
+                                <tr>
+                                    <td className={classes.center} key="1">
+                                        {item.Miner}
+                                    </td>
+                                    <td className={`${classes.green} ${classes.center}`} key="2">
+                                        <div>
+                                            {item.NFT}
+                                            {item.Connection === 'Secure' &&
+                                                <Button
+                                                    onClick={() => onRemoveConnection(item.NFT)}
+                                                    className={classes.button}
+                                                    variant="white"
+                                                    size="xs">
+                                                    Remove Connection
+                                                </Button>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td className={`${classes.green} ${classes.center}`} key="3">
+                                        {item.Connection}
+                                    </td>
+                                </tr>
+                            )
+                        }
                     </tbody>
                 </table>
             </Box>

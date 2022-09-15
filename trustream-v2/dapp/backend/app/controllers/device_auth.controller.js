@@ -1,7 +1,7 @@
 const { recoverPersonalSignature } = require('eth-sig-util')
 const { isActive } = require('./device_data.controller')
 const { CENTRAL_WALLET } = require('../config/db.config');
-const { getRandomNounce, getRandomSessionID } = require('../utils'); 
+const { getRandomNounce, getRandomSessionID, nounce_length } = require('../utils'); 
 
 const db = require('../models')
 const Device_Auth = db.device_auth
@@ -171,8 +171,7 @@ exports.login = (req, res) => {
   }
 
   if (req.body.remove_flag === undefined) {
-    res.send('Bad request')
-    return
+    req.body.remove_flag = false;
   }
 
   const { address, password, remove_flag } = req.body
@@ -258,6 +257,7 @@ exports.login = (req, res) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       res.send({
         status: 'ERR',
         message: 'INTERNAL SERVER ERROR',
