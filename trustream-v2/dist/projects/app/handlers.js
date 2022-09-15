@@ -18,9 +18,9 @@ function buf2hex(buffer) {
         .map(x => x.toString(16).padStart(2, '0'))
         .join('');
 }
-async function verifyMessage(from, sessionID) {
+async function verifyMessage(nft_id, sessionID) {
     try {
-        let result = await models_1.deviceAuthRepository.findOne({ where: { address: from, session_id: sessionID } });
+        let result = await models_1.nftAuthRepository.findOne({ where: { nft_id, session_id: sessionID } });
         if (result === null)
             return false;
         return true;
@@ -94,7 +94,12 @@ async function onMqttData(context, topic, payload) {
     console.log('message', message);
     const signature = decodedPayload.signature;
     let isValid = false;
-    isValid = await verifyMessage(address, signature);
+    let nftID = decodedPayload.message.nftID;
+    if (nftID === undefined) {
+        console.log(`WARNING: Dropping data message: message does not include NFT ID.`);
+        return;
+    }
+    isValid = await verifyMessage(nftID, signature);
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: Invalid session id ${address}`);
         return;
@@ -114,7 +119,6 @@ async function onMqttData(context, topic, payload) {
     if (miner == undefined)
         miner = 'Not set';
     let nounce = ~~(Math.random() * 100000);
-    let nftID = decodedPayload.message.nftID;
     console.log(`NFT ID: ${nftID}`);
     let result = true;
     if (nftID !== undefined) {

@@ -124,7 +124,7 @@ exports.getStatus = (req, res) => {
     return;
   }
 
-  NFT_Auth.findOne( { nft_id })
+  NFT_Auth.findOne( { where : { nft_id } })
     .then((data) => {
       if (data === null) {
         res.send({
@@ -141,7 +141,7 @@ exports.getStatus = (req, res) => {
           data : {
             nft_id,
             miner : data.miner,
-            session : data.session_id
+            session : getRandomSessionID()
           }
         });
       }

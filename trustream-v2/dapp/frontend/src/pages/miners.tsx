@@ -86,6 +86,7 @@ export default observer(() => {
                         setNFTStatus([{
                             NFT: data.data.data.nft_id,
                             Miner: data.data.data.miner ? data.data.data.miner : 'Not set',
+                            // This session is random fake session. Just check if it is null or not.
                             Connection: data.data.data.session ? 'Secure' : 'Not Secure'
                         }]);
                     }).catch((err) => {

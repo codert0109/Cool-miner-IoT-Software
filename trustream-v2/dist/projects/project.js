@@ -178,7 +178,6 @@ class Project {
         }
     }
     async run() {
-        console.log('run called');
         if (this.useMqtt)
             this.mqtt = await this.startMqtt();
         this.portOpen();

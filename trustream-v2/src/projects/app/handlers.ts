@@ -3,7 +3,8 @@ import {
   deviceDataRepository, 
   deviceRepository, 
   deviceAuthRepository,
-  deviceUptimeRepository 
+  deviceUptimeRepository, 
+  nftAuthRepository
 } from './models'
 import { ProjectContext } from '../interface'
 // import { EthHelper } from "@helpers/index"
@@ -53,9 +54,9 @@ function verifyMessage(from : string, signature : string) {
 }
 */
 
-async function verifyMessage(from : string, sessionID : string) {
+async function verifyMessage(nft_id : number, sessionID : string) {
   try {
-    let result = await deviceAuthRepository.findOne({ where : {address : from, session_id : sessionID}})
+    let result = await nftAuthRepository.findOne({ where : {nft_id, session_id : sessionID}})
     if (result === null)
       return false;
     return true;
@@ -148,7 +149,14 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   let isValid: boolean = false
 
-  isValid = await verifyMessage(address, signature);
+  let nftID = decodedPayload.message.nftID;
+
+  if (nftID === undefined) {
+    console.log(`WARNING: Dropping data message: message does not include NFT ID.`)
+    return;
+  }
+
+  isValid = await verifyMessage(nftID, signature);
   
   if (isValid === false) {
     console.log(`WARNING: Dropping data message: Invalid session id ${address}`)
@@ -176,8 +184,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     miner = 'Not set';
 
   let nounce = ~~(Math.random() * 100000);
-
-  let nftID = decodedPayload.message.nftID;
 
   console.log(`NFT ID: ${nftID}`);
   let result = true;
