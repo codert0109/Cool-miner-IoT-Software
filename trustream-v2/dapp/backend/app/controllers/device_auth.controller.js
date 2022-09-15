@@ -1,31 +1,12 @@
 const { recoverPersonalSignature } = require('eth-sig-util')
 const { isActive } = require('./device_data.controller')
 const { CENTRAL_WALLET } = require('../config/db.config');
+const { getRandomNounce, getRandomSessionID } = require('../utils'); 
 
 const db = require('../models')
 const Device_Auth = db.device_auth
 
 // Core API Functions for Device_Auth
-
-const nounce_length = 40
-
-function randomString(length) {
-  let chars = 'abcdefghijklmnopqrstuvwxyz'
-  let ret = ''
-
-  for (let i = 0; i < length; i++)
-    ret += chars[~~(Math.random() * chars.length)]
-
-  return ret
-}
-
-function getRandomNounce() {
-  return randomString(nounce_length)
-}
-
-function getRandomSessionID() {
-  return randomString(nounce_length)
-}
 
 function verifySignature(address, nounce, signature) {
   try {
