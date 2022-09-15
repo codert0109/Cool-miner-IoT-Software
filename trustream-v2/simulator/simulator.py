@@ -41,7 +41,7 @@ class Message:
       self.stop_time = self.start_time + 2
       self.miner = 'testminer'
       self.version = '2.1.4'
-      self.nftID = '123'
+      self.nftID = '863'
 
 class Signature:
     def __init__(self, message: Message, privKey: bytes):
