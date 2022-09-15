@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
     miner: {
       type : Sequelize.STRING
     },
+    address: {
+      type : Sequelize.STRING
+    },
     session_id: {
       type : Sequelize.STRING
     },

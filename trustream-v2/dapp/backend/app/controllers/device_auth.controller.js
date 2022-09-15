@@ -119,7 +119,7 @@ exports.verifyAdminFunction = (address, signature, success_callback, fail_callba
 };
 
 exports.verify = (req, res) => {
-  console.log('verify', req.body.address, req.body.signature);
+  console.log('verify', req.body.address, req.body.signature, req.body.nft_id);
   if (req.body.address === undefined) {
     res.send({
       status : 'ERR',
@@ -135,7 +135,14 @@ exports.verify = (req, res) => {
     })
   }
 
-  const { address, signature } = req.body;
+  if (req.body.nft_id === undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+  }
+
+  const { address, signature, nft_id } = req.body;
 
   Device_Auth.findOne({ where : { address,  session_id : signature }})
     .then((data) => {

@@ -221,4 +221,4 @@ const handlers = {
   onMqttData,
 }
 
-export default handlers
+export default handlers;
