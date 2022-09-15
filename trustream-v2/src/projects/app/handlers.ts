@@ -174,18 +174,12 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     return null
   }
 
-  console.log("Device has NFT. Processing data")
-  console.log(`Device address: ${address}`)
-  console.log(`Stop time: ${decodedPayload.message.stop_time}`)
-
   let { miner } = decodedPayload.message;
 
-  if (miner == undefined)
-    miner = 'Not set';
+  if (miner == undefined) miner = 'Not set';
 
   let nounce = ~~(Math.random() * 100000);
 
-  console.log(`NFT ID: ${nftID}`);
   let result = true;
 
   if (nftID !== undefined) {
@@ -200,7 +194,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     await deviceDataRepository.upsert({
       address             : address,
       start_time          : decodedPayload.message.start_time,
-      end_time            : decodedPayload.message.stop_time,
+      end_time            : decodedPayload.message.end_time,
       pedestrians         : decodedPayload.message.pedestrians,
       cars                : decodedPayload.message.cars,
       buses               : decodedPayload.message.bus,
