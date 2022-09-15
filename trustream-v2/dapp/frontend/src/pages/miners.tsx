@@ -130,11 +130,6 @@ export default observer(() => {
                             }]);
                         } else {
                             setNFTStatus([]);
-                            Swal.fire({
-                                title: 'Warning',
-                                html: `<p>No miners currently assigned.</p>`,
-                                icon: 'warning',
-                            });
                         }
                     }).catch((err) => {
                         console.log(err);
@@ -354,7 +349,13 @@ export default observer(() => {
                     </thead>
                     <tbody>
                         {
-                            NFTStatus.map((item, index) =>
+                            NFTStatus.length == 0 ? 
+                                <tr key={0}>
+                                    <td colSpan={4} rowSpan={1} style={{ textAlign : 'center' }}>
+                                        No miners currently assigned.
+                                    </td>
+                                </tr>
+                            : NFTStatus.map((item, index) =>
                                 <tr key={index}>
                                     <td className={classes.center} key="1">
                                         {item.Miner}
