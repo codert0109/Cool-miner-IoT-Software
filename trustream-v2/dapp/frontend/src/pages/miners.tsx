@@ -40,8 +40,8 @@ const useStyles = createStyles((theme) => ({
     },
 
     button: {
-        color: 'black',
-        borderColor: 'black',
+        // color: 'black',
+        // borderColor: 'black',
         marginLeft: 10,
         marginRight: 10
     },
@@ -52,6 +52,10 @@ const useStyles = createStyles((theme) => ({
 
     th: {
         borderBottom: '1px solid black'
+    },
+
+    btn_th : {
+        width : 110
     }
 }));
 
@@ -72,22 +76,22 @@ export default observer(() => {
             .then((data) => {
                 let info = data.data;
                 if (info.message == 'an error has occured') {
-                    Swal.fire({
-                        title: 'Warning',
-                        html: `<p>Mining software returns error message.</p>`,
-                        icon: 'warning',
-                    });
+                    // Swal.fire({
+                    //     title: 'Warning',
+                    //     html: `<p>Mining software returns error message.</p>`,
+                    //     icon: 'warning',
+                    // });
                 } else {
                     setMinerName(info.miner);
                     setMinerSession(info.signature);
                 }
             })
             .catch((err) => {
-                Swal.fire({
-                    title: 'Info',
-                    html: `<p>Cannot detect local mining software information.</p>`,
-                    icon: 'info',
-                });
+                // Swal.fire({
+                //     title: 'Info',
+                //     html: `<p>Cannot detect local mining software information.</p>`,
+                //     icon: 'info',
+                // });
             });
 
         // setTimeout(() => {
@@ -324,6 +328,7 @@ export default observer(() => {
                 style={{ marginBottom: '10px' }}
                 onClick={onSecureMinerConnection}
                 rightIcon={<Send size={18} />}
+                disabled={minerName === ''}
                 sx={{ paddingRight: 12 }}>
                 {minerName !== '' ? `Secure ${minerName} Connection` : `Secure Connection`}
             </Button>
@@ -334,7 +339,7 @@ export default observer(() => {
                             <th className={classes.th} key="1">Miner Name</th>
                             <th className={classes.th} key="2">NFT Status</th>
                             <th className={classes.th} key="3">NFT ID</th>
-                            <th className={classes.th} key="4"></th>
+                            <th className={`${classes.th} ${classes.btn_th}`} key="4">&nbsp;&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -358,7 +363,7 @@ export default observer(() => {
                                                 <Button
                                                     onClick={() => onRemoveConnection(item.NFT)}
                                                     className={classes.button}
-                                                    variant="white"
+                                                    // variant="white"
                                                     size="xs">
                                                     Remove Miner
                                                 </Button>
