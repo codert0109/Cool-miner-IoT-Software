@@ -62,6 +62,39 @@ export default observer(() => {
     const [hasNFT, setHasNFT] = useState(false);
     const [NFTLists, setNFTLists] = useState([]);
     const [NFTStatus, setNFTStatus] = useState([]);
+    const [minerName, setMinerName] = useState('');
+    const [minerSession, setMinerSession] = useState('');
+
+    const UpdateLocalMinerInfo = () => {
+        const url = `${publicConfig.DEVICE_URL}/get_status`;
+
+        $.get(url)
+            .then((data) => {
+                let info = data.data;
+                if (info.message == 'an error has occured') {
+                    Swal.fire({
+                        title: 'Warning',
+                        html: `<p>Mining software returns error message.</p>`,
+                        icon: 'warning',
+                    });
+                } else {
+                    setMinerName(info.miner);
+                    setMinerSession(info.signature);
+                }
+            })
+            .catch((err) => {
+                Swal.fire({
+                    title: 'Info',
+                    html: `<p>Cannot detect local mining software information.</p>`,
+                    icon: 'info',
+                });
+            });
+
+        // setTimeout(() => {
+        //     setMinerName('testminer');
+        //     setMinerSession('0x173');
+        // }, 2000);
+    };
 
     const UpdateNFTStatus = () => {
         nft.getNFTLists()
@@ -87,7 +120,7 @@ export default observer(() => {
                             NFT: data.data.data.nft_id,
                             Miner: data.data.data.miner ? data.data.data.miner : 'Not set',
                             // This session is random fake session. Just check if it is null or not.
-                            Connection: data.data.data.session ? 'Secure' : 'Not Secure'
+                            Connection: data.data.data.session ? 'Assigned' : 'Not assigned'
                         }]);
                     }).catch((err) => {
                         console.log(err);
@@ -101,7 +134,12 @@ export default observer(() => {
 
     const Refresh = () => {
         UpdateNFTStatus();
+        UpdateLocalMinerInfo();
     };
+
+    useEffect(() => {
+        UpdateLocalMinerInfo();
+    }, [god.currentNetwork.account]);
 
     useEffect(() => {
         UpdateNFTStatus();
@@ -150,9 +188,8 @@ export default observer(() => {
             auth.$().post(`${BACKEND_URL}/api/nft_auth/create`, {
                 address: god.currentNetwork.account,
                 nft_id: getNFTIDFromAddress(god.currentNetwork.account),
-                miner: 'unknown' // we should upgrade this one
+                miner: minerName // we should upgrade this one
             }).then((data) => {
-                console.log('onSecureMinerConnection', data);
                 Swal.fire({
                     title: 'Success',
                     html: `<p>Secure Miner Connection Success</p>`,
@@ -161,11 +198,11 @@ export default observer(() => {
                 Refresh();
 
                 const url = `${publicConfig.DEVICE_URL}/set_signature`;
-                
-                const wallet = god.currentNetwork.account;            
-                const nftID =  getNFTIDFromAddress(wallet);
 
-                $.post(url, { signature : data.data.session, nftID, wallet }, {
+                const wallet = god.currentNetwork.account;
+                const nftID = getNFTIDFromAddress(wallet);
+
+                $.post(url, { signature: data.data.session, nftID, wallet }, {
 
                 });
             }).catch((err) => {
@@ -189,7 +226,6 @@ export default observer(() => {
                     showCancelButton: true
                 }).then((result) => {
                     if (!result.isConfirmed) {
-                        // isPendingUptime(false);
                         return;
                     }
                     auth.login(
@@ -202,7 +238,6 @@ export default observer(() => {
                                 html: `<p>Errors Occured while login.</p>`,
                                 icon: 'error',
                             });
-                            // isPendingUptime(false);
                         });
                 }).catch(() => {
                     Swal.fire({
@@ -210,7 +245,6 @@ export default observer(() => {
                         html: `<p>Securing Miner Connection has been failed.</p>`,
                         icon: 'info',
                     });
-                    // isPendingUptime(false);
                 });
             }
         );
@@ -291,40 +325,45 @@ export default observer(() => {
                 onClick={onSecureMinerConnection}
                 rightIcon={<Send size={18} />}
                 sx={{ paddingRight: 12 }}>
-                Secure Miner Connection
+                {minerName !== '' ? `Secure ${minerName} Connection` : `Secure Connection`}
             </Button>
             <Box label="My Miners">
                 <table className={classes.NFTTable}>
                     <thead className={classes.thead}>
                         <tr>
                             <th className={classes.th} key="1">Miner Name</th>
-                            <th className={classes.th} key="2">NFT</th>
-                            <th className={classes.th} key="3">Connection Status</th>
+                            <th className={classes.th} key="2">NFT Status</th>
+                            <th className={classes.th} key="3">NFT ID</th>
+                            <th className={classes.th} key="4"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             NFTStatus.map((item, index) =>
-                                <tr>
+                                <tr key={index}>
                                     <td className={classes.center} key="1">
                                         {item.Miner}
                                     </td>
                                     <td className={`${classes.green} ${classes.center}`} key="2">
+                                        {item.Connection}
+                                    </td>
+                                    <td className={`${classes.green} ${classes.center}`} key="3">
                                         <div>
                                             {item.NFT}
-                                            {item.Connection === 'Secure' &&
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {item.Connection === 'Assigned' &&
                                                 <Button
                                                     onClick={() => onRemoveConnection(item.NFT)}
                                                     className={classes.button}
                                                     variant="white"
                                                     size="xs">
-                                                    Remove Connection
+                                                    Remove Miner
                                                 </Button>
                                             }
                                         </div>
-                                    </td>
-                                    <td className={`${classes.green} ${classes.center}`} key="3">
-                                        {item.Connection}
                                     </td>
                                 </tr>
                             )
