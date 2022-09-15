@@ -5,6 +5,7 @@ const { getRandomNounce, getRandomSessionID, nounce_length } = require('../utils
 
 const db = require('../models')
 const Device_Auth = db.device_auth
+const NFT_Auth = db.nft_auth;
 
 // Core API Functions for Device_Auth
 
@@ -118,6 +119,8 @@ exports.verifyAdminFunction = (address, signature, success_callback, fail_callba
     });
 };
 
+// This should be nft_auth.controller, but keep it now.
+// We will move in near future.
 exports.verify = (req, res) => {
   console.log('verify', req.body.address, req.body.signature, req.body.nft_id);
   if (req.body.address === undefined) {
@@ -144,7 +147,7 @@ exports.verify = (req, res) => {
 
   const { address, signature, nft_id } = req.body;
 
-  Device_Auth.findOne({ where : { address,  session_id : signature }})
+  NFT_Auth.findOne({ where : { address,  session_id : signature, nft_id }})
     .then((data) => {
       if (data === null) {
         res.send({
