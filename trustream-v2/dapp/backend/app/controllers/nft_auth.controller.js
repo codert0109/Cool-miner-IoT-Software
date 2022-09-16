@@ -155,8 +155,40 @@ exports.getStatus = (req, res) => {
     });
 }
 
+exports.verifySignature = (req, res) => {
+  if (req.body.signature === undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+    return;
+  }
+
+  const { signature } = req.body;
+
+  NFT_Auth.findOne({ where : { session_id : signature }})
+    .then((data) => {
+      if (data === null) {
+        res.send({
+          status : 'ERR',
+          message : 'Signature is invalid.'
+        });
+      } else {
+        res.send({
+          status : 'OK',
+          message : 'Signature is valid.'
+        })
+      }
+    })
+    .catch((err) => {
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      });
+    });
+}
+
 exports.verify = (req, res) => {
-  console.log('verify', req.body.address, req.body.signature, req.body.nft_id);
   if (req.body.address === undefined) {
     res.send({
       status : 'ERR',

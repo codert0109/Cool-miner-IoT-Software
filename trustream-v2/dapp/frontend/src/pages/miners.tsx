@@ -76,28 +76,29 @@ export default observer(() => {
             .then((data) => {
                 let info = data.data;
                 if (info.message == 'an error has occured') {
-                    // Swal.fire({
-                    //     title: 'Warning',
-                    //     html: `<p>Mining software returns error message.</p>`,
-                    //     icon: 'warning',
-                    // });
+                    setMinerName('');
+                    setMinerSession('');
                 } else {
-                    setMinerName(info.miner);
-                    setMinerSession(info.signature);
+                    auth.$().post(`${BACKEND_URL}/api/nft_auth/verifySignature`, {
+                        signature : info.signature
+                    }).then((data) => {
+                        if (data.data.status === 'OK') {
+                            setMinerName('');
+                            setMinerSession('');
+                        } else {
+                            setMinerName(info.miner);
+                            setMinerSession(info.signature);
+                        }
+                    }).catch((err) => {
+                        setMinerName(info.miner);
+                        setMinerSession(info.signature);
+                    });
                 }
             })
             .catch((err) => {
-                // Swal.fire({
-                //     title: 'Info',
-                //     html: `<p>Cannot detect local mining software information.</p>`,
-                //     icon: 'info',
-                // });
+                setMinerName('');
+                setMinerSession('');
             });
-
-        // setTimeout(() => {
-        //     setMinerName('testminer');
-        //     setMinerSession('0x173');
-        // }, 2000);
     };
 
     const UpdateNFTStatus = () => {
