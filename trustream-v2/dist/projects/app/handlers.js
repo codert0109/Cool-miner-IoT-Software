@@ -36,28 +36,22 @@ async function updateUpTime(address, nftID) {
     console.log('updateUpTime called');
     try {
         let result = await models_1.deviceDataRepository.findOne({ where: { nft_id: nftID }, order: [['upload_time', 'DESC']] });
-        if (result === null) {
-            await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
-            return true;
-        }
-        else {
+        if (result !== null) {
             let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
             console.log('elapsedTime', elapsedTime);
-            if (elapsedTime > UPLOAD_THRESMS) {
-                let result = await models_1.deviceUptimeRepository.findOne({ where: { address } });
-                if (result === null) {
-                    await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
-                }
-                else {
-                    await models_1.deviceUptimeRepository.update({ address, uptime: result.uptime + UPLOAD_INTERVAL }, { where: { address } });
-                }
-                return true;
-            }
-            else {
+            if (elapsedTime < UPLOAD_THRESMS) {
                 console.log('blocked: data is uploading too fast.');
                 return false;
             }
         }
+        let upload_record = await models_1.deviceUptimeRepository.findOne({ where: { address } });
+        if (upload_record === null) {
+            await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
+        }
+        else {
+            await models_1.deviceUptimeRepository.update({ address, uptime: upload_record.uptime + UPLOAD_INTERVAL }, { where: { address } });
+        }
+        return true;
     }
     catch (err) {
         console.log(`errors occured in updateUpTime ${err}`);
@@ -112,14 +106,10 @@ async function onMqttData(context, topic, payload) {
         console.log(`WARNING: Dropping data message: Device ${address} has no NFT.`);
         return null;
     }
-    console.log("Device has NFT. Processing data");
-    console.log(`Device address: ${address}`);
-    console.log(`Stop time: ${decodedPayload.message.stop_time}`);
     let { miner } = decodedPayload.message;
     if (miner == undefined)
         miner = 'Not set';
     let nounce = ~~(Math.random() * 100000);
-    console.log(`NFT ID: ${nftID}`);
     let result = true;
     if (nftID !== undefined) {
         result = await updateUpTime(address, nftID);
@@ -133,7 +123,7 @@ async function onMqttData(context, topic, payload) {
         await models_1.deviceDataRepository.upsert({
             address: address,
             start_time: decodedPayload.message.start_time,
-            end_time: decodedPayload.message.stop_time,
+            end_time: decodedPayload.message.end_time,
             pedestrians: decodedPayload.message.pedestrians,
             cars: decodedPayload.message.cars,
             buses: decodedPayload.message.bus,

@@ -36,6 +36,13 @@ __decorate([
         type: sequelize_typescript_1.DataType.STRING(64)
     }),
     __metadata("design:type", String)
+], NftAuthModel.prototype, "address", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false,
+        type: sequelize_typescript_1.DataType.STRING(64)
+    }),
+    __metadata("design:type", String)
 ], NftAuthModel.prototype, "miner", void 0);
 __decorate([
     sequelize_typescript_1.Column({

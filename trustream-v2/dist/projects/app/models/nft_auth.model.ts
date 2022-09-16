@@ -20,6 +20,12 @@ export class NftAuthModel extends BaseModel<NftAuthModel> {
     allowNull: false,
     type: DataType.STRING(64)
   })
+  public address!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING(64)
+  })
   public miner!: string;
 
   @Column({

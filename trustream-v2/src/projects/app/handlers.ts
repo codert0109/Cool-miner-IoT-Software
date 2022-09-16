@@ -75,31 +75,27 @@ async function updateUpTime(address : string, nftID : string) {
   try {
     let result = await deviceDataRepository.findOne({ where : { nft_id : nftID }, order : [['upload_time', 'DESC']] })
 
-    if (result === null) {
-      // find new miner! add data
-      await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
-      return true;
-    } else {
+    if (result !== null) {
       // update data
       let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
 
       console.log('elapsedTime', elapsedTime);
 
-      if (elapsedTime > UPLOAD_THRESMS) {
-        let result = await deviceUptimeRepository.findOne({ where : { address }});
-        if (result === null) {
-          await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
-        } else {
-          await deviceUptimeRepository.update(
-            { address, uptime : result.uptime + UPLOAD_INTERVAL},
-            { where : { address }});
-        }
-        return true;
-      } else {
+      if (elapsedTime < UPLOAD_THRESMS) {
         console.log('blocked: data is uploading too fast.');
         return false;
       }
     }
+        
+    let upload_record = await deviceUptimeRepository.findOne({ where : { address }});
+    if (upload_record === null) {
+      await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
+    } else {
+      await deviceUptimeRepository.update(
+        { address, uptime : upload_record.uptime + UPLOAD_INTERVAL},
+        { where : { address }});
+    }
+    return true;
   } catch (err) {
     console.log(`errors occured in updateUpTime ${err}`);
     return false;

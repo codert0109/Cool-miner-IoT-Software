@@ -38,10 +38,11 @@ class Message:
       self.total = self.pedestrians + self.cars + self.bus + self.truck
       self.link = 'testing'
       self.start_time = int(time.time())
-      self.stop_time = self.start_time + 2
+      self.end_time = self.start_time + 2
       self.miner = 'testminer'
-      self.version = '2.1.4'
-      self.nftID = '863'
+      self.version = '2.1.5'
+      self.nftID = '363'
+
 
 class Signature:
     def __init__(self, message: Message, privKey: bytes):
@@ -54,7 +55,7 @@ class Signature:
 
         self.hex = base64.b64encode(signed_message.signature).decode("utf-8")
 
-        self.hex = "npnkosvigidjwwcfbijszofdoywymgnyhjgmbswc"
+        self.hex = "wytrnewccjuyfaabueessrwhranpsjznamrllxzh"
 
 class DataFrame:
     def __init__(self, message: Message, privKey : bytes):
