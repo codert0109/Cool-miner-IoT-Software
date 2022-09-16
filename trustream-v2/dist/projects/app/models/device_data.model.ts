@@ -3,14 +3,16 @@ import BaseModel from './base';
 import { DeviceModel } from './device.model';
 
 @Table({
-  tableName: 'device_data'
+  tableName: 'device_data',
+  timestamps: false
 })
+
 export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   @PrimaryKey
   @Column({
-    type: DataType.STRING(64)
+    type: DataType.INTEGER
   })
-  public id!: string;
+  public id!: number;
 
   // @ForeignKey(() => DeviceModel)
   @Column({
@@ -28,12 +30,17 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   @Column({
     allowNull: false
   })
-  public timestamp!: number;
+  public start_time!: number;
 
   @Column({
     allowNull: false
   })
-  public pedestrains!: number;
+  public end_time!: number;
+
+  @Column({
+    allowNull: false
+  })
+  public pedestrians!: number;
 
   @Column({
     allowNull: false
@@ -43,12 +50,12 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   @Column({
     allowNull: false
   })
-  public bus!: number;
+  public buses!: number;
 
   @Column({
     allowNull: false
   })
-  public truck!: number;
+  public trucks!: number;
 
   @Column({
     allowNull: false
@@ -59,4 +66,14 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
     allowNull: false
   })
   public link!: string;
+
+  @Column({
+    allowNull: false
+  })
+  public upload_time!: Date;
+
+  @Column({
+    allowNull: false
+  })
+  public nft_id!: number;
 }

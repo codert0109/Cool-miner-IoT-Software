@@ -1,31 +1,13 @@
 const { recoverPersonalSignature } = require('eth-sig-util')
 const { isActive } = require('./device_data.controller')
 const { CENTRAL_WALLET } = require('../config/db.config');
+const { getRandomNounce, getRandomSessionID, nounce_length } = require('../utils'); 
 
 const db = require('../models')
 const Device_Auth = db.device_auth
+const NFT_Auth = db.nft_auth;
 
 // Core API Functions for Device_Auth
-
-const nounce_length = 40
-
-function randomString(length) {
-  let chars = 'abcdefghijklmnopqrstuvwxyz'
-  let ret = ''
-
-  for (let i = 0; i < length; i++)
-    ret += chars[~~(Math.random() * chars.length)]
-
-  return ret
-}
-
-function getRandomNounce() {
-  return randomString(nounce_length)
-}
-
-function getRandomSessionID() {
-  return randomString(nounce_length)
-}
 
 function verifySignature(address, nounce, signature) {
   try {
@@ -189,7 +171,11 @@ exports.login = (req, res) => {
     return
   }
 
-  const { address, password } = req.body
+  if (req.body.remove_flag === undefined) {
+    req.body.remove_flag = false;
+  }
+
+  const { address, password, remove_flag } = req.body
 
   Device_Auth.findOne({ where: { address } })
     .then((data) => {
@@ -238,8 +224,30 @@ exports.login = (req, res) => {
                   })
                 })
             }
+
+            const removeSession = () => {
+              data.destroy()
+                .then(() => {
+                  res.send({
+                    status: 'OK',
+                    message: 'Session Removed',
+                    session: sessionID,
+                  })
+                })
+                .catch(() => {
+                  res.send({
+                    status: 'ERR',
+                    message: 'Internal Server Error',
+                    detail: 'Removing Session failed',
+                  })
+                });
+            }
             
-            processNewSession();
+            if (remove_flag === false) {
+              processNewSession();
+            } else {
+              removeSession();
+            }
           } else {
             res.send({
               status: 'ERR',
@@ -250,6 +258,7 @@ exports.login = (req, res) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       res.send({
         status: 'ERR',
         message: 'INTERNAL SERVER ERROR',

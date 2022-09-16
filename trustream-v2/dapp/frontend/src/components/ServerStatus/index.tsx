@@ -6,6 +6,8 @@ import $ from "axios";
 import Router, { useRouter } from 'next/router';
 import { Loader } from '@mantine/core';
 import { Refresh } from 'tabler-icons-react';
+import { publicConfig } from "../../config/public";
+const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
     centerAlign : {
@@ -62,7 +64,7 @@ export default function() {
 
     const updateStatus = () => {
         setLoading(true);
-        $.get('https://miner.elumicate.com/api/status/servers')
+        $.get(`${BACKEND_URL}/api/status/servers`)
             .then(function (data : any) {
                 setLoading(false);
                 let info : any = data.data;

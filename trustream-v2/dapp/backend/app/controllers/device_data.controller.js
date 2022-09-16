@@ -5,12 +5,12 @@ const MINER_CONFIG = require('../config/miner.config');
 
 // Core API Functions for Device_Data
 const checkActive = (address, callback) => {
-  Device_Data.findOne({ where : { address}, order: [['timestamp', 'DESC']]})
+  Device_Data.findOne({ where : { address}, order: [['start_time', 'DESC']]})
     .then((data) => {
       if (data === null)
         callback(false);
       else {
-        if (Date.now() - new Date(data.timestamp * 1000) > MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
+        if (Date.now() - new Date(data.start_time * 1000) > MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
           callback(false);
         } else {
           callback(true);
@@ -43,6 +43,37 @@ exports.isActive = (req, res) => {
       address
     })
   });
+}
+
+exports.getMinerName = (req, res) => {
+  let address = req.query.address;
+  if (address == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+  } else {
+    Device_Data.findOne({ where : { address}, order: [['start_time', 'DESC']]})
+    .then((data) => {
+      if (data === null) {
+        res.send({
+          status : 'OK',
+          miner : 'Not set'
+        })
+      } else {
+        res.send({
+          status : 'OK',
+          miner : data.miner
+        })
+      }
+    })
+    .catch((err) => {
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      });
+    });
+  }
 }
 
 // exports.getUploadCnt = (req, res) => {
@@ -98,7 +129,7 @@ exports.findAll = (req, res) => {
 
   Device_Data.count()
     .then(cnt => {
-      Device_Data.findAll({offset, limit, order: [['timestamp', 'DESC']]})
+      Device_Data.findAll({offset, limit, order: [['start_time', 'DESC']]})
         .then(data => {
           res.send({
             offset,
@@ -131,22 +162,22 @@ exports.clean = (req, res) => {
     for (let i = 0; i < data.length; i++) {
       let alldata = await Device_Data.findAll( 
         { 
-          attributes : ["timestamp", "id"],
+          attributes : ["start_time", "id"],
           where : { 
             address : data[i].address 
           },
-          order: [['timestamp', 'ASC']]
+          order: [['start_time', 'ASC']]
         }
       );
 
       console.log('receive data', alldata.length, data[i].address);
       let n = alldata.length;
-      let last_timestamp = 0;
+      let last_start_time = 0;
       for (let j = 0; j < n; j++) {
-        if (alldata[j].timestamp - last_timestamp < 2) {
+        if (alldata[j].start_time - last_start_time < 2) {
           removeIDs.push(alldata[j].id);
         } else {
-          last_timestamp = alldata[j].timestamp;
+          last_start_time = alldata[j].start_time;
         }
       }
     }

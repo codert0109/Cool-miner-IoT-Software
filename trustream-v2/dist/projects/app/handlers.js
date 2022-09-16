@@ -18,9 +18,9 @@ function buf2hex(buffer) {
         .map(x => x.toString(16).padStart(2, '0'))
         .join('');
 }
-async function verifyMessage(from, sessionID) {
+async function verifyMessage(nft_id, sessionID) {
     try {
-        let result = await models_1.deviceAuthRepository.findOne({ where: { address: from, session_id: sessionID } });
+        let result = await models_1.nftAuthRepository.findOne({ where: { nft_id, session_id: sessionID } });
         if (result === null)
             return false;
         return true;
@@ -30,26 +30,52 @@ async function verifyMessage(from, sessionID) {
         return false;
     }
 }
-async function updateUpTime(address) {
-    const UPLOAD_INTERVAL = 2;
+async function updateUpTime(address, nftID) {
+    const UPLOAD_INTERVAL = 5 * 60;
+    const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
     console.log('updateUpTime called');
     try {
-        let result = await models_1.deviceUptimeRepository.findOne({ where: { address } });
+        let result = await models_1.deviceDataRepository.findOne({ where: { nft_id: nftID }, order: [['upload_time', 'DESC']] });
         if (result === null) {
             await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
             return true;
         }
         else {
-            console.log('updatedAt', result.updatedAt);
-            console.log(Date.now() - new Date(result.updatedAt).getTime());
-            await models_1.deviceUptimeRepository.update({ address, uptime: result.uptime + UPLOAD_INTERVAL }, { where: { address } });
+            let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+            console.log('elapsedTime', elapsedTime);
+            if (elapsedTime > UPLOAD_THRESMS) {
+                let result = await models_1.deviceUptimeRepository.findOne({ where: { address } });
+                if (result === null) {
+                    await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
+                }
+                else {
+                    await models_1.deviceUptimeRepository.update({ address, uptime: result.uptime + UPLOAD_INTERVAL }, { where: { address } });
+                }
+                return true;
+            }
+            else {
+                console.log('blocked: data is uploading too fast.');
+                return false;
+            }
         }
-        return true;
     }
     catch (err) {
         console.log(`errors occured in updateUpTime ${err}`);
         return false;
     }
+}
+function checkVersion(min_version = '2.1.3', msg_version) {
+    if (msg_version == null || msg_version == undefined)
+        return false;
+    let a = min_version.split('.');
+    let b = msg_version.split('.');
+    for (let i = 0; i < 3; i++) {
+        if (~~a > ~~b)
+            return false;
+        if (~~a < ~~b)
+            return true;
+    }
+    return true;
 }
 async function onMqttData(context, topic, payload) {
     console.log("Received a message on topic: ", topic);
@@ -60,11 +86,20 @@ async function onMqttData(context, topic, payload) {
     }
     const address = values[1];
     let decodedPayload = eval('(' + payload.toString() + ')');
+    if (!checkVersion('2.1.3', decodedPayload.message.version)) {
+        console.log("Discard message with version error, ", decodedPayload.message.version);
+        return;
+    }
     const message = JSON.stringify(decodedPayload.message);
     console.log('message', message);
     const signature = decodedPayload.signature;
     let isValid = false;
-    isValid = await verifyMessage(address, signature);
+    let nftID = decodedPayload.message.nftID;
+    if (nftID === undefined) {
+        console.log(`WARNING: Dropping data message: message does not include NFT ID.`);
+        return;
+    }
+    isValid = await verifyMessage(nftID, signature);
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: Invalid session id ${address}`);
         return;
@@ -79,24 +114,35 @@ async function onMqttData(context, topic, payload) {
     }
     console.log("Device has NFT. Processing data");
     console.log(`Device address: ${address}`);
-    console.log(`Timestamp: ${decodedPayload.message.timestamp}`);
+    console.log(`Stop time: ${decodedPayload.message.stop_time}`);
     let { miner } = decodedPayload.message;
     if (miner == undefined)
         miner = 'Not set';
     let nounce = ~~(Math.random() * 100000);
-    let result = await updateUpTime(address);
+    console.log(`NFT ID: ${nftID}`);
+    let result = true;
+    if (nftID !== undefined) {
+        result = await updateUpTime(address, nftID);
+    }
+    else {
+        nftID = -1;
+        console.log(`WARNING: Dropping data message: message does not include NFT ID.`);
+        return null;
+    }
     if (result == true) {
         await models_1.deviceDataRepository.upsert({
-            id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
             address: address,
-            timestamp: decodedPayload.message.timestamp,
-            pedestrains: decodedPayload.message.pedestrians,
+            start_time: decodedPayload.message.start_time,
+            end_time: decodedPayload.message.stop_time,
+            pedestrians: decodedPayload.message.pedestrians,
             cars: decodedPayload.message.cars,
-            bus: decodedPayload.message.bus,
-            truck: decodedPayload.message.truck,
+            buses: decodedPayload.message.bus,
+            trucks: decodedPayload.message.truck,
             total: decodedPayload.message.total,
             link: decodedPayload.message.link,
-            miner
+            upload_time: Date.now(),
+            miner,
+            nft_id: nftID
         });
     }
 }

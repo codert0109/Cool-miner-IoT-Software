@@ -2,6 +2,8 @@ import { Button, Loader, createStyles } from '@mantine/core';
 import { useState } from 'react';
 import Swal from "sweetalert2";
 import { useStore } from '../../../store/index';
+import { publicConfig } from "../../../config/public";
+const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
     split: {
@@ -31,7 +33,7 @@ export default function () {
 
     const onClearConflict = () => {
         const performAction = () => {
-            auth.$().get('https://miner.elumicate.com/api/device_status/clean')
+            auth.$().get(`${BACKEND_URL}/api/device_status/clean`)
                 .then((data: any) => {
                     let info: any = data.data;
                     if (info.status == 'OK') {
@@ -104,7 +106,7 @@ export default function () {
 
     const onFixUptime = () => {
         const performAction = () => {
-            auth.$().post('https://miner.elumicate.com/api/device_uptime/fixUpTime')
+            auth.$().post(`${BACKEND_URL}/api/device_uptime/fixUpTime`)
                 .then((data: any) => {
                     let info: any = data.data;
                     if (info.status == 'OK') {

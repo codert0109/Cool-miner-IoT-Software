@@ -9,6 +9,8 @@ import { classToClassFromExist } from 'class-transformer';
 import $ from "axios";
 import { useStore } from '@/store/index';
 import Router, { useRouter } from 'next/router';
+import { publicConfig } from "../../config/public";
+const { BACKEND_URL } = publicConfig;
 
 import { Loader } from '@mantine/core';
 
@@ -88,7 +90,7 @@ export default function ({ label }) {
 
     const updateTime = () => {
         setLoading(true);
-        $.post('https://miner.elumicate.com/api/device_uptime/getUpTime',
+        $.post(`${BACKEND_URL}/api/device_uptime/getUpTime`,
             { address: god.currentNetwork.account }).then(function (data: any) {
                 setLoading(false);
                 let info = data.data;

@@ -1,3 +1,5 @@
+const env = require('./env');
+
 module.exports = {
   HOST: "database-1.c8hczoahlwk5.us-east-1.rds.amazonaws.com",
   USER: "postgres",
@@ -10,7 +12,7 @@ module.exports = {
     acquire: 30000,
     idle: 10000
   },
-  project : 'app',
+  project : env.project,
 
   CENTRAL_WALLET : {
     address : '0x78D0e460f234efbFc235152d32AB5e31b30B2171',

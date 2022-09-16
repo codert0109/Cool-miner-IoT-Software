@@ -3,7 +3,8 @@ import {
   deviceDataRepository, 
   deviceRepository, 
   deviceAuthRepository,
-  deviceUptimeRepository 
+  deviceUptimeRepository, 
+  nftAuthRepository
 } from './models'
 import { ProjectContext } from '../interface'
 // import { EthHelper } from "@helpers/index"
@@ -53,9 +54,9 @@ function verifyMessage(from : string, signature : string) {
 }
 */
 
-async function verifyMessage(from : string, sessionID : string) {
+async function verifyMessage(nft_id : number, sessionID : string) {
   try {
-    let result = await deviceAuthRepository.findOne({ where : {address : from, session_id : sessionID}})
+    let result = await nftAuthRepository.findOne({ where : {nft_id, session_id : sessionID}})
     if (result === null)
       return false;
     return true;
@@ -65,28 +66,37 @@ async function verifyMessage(from : string, sessionID : string) {
   }
 }
 
-async function updateUpTime(address : string) {
-  const UPLOAD_INTERVAL = 2;
-  const UPLOAD_THRESMS = 1500;
-
+async function updateUpTime(address : string, nftID : string) {
+  const UPLOAD_INTERVAL = 5 * 60;
+  const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
 
   console.log('updateUpTime called');
+
   try {
-    let result = await deviceUptimeRepository.findOne({ where : { address } })
+    let result = await deviceDataRepository.findOne({ where : { nft_id : nftID }, order : [['upload_time', 'DESC']] })
+
     if (result === null) {
       // find new miner! add data
       await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
       return true;
     } else {
-      console.log('updatedAt', result.updatedAt);
       // update data
-      let elapsedTime = Date.now() - new Date(result.updatedAt).getTime();
-      if (true || elapsedTime > UPLOAD_THRESMS) {
-        await deviceUptimeRepository.update(
-          { address, uptime : result.uptime + UPLOAD_INTERVAL},
-          { where : { address }});
+      let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+
+      console.log('elapsedTime', elapsedTime);
+
+      if (elapsedTime > UPLOAD_THRESMS) {
+        let result = await deviceUptimeRepository.findOne({ where : { address }});
+        if (result === null) {
+          await deviceUptimeRepository.create({ address, uptime : UPLOAD_INTERVAL});
+        } else {
+          await deviceUptimeRepository.update(
+            { address, uptime : result.uptime + UPLOAD_INTERVAL},
+            { where : { address }});
+        }
         return true;
       } else {
+        console.log('blocked: data is uploading too fast.');
         return false;
       }
     }
@@ -139,7 +149,14 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   let isValid: boolean = false
 
-  isValid = await verifyMessage(address, signature);
+  let nftID = decodedPayload.message.nftID;
+
+  if (nftID === undefined) {
+    console.log(`WARNING: Dropping data message: message does not include NFT ID.`)
+    return;
+  }
+
+  isValid = await verifyMessage(nftID, signature);
   
   if (isValid === false) {
     console.log(`WARNING: Dropping data message: Invalid session id ${address}`)
@@ -157,31 +174,36 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     return null
   }
 
-  console.log("Device has NFT. Processing data")
-  console.log(`Device address: ${address}`)
-  console.log(`Timestamp: ${decodedPayload.message.timestamp}`)
-
   let { miner } = decodedPayload.message;
 
-  if (miner == undefined)
-    miner = 'Not set';
+  if (miner == undefined) miner = 'Not set';
 
   let nounce = ~~(Math.random() * 100000);
 
-  let result = await updateUpTime(address);
+  let result = true;
+
+  if (nftID !== undefined) {
+    result = await updateUpTime(address, nftID);
+  } else {
+    nftID = -1;
+    console.log(`WARNING: Dropping data message: message does not include NFT ID.`)
+    return null;
+  }
 
   if (result == true) {
     await deviceDataRepository.upsert({
-      id: address + '-' + decodedPayload.message.timestamp + '_' + nounce,
-      address: address,
-      timestamp: decodedPayload.message.timestamp,
-      pedestrains : decodedPayload.message.pedestrians,
-      cars : decodedPayload.message.cars,
-      bus : decodedPayload.message.bus,
-      truck : decodedPayload.message.truck,
-      total : decodedPayload.message.total,
-      link : decodedPayload.message.link,
-      miner
+      address             : address,
+      start_time          : decodedPayload.message.start_time,
+      end_time            : decodedPayload.message.end_time,
+      pedestrians         : decodedPayload.message.pedestrians,
+      cars                : decodedPayload.message.cars,
+      buses               : decodedPayload.message.bus,
+      trucks              : decodedPayload.message.truck,
+      total               : decodedPayload.message.total,
+      link                : decodedPayload.message.link,
+      upload_time         : Date.now(),
+      miner,
+      nft_id              : nftID
     })
   }
 
@@ -193,4 +215,4 @@ const handlers = {
   onMqttData,
 }
 
-export default handlers
+export default handlers;

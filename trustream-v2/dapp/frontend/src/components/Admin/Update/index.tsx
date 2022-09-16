@@ -4,6 +4,8 @@ import { Button, List, Loader, Textarea, createStyles } from '@mantine/core';
 import Swal from "sweetalert2";
 import { useStore } from '../../../store/index';
 import $ from 'axios';
+import { publicConfig } from "../../../config/public";
+const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
     split: {
@@ -35,7 +37,7 @@ export default function () {
 
     useEffect(() => {
         isLoading(true);
-        auth.$().get('https://miner.elumicate.com/update')
+        auth.$().get(`${BACKEND_URL}/update`)
             .then((data: any) => {
                 isLoading(false);
                 let info: any = data.data;
@@ -67,7 +69,7 @@ export default function () {
     const onUpdate = () => {
         isPending(true);
         const performAction = () => {
-            auth.$().post('https://miner.elumicate.com/update/create', { version, download, message, note })
+            auth.$().post(`${BACKEND_URL}/update/create`, { version, download, message, note })
                 .then((data: any) => {
                     let info: any = data.data;
                     if (info.status == 'OK') {
