@@ -49,7 +49,7 @@ async function main() {
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
 
-  await AddWhiteLists(ContractObj)
+  // await AddWhiteLists(ContractObj)
   saveFrontendFiles(ContractInfo)
 }
 
@@ -78,10 +78,10 @@ async function AddWhiteLists(ContractObj) {
 
   await NFTContract.insertWhiteListArray(lists);
 
-  // for (const wallet of lists) {
-  //   await NFTContract.insertWhiteList(wallet)
-  //   console.log(`Added to whitelist ${wallet}`)
-  // }
+  for (const wallet of lists) {
+    await NFTContract.insertWhiteList(wallet)
+    console.log(`Added to whitelist ${wallet}`)
+  }
 }
 
 main()
