@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { createStyles, Navbar, Group, Box, TextInput, Code, Space, ThemeIcon, Text, Modal } from '@mantine/core';
+import { 
+  createStyles, 
+  Navbar, 
+  Group, 
+  Box, 
+  TextInput, 
+  Code, 
+  Text, 
+  Modal 
+} from '@mantine/core';
+
 import {
   Home,
   Code as CodeIcon,
@@ -7,9 +17,11 @@ import {
   CloudDataConnection as ViewIcon,
   News,
   Help,
-  Lock
-}
-  from 'tabler-icons-react';
+  Lock,
+  Stack2,
+  ZoomMoney
+} from 'tabler-icons-react';
+
 import { useStore } from '../../store/index';
 import { observer } from 'mobx-react-lite';
 import { openSpotlight } from '@mantine/spotlight';
@@ -115,7 +127,8 @@ export const NavbarSimple = observer(() => {
   const data = [
     { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false, access : 'public' },
     { link: '/admin',                                     label: 'Admin',         icon: Lock,     __blank : false, access : 'admin' },
-    { link: '/nft',                                       label: 'NFT',           icon: ViewIcon, __blank : false, access : 'public' },
+    { link: '/nft',                                       label: 'NFT',           icon: Stack2,   __blank : false, access : 'public' },
+    { link: '/stacking',                                  label: 'Stacking',      icon: ZoomMoney,__blank : false, access : 'public' },
     { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon, __blank : false, access : 'public' },
     { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,     __blank : true,  access : 'public' },
     { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,     __blank : true,  access : 'public' },

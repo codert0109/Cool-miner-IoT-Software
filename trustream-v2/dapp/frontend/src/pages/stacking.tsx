@@ -23,7 +23,7 @@ export default observer((props: Props) => {
   return (
     <Layout>
         <ScrollArea>
-            { store.count }
+            Stacking Sample Page
         </ScrollArea>
     </Layout>
   );

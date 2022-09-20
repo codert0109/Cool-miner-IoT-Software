@@ -7,13 +7,12 @@ import NFTContractABI from '../../contracts/NFT.json';
 import ContractAddress from '../../contracts/contract-address.json';
 
 import {
-  Settings,
   ChevronDown,
   Home,
-  LayersLinked,
-  FileDatabase,
   CloudDataConnection,
   Stack2,
+  ZoomMoney,
+  FileDatabase,
   Lock
 } from 'tabler-icons-react';
 
@@ -95,6 +94,12 @@ const links: Array<HeaderSearchProps> = [
     link: '/nft',
     label: 'NFT',
     icon: Stack2,
+    access : 'public'
+  },
+  {
+    link: '/stacking',
+    label: 'Stacking',
+    icon: ZoomMoney,
     access : 'public'
   },
   {
