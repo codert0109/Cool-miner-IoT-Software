@@ -40,6 +40,8 @@ const useStyles = createStyles((theme) => ({
     },
 
     messagetext : {
+        display : 'flex',
+        alignItems : 'center'
         // overflow : 'hidden',
         // whiteSpace : 'nowrap',
         // textOverflow : 'ellipsis'
