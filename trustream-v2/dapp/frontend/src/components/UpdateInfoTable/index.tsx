@@ -54,6 +54,10 @@ const useStyles = createStyles((theme) => ({
     releaseBTN : {
         color : 'black', 
         borderColor : 'black'
+    },
+
+    w100 : {
+        width : '100%'
     }
 }));
 
@@ -144,7 +148,7 @@ export default function TableScrollArea() {
     ));
 
     return (
-        <ScrollArea onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+        <ScrollArea className={classes.w100} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
             <Table style={{backgroundColor : 'white', color : 'black'}}>
                 <thead>
                     <tr>
