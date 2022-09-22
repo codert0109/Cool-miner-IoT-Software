@@ -1,24 +1,23 @@
-const { deployContract } = require('ethereum-waffle')
+let ContractInfo = {}
+let ContractObj = {}
+
+async function deployContract(name) {
+  const Contract = await ethers.getContractFactory(name)
+  let params = []
+  for (let i = 1; i < arguments.length; i++) {
+    params.push(arguments[i])
+  }
+  const contract = await Contract.deploy(...params)
+  ContractInfo[name] = contract.address
+  ContractObj[name] = contract
+
+  console.log(
+    `${name} Contract deployed at ${contract.address}, block:${contract.deployTransaction.blockNumber}`,
+  )
+  return contract
+}
 
 async function main() {
-  let ContractInfo = {}
-  let ContractObj = {}
-  async function deployContract(name) {
-    const Contract = await ethers.getContractFactory(name)
-    let params = []
-    for (let i = 1; i < arguments.length; i++) {
-      params.push(arguments[i])
-    }
-    const contract = await Contract.deploy(...params)
-    ContractInfo[name] = contract.address
-    ContractObj[name] = contract
-
-    console.log(
-      `${name} Contract deployed at ${contract.address}, block:${contract.deployTransaction.blockNumber}`,
-    )
-    return contract
-  }
-
   const [deployer] = await ethers.getSigners()
 
   console.log('Deploying contracts with the account:', deployer.address)
@@ -45,12 +44,33 @@ async function main() {
     special_nft_price,
   )
 
+  // await testCapacity();
+
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
 
   // await AddWhiteLists(ContractObj)
   saveFrontendFiles(ContractInfo)
+}
+
+async function testCapacity() {
+  const testCapacity = await deployContract(
+    'TestCapacity'
+  );
+  const testContract = ContractObj['TestCapacity'];
+
+  const n = 600;
+
+  let addressList = [];
+  let balanceList = [];
+
+  for (let i = 0; i < n; i++) {
+    addressList.push('0xC332AE62518fB7B88F8C05470265f71a4fD7dC2f');
+    balanceList.push(~~(Math.random() * 1000));
+  }
+
+  await testContract.addRewardTransactions(addressList, balanceList)
 }
 
 async function loadFromFile(path) {

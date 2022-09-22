@@ -4,7 +4,7 @@ import { Box, Button } from '@mantine/core';
 
 interface Props {}
 
-export const Template = observer((props: Props) => {
+export default observer((props: Props) => {
   const store = useLocalObservable(() => ({
     count: 0,
     setCount(count) {

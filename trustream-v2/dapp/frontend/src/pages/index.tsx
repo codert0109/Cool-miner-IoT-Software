@@ -15,7 +15,6 @@ import ServerStatus from "@/components/ServerStatus";
 import UpdateInfoTable from "@/components/UpdateInfoTable";
 import Box from "@/components/Container/Box";
 
-
 export default function () {
   const router = useRouter()
 

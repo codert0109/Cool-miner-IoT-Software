@@ -183,8 +183,8 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\NFT.sol": {
-      "lastModificationDate": 1661366453527,
-      "contentHash": "7e667be52a08a2acea70acdb095d5d3e",
+      "lastModificationDate": 1661370223227,
+      "contentHash": "9e7840377db7280afe518e632ae1d7e6",
       "sourceName": "contracts/NFT.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -331,9 +331,123 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumToken.sol": {
-      "lastModificationDate": 1658450400987,
-      "contentHash": "39ee136a3744accf5b5afcc6eee137f8",
+      "lastModificationDate": 1663749342860,
+      "contentHash": "74d67ca50dc544485ffd6c1118c38d48",
       "sourceName": "contracts/ElumToken.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "./interfaces/IElumToken.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ElumToken"
+      ]
+    },
+    "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\TestCapacity.sol": {
+      "lastModificationDate": 1663667317948,
+      "contentHash": "385f274a9093e3afd9fd612693b36d5a",
+      "sourceName": "contracts/TestCapacity.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "TestCapacity"
+      ]
+    },
+    "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\Reward.sol": {
+      "lastModificationDate": 1663749413955,
+      "contentHash": "16864c5e90b135358e9addf6d3dd141b",
+      "sourceName": "contracts/Reward.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "./interfaces/IElumToken.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Reward"
+      ]
+    },
+    "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\interfaces\\IElumToken.sol": {
+      "lastModificationDate": 1663749279068,
+      "contentHash": "c80ad3634856ad83f008253fa32710d3",
+      "sourceName": "contracts/interfaces/IElumToken.sol",
       "solcConfig": {
         "version": "0.8.4",
         "settings": {
@@ -364,7 +478,44 @@
         "^0.8.0"
       ],
       "artifacts": [
-        "ElumToken"
+        "IElumToken"
+      ]
+    },
+    "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\Stacking.sol": {
+      "lastModificationDate": 1663782332989,
+      "contentHash": "6eede8bd3a3038084117b9c1a0640d4f",
+      "sourceName": "contracts/Stacking.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Stacking"
       ]
     }
   }

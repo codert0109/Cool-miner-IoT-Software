@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStyles, Table, Progress, Anchor, Text, Group, ScrollArea } from '@mantine/core';
+import { createStyles, Table, Progress, Anchor, Text, Group, ScrollArea, Box } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -11,9 +11,10 @@ const useStyles = createStyles((theme) => ({
 
 interface TableReviewsProps {
   data: {
-    Pool : string,
+    Date : string,
     Amount : number,
-    AvailableRewards : number,
+    NFT : number,
+    Multiplier : string,
     TimeRemaining : number,
     TotalTime : number
   }[];
@@ -33,19 +34,19 @@ export default function TableReviews({ data }: TableReviewsProps) {
     return (
       <tr key={index}>
         <td>
-          <Anchor<'a'> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.Pool}
-          </Anchor>
+          {/* <Anchor<'a'> size="sm" onClick={(event) => event.preventDefault()}> */}
+            {row.Date}
+          {/* </Anchor> */}
         </td>
         <td>{row.Amount}</td>
-        <td>{Intl.NumberFormat().format(row.AvailableRewards)}</td>
+        <td>{Intl.NumberFormat().format(row.NFT)}</td>
         <td>
           <Group position="apart">
             <Text size="xs" color="teal" weight={700}>
-              {timePast.toFixed(0)}s passed
+              {timePast.toFixed(0)}days passed
             </Text>
             <Text size="xs" color="red" weight={700}>
-              {timeLeft.toFixed(0)}s left
+              {timeLeft.toFixed(0)}days left
             </Text>
           </Group>
           <Progress
@@ -62,23 +63,27 @@ export default function TableReviews({ data }: TableReviewsProps) {
             ]}
           />
         </td>
+        <td>
+          {row.Multiplier}
+        </td>
       </tr>
     );
   });
 
   return (
-    <ScrollArea>
-      <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
+    <ScrollArea style={{ width : '100%' }}>
+      <Table sx={{ minWidth: 600, maxWidth: '100%' }} verticalSpacing="xs">
         <thead>
           <tr>
-            <th>Pool</th>
+            <th>Date</th>
             <th>Amount</th>
-            <th>Available Rewards</th>
+            <th>NFT</th>
             <th>Time Remaining</th>
+            <th>Multiplier</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
       </Table>
-    </ScrollArea>
+     </ScrollArea>
   );
 }
