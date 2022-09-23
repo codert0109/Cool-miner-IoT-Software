@@ -8,6 +8,7 @@ import AvailableStaking from "../components/Staking/AvailableStaking";
 import CurrentlyStaking from "../components/Staking/CurrentlyStaking";
 import StakingLog from "../components/Staking/StakingLog";
 import StakeTokens from "@/components/Staking/StakeTokens";
+import Token from "@/components/Token";
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -30,6 +31,9 @@ export default observer((props: Props) => {
         </Grid.Col>
         <Grid.Col sm={6} md={4}>
           <CurrentlyStaking />
+        </Grid.Col>
+        <Grid.Col sm={12} md={8}>
+          <Token />
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
           <StakeTokens />
