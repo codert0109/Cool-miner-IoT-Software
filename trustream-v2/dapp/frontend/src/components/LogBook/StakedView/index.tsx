@@ -1,12 +1,13 @@
 import React from 'react';
-import { createStyles, Table, Progress, Anchor, Text, Group, ScrollArea, Box } from '@mantine/core';
+import { createStyles, Table, Button, Progress, Anchor, Text, Group, ScrollArea, Box } from '@mantine/core';
+import WhiteLabel from "@/components/WhiteLabel";
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
     '&:not(:first-of-type)': {
       borderLeft: `3px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white}`,
     },
-  },
+  }
 }));
 
 interface TableReviewsProps {
@@ -38,7 +39,7 @@ export default function TableReviews({ data }: TableReviewsProps) {
             {row.Date}
           {/* </Anchor> */}
         </td>
-        <td>{row.Amount}</td>
+        <td style = {{ textAlign : 'center'}} >{row.Amount}</td>
         <td>{Intl.NumberFormat().format(row.NFT)}</td>
         <td>
           <Group position="apart">
@@ -63,27 +64,37 @@ export default function TableReviews({ data }: TableReviewsProps) {
             ]}
           />
         </td>
-        <td>
+        <td style = {{ paddingLeft : 20}} >
           {row.Multiplier}
+        </td>
+        <td>
+          <Button color='teal' size="xs">Upgrade</Button>
         </td>
       </tr>
     );
   });
 
+  const tableView = () => {
+    return (
+      <ScrollArea style={{ width : '100%' }}>
+        <Table sx={{ minWidth: 600, maxWidth: '100%', color : 'black' }} verticalSpacing="xs">
+          <thead>
+            <tr>
+              <th style={{ color : 'black'}} >Date</th>
+              <th style={{ color : 'black', textAlign : 'center'}} >Amount</th>
+              <th style={{ color : 'black'}} >NFT id</th>
+              <th style={{ color : 'black'}} >Time Remaining</th>
+              <th style={{ color : 'black'}} >Multiplier</th>
+              <th style={{ color : 'black'}} >Upgrade</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
+       </ScrollArea>
+    );
+  };
+
   return (
-    <ScrollArea style={{ width : '100%' }}>
-      <Table sx={{ minWidth: 600, maxWidth: '100%' }} verticalSpacing="xs">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>NFT</th>
-            <th>Time Remaining</th>
-            <th>Multiplier</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-     </ScrollArea>
+    <WhiteLabel label={tableView()} className=''/>
   );
 }

@@ -29,7 +29,7 @@ const useStyles = createStyles((theme) => ({
         justifyContent: 'center',
         display : 'flex',
         flexDirection:'column',
-        padding : '10px',
+        padding : '8px',
         paddingTop : '18px',
         borderRadius : '6px',
         flexGrow : 1
@@ -39,14 +39,14 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function({label, children}) {
+export default function({label, children, bodyClass = ''}) {
     const { classes } = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.header}>
                 <div>{label}</div>
             </div>
-            <div className={classes.body}>
+            <div className={`${classes.body} ${bodyClass}`}>
                 {children}
             </div>
         </div>

@@ -37,6 +37,17 @@ const useStyles = createStyles((theme) => ({
     whiteSpace : 'nowrap',
     textOverflow : 'ellipsis',
     overflow : 'hidden'
+  },
+
+  textCenter : {
+    textAlign : 'center',
+    paddingLeft : 0,
+    paddingRight : 0
+  },
+
+  gridPadding : {
+    paddingLeft : '0px !important',
+    paddingRight : '0px !important'
   }
 }));
 
@@ -60,12 +71,12 @@ export default observer((props: Props) => {
   );
 
   return (
-    <Box label="Stake Tokens">
+    <Box label="Stake Tokens" bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }}>
         <Grid.Col lg={3} md={6} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="Number of Tokens" />
+              <WhiteLabel className="" label="Amount to Stake" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label="........." />
@@ -78,7 +89,7 @@ export default observer((props: Props) => {
               <WhiteLabel className="" label="NFT id" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.text} label="Click to browser Your NFTs" />
+              <WhiteLabel className={classes.text} label="Click to choose an NFT" />
             </Grid.Col>
           </Grid>
         </Grid.Col>
@@ -88,16 +99,16 @@ export default observer((props: Props) => {
               <WhiteLabel className="" label="Stake Duration" />
             </Grid.Col>
             <Grid.Col md={3} sm={3}>
-              <WhiteLabel className="" label="45" />
+              <WhiteLabel className={classes.textCenter} label="45" />
             </Grid.Col>
             <Grid.Col md={3} sm={3}>
-              <WhiteLabel className="" label="90" />
+              <WhiteLabel className={classes.textCenter} label="90" />
             </Grid.Col>
             <Grid.Col md={3} sm={3}>
-              <WhiteLabel className="" label="180" />
+              <WhiteLabel className={classes.textCenter} label="180" />
             </Grid.Col>
             <Grid.Col md={3} sm={3}>
-              <WhiteLabel className="" label="360" />
+              <WhiteLabel className={classes.textCenter} label="360" />
             </Grid.Col>
           </Grid>
         </Grid.Col>

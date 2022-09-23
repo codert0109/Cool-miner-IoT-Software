@@ -14,12 +14,14 @@ const useStyles = createStyles((theme) => ({
     '&:not(:first-of-type)': {
       borderLeft: `3px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white}`,
     },
-  },
+  }
 }));
 
 interface Props { }
 
 export default observer((props: Props) => {
+  const { classes } = useStyles();
+
   return (
     <Layout>
       <Grid>
