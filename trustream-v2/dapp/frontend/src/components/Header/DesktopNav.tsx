@@ -97,8 +97,8 @@ const links: Array<HeaderSearchProps> = [
     access : 'public'
   },
   {
-    link: '/stacking',
-    label: 'Stacking',
+    link: '/stake',
+    label: 'Stake',
     icon: ZoomMoney,
     access : 'public'
   },

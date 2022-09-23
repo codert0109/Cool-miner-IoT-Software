@@ -128,7 +128,7 @@ export const NavbarSimple = observer(() => {
     { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false, access : 'public' },
     { link: '/admin',                                     label: 'Admin',         icon: Lock,     __blank : false, access : 'admin' },
     { link: '/nft',                                       label: 'NFT',           icon: Stack2,   __blank : false, access : 'public' },
-    { link: '/stacking',                                  label: 'Stacking',      icon: ZoomMoney,__blank : false, access : 'public' },
+    { link: '/stake',                                     label: 'Stake',      icon: ZoomMoney,__blank : false, access : 'public' },
     { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon, __blank : false, access : 'public' },
     { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,     __blank : true,  access : 'public' },
     { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,     __blank : true,  access : 'public' },

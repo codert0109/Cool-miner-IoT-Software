@@ -68,7 +68,7 @@ export default function TableReviews({ data }: TableReviewsProps) {
           {row.Multiplier}
         </td>
         <td>
-          <Button color='teal' size="xs">Upgrade</Button>
+          <Button color='teal' size="xs">Edit</Button>
         </td>
       </tr>
     );
