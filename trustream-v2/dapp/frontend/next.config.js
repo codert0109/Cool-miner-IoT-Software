@@ -16,7 +16,7 @@ const nextConfig = {
       '/login'    : { page: '/login'    },
       '/viewdata' : { page: '/viewdata' },
       '/admin'    : { page: '/admin'    },
-      '/stake'    : { page: '/stake'    },
+      '/staking'  : { page: '/staking'  },
     }
   },
 };

@@ -9,12 +9,13 @@ const useStyles = createStyles((theme) => ({
     paddingLeft: '0px !important',
     paddingRight: '0px !important'
   },
-  price : {
-    color : '#2f9e44'
+  price: {
+    color: '#2f9e44'
   },
-  button : {
-    width : '100%',
-    fontSize : '1.2em'
+  button: {
+    width: '100%',
+    fontSize: '1.5rem',
+    height : '100%',
   }
 }));
 
@@ -23,56 +24,29 @@ export default observer((props: Props) => {
 
   return (
     <Box label="Buy ELUM Tokens" bodyClass={classes.gridPadding}>
-      <Grid style={{ width: '100%' }} columns={60}>
-        <Grid.Col lg={12} md={20} sm={60}>
+      <Grid style={{ width: '100%' }}>
+        <Grid.Col md={4} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="Name" />
+              <WhiteLabel className="" label="Token Amount" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="ELUM" />
+              <WhiteLabel className="" label="........." />
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col lg={12} md={20} sm={60}>
+        <Grid.Col md={4} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label="Price" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="CA$ 100" />
+              <WhiteLabel className="" label="1 IOTX" />
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col lg={12} md={20} sm={60}>
-          <Grid>
-            <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="Change" />
-            </Grid.Col>
-            <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.price} label="+1.05%" />
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-        <Grid.Col lg={12} md={30} sm={60}>
-          <Grid>
-            <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="Chart" />
-            </Grid.Col>
-            <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="..." />
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-        <Grid.Col lg={12} md={30} sm={60}>
-          <Grid>
-            <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="Trade" />
-            </Grid.Col>
-            <Grid.Col md={12} sm={12}>
-              <Button color='green' size="xs" className={classes.button}>Buy</Button>
-            </Grid.Col>
-          </Grid>
+        <Grid.Col md={4} sm={12}>
+          <Button color='green' size="xs" className={classes.button}>Buy</Button>
         </Grid.Col>
       </Grid>
     </Box>

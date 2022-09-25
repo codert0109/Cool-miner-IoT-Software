@@ -1,29 +1,14 @@
 import Layout from "@/components/EntireLayout";
-import { useEffect } from "react";
-import { useRouter } from 'next/router';
-
 import { Grid } from "@mantine/core";
-import STAKEDCLAIMED from "@/components/STAKEDCLAIMED";
-import EARNED from "@/components/EARNED";
-import BUYELUM from "@/components/BUYELUM";
-import INFOCONTAINER from "@/components/INFOCONTAINER";
-import LogBook from "@/components/LogBook";
-import MyAccount from "@/components/MyAccount";
-
 import UPTIME from "@/components/UPTIME";
 import ServerStatus from "@/components/ServerStatus";
 import UpdateInfoTable from "@/components/UpdateInfoTable";
 import Box from "@/components/Container/Box";
 import WalletBalance from "@/components/WalletBalance";
 import TokenRewards from "@/components/TokenRewards";
+import Token from "@/components/Token";
 
 export default function () {
-  const router = useRouter()
-
-  useEffect(() => {
-    // router.push('/nft');
-  }, []);
-
   return (
     <Layout>
       <Grid>
@@ -38,6 +23,9 @@ export default function () {
         </Grid.Col>
         <Grid.Col sm={12} md={6}>
           <TokenRewards />
+        </Grid.Col>
+        <Grid.Col sm={12} md={12}>
+          <Token />
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
           <Box label="Release Updates">
