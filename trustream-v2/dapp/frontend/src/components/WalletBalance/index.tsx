@@ -3,6 +3,7 @@ import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from '../Container/Box';
 import WhiteLabel from '../WhiteLabel';
 import { createStyles, Grid, Button, MantineProvider } from '@mantine/core';
+import { useRouter } from 'next/router';
 
 const BREAKPOINT = '@media (max-width: 992px)';
 
@@ -29,6 +30,12 @@ const useStyles = createStyles((theme) => ({
 
 export default observer((props: Props) => {
     const { classes } = useStyles();
+    const router = useRouter()
+
+    const onStakeTokens = () => {
+        console.log('working button');
+        router.push('/staking');
+    };
 
     return (
         <Box label="Wallet Balance">
@@ -44,7 +51,13 @@ export default observer((props: Props) => {
                             },
                         }}
                     >
-                        <Button size="xs" className={classes.button} color="brightorange">Stake Your Tokens</Button>
+                        <Button 
+                            size="xs" 
+                            onClick={() => onStakeTokens()}
+                            className={classes.button} 
+                            color="brightorange">
+                            Stake Your Tokens
+                        </Button>
                     </MantineProvider>
                 </Grid.Col>
             </Grid>
