@@ -19,7 +19,7 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function({label, className}) {
+export default function({label, className = ""}) {
     const { classes } = useStyles();
     return (
         <div className={`${className} ${classes.labelstyle}`}>

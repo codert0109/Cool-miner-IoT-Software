@@ -14,6 +14,8 @@ import UPTIME from "@/components/UPTIME";
 import ServerStatus from "@/components/ServerStatus";
 import UpdateInfoTable from "@/components/UpdateInfoTable";
 import Box from "@/components/Container/Box";
+import WalletBalance from "@/components/WalletBalance";
+import TokenRewards from "@/components/TokenRewards";
 
 export default function () {
   const router = useRouter()
@@ -25,13 +27,17 @@ export default function () {
   return (
     <Layout>
       <Grid>
-        <Grid.Col>
-          <Grid.Col sm={12} md={6}>
-            <UPTIME label="Public Pool Mining" />
-          </Grid.Col>
-          <Grid.Col sm={12} md={6}>
-            <ServerStatus />
-          </Grid.Col>
+        <Grid.Col sm={12} md={6}>
+          <UPTIME label="Public Pool Mining" />
+        </Grid.Col>
+        <Grid.Col sm={12} md={6}>
+          <WalletBalance/>
+        </Grid.Col>
+        <Grid.Col sm={12} md={6}>
+          <ServerStatus />
+        </Grid.Col>
+        <Grid.Col sm={12} md={6}>
+          <TokenRewards />
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
           <Box label="Release Updates">

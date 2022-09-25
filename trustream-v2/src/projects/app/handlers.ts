@@ -54,9 +54,9 @@ function verifyMessage(from : string, signature : string) {
 }
 */
 
-async function verifyMessage(nft_id : number, sessionID : string) {
+async function verifyMessage(address : string, nft_id : number, sessionID : string) {
   try {
-    let result = await nftAuthRepository.findOne({ where : {nft_id, session_id : sessionID}})
+    let result = await nftAuthRepository.findOne({ where : {address, nft_id, session_id : sessionID}})
     if (result === null)
       return false;
     return true;
@@ -73,7 +73,12 @@ async function updateUpTime(address : string, nftID : string) {
   console.log('updateUpTime called');
 
   try {
-    let result = await deviceDataRepository.findOne({ where : { nft_id : nftID }, order : [['upload_time', 'DESC']] })
+    let result = await deviceDataRepository.findOne(
+      { 
+        where : { address, nft_id : nftID }, 
+        order : [['upload_time', 'DESC']] 
+      }
+    )
 
     if (result !== null) {
       // update data
@@ -152,7 +157,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     return;
   }
 
-  isValid = await verifyMessage(nftID, signature);
+  isValid = await verifyMessage(address, nftID, signature);
   
   if (isValid === false) {
     console.log(`WARNING: Dropping data message: Invalid session id ${address}`)

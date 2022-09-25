@@ -18,9 +18,9 @@ function buf2hex(buffer) {
         .map(x => x.toString(16).padStart(2, '0'))
         .join('');
 }
-async function verifyMessage(nft_id, sessionID) {
+async function verifyMessage(address, nft_id, sessionID) {
     try {
-        let result = await models_1.nftAuthRepository.findOne({ where: { nft_id, session_id: sessionID } });
+        let result = await models_1.nftAuthRepository.findOne({ where: { address, nft_id, session_id: sessionID } });
         if (result === null)
             return false;
         return true;
@@ -35,7 +35,10 @@ async function updateUpTime(address, nftID) {
     const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
     console.log('updateUpTime called');
     try {
-        let result = await models_1.deviceDataRepository.findOne({ where: { nft_id: nftID }, order: [['upload_time', 'DESC']] });
+        let result = await models_1.deviceDataRepository.findOne({
+            where: { address, nft_id: nftID },
+            order: [['upload_time', 'DESC']]
+        });
         if (result !== null) {
             let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
             console.log('elapsedTime', elapsedTime);
@@ -93,7 +96,7 @@ async function onMqttData(context, topic, payload) {
         console.log(`WARNING: Dropping data message: message does not include NFT ID.`);
         return;
     }
-    isValid = await verifyMessage(nftID, signature);
+    isValid = await verifyMessage(address, nftID, signature);
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: Invalid session id ${address}`);
         return;

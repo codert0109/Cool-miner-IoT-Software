@@ -6,7 +6,7 @@ const { getRandomSessionID } = require('../utils');
 // Before call this function, please check authentication.
 // This fuction create new Session ID for corresponding NFT_ID.
 function createNFTSession(address, nft_id, miner, success_callback, error_callback) {
-  NFT_Auth.findOne( { where : { nft_id } } )
+  NFT_Auth.findOne( { where : { nft_id, address } } ) // nft_id & address is pair.
     .then((data) => {
       if (data === null) { // No data exist for that NFT_ID
         let session_id = getRandomSessionID();
@@ -42,7 +42,7 @@ function createNFTSession(address, nft_id, miner, success_callback, error_callba
 // Before call this function, please check authentication.
 // This function remove NFT_Session that NFT_ID assigned.
 function removeNFTSession(address, nft_id, success_callback, error_callback) {
-  NFT_Auth.findOne({ where : { nft_id } })
+  NFT_Auth.findOne({ where : { address, nft_id } }) // nft_id & address is pair
     .then((data) => {
       if (data !== null) {
         data.destroy()
@@ -124,7 +124,7 @@ exports.getStatus = (req, res) => {
     return;
   }
 
-  NFT_Auth.findOne( { where : { nft_id } })
+  NFT_Auth.findOne( { where : { address, nft_id } })
     .then((data) => {
       if (data === null) {
         res.send({
