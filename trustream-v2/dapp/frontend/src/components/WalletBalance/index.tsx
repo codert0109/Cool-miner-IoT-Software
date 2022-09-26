@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from '../Container/Box';
 import WhiteLabel from '../WhiteLabel';
 import { createStyles, Grid, Button, MantineProvider } from '@mantine/core';
 import { useRouter } from 'next/router';
+import { useStore } from '../../store/index';
 
 const BREAKPOINT = '@media (max-width: 992px)';
 
@@ -29,8 +30,20 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default observer((props: Props) => {
+    const { god, token } = useStore();
     const { classes } = useStyles();
     const router = useRouter()
+    const [balance, setBalance] = useState('0');
+
+    const refresh = async () => {
+        let value : string;
+        value = await token.getBalance();
+        setBalance(value);
+    };
+
+    useEffect(() => {
+        refresh();
+    }, []);
 
     const onStakeTokens = () => {
         console.log('working button');
@@ -41,7 +54,7 @@ export default observer((props: Props) => {
         <Box label="Wallet Balance">
             <Grid style={{ width: '100%' }}>
                 <Grid.Col sm={12} md={6} className={classes.padding0}>
-                    <WhiteLabel label="14,254" />
+                    <WhiteLabel label={balance} />
                 </Grid.Col>
                 <Grid.Col sm={12} md={6} className={classes.padding0}>
                     <MantineProvider

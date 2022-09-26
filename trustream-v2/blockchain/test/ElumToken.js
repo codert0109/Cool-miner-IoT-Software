@@ -11,6 +11,8 @@ describe("ElumToken contract", function () {
     await expect(hardhatElumToken.buyTokens(100))
         .to.be.revertedWith('Not enough payment.');
     
-    await hardhatElumToken.buyTokens(100, { value : TokenPrice.multiply(100)});
+    // await hardhatElumToken.buyTokens(100, { value : TokenPrice.multiply(100)});
+    expect(await hardhatElumToken.tokenPrice())
+      .to.be.equal(TokenPrice);
   });
 });
