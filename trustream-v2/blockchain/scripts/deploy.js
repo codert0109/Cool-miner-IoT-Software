@@ -26,25 +26,13 @@ async function main() {
   let balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance before deploy:', balanceIOTX, ' IOTX')
 
-  await deployContract('DevicesRegistry')
+  const elumToken = await deployContract('ElumToken', "100000000000000000")
+  const elumNFT = await deployContract('ElumNFT')
 
-  const init_token_supply = 10000
-  const elumToken = await deployContract('ElumToken', init_token_supply)
-
-  const normal_nft_supply = 1000
-  const special_nft_supply = 1000
-  const normal_nft_price = 3
-  const special_nft_price = 5
-  const nft = await deployContract(
-    'NFT',
-    elumToken.address,
-    normal_nft_supply,
-    normal_nft_price,
-    special_nft_supply,
-    special_nft_price,
-  )
-
-  // await testCapacity();
+  await elumNFT.setTokenAddress(elumToken.address);
+  await elumNFT.addNewType( 'https://testminer.elumicate.com/api/metadata/NFT/{id}.json', 
+                            "3000000000000000000");
+  await elumNFT.mint([0], [1000]);
 
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
