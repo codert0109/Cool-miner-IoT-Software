@@ -103,9 +103,10 @@ export default observer(() => {
     const UpdateNFTStatus = () => {
         nft.getNFTLists()
             .then((data) => {
-                setNFTLists(data);
+                let info : any = data;
+                setNFTLists(info);
                 let curNFTStatus = [];
-                data.forEach(item => {
+                info.forEach(item => {
                     curNFTStatus.push({
                         NFT: parseInt(item.toString()),
                         Miner: 'Loading',
@@ -115,7 +116,7 @@ export default observer(() => {
 
                 setNFTStatus((e) => curNFTStatus);
 
-                data.forEach(item => {
+                info.forEach(item => {
                     auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
                         nft_id: item.toString()
                     }).then((data) => {

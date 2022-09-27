@@ -15,6 +15,7 @@ contract ElumStaking is Ownable{
     mapping (uint => STAKE_INFO) public NFT_TO_INFO;
 
     /* Begin OnlyOwner Module */
+
     function setTokenAddress(address _token_address) public virtual onlyOwner {
         require (_token_address != address(0), "invalid token address");
         token_address = _token_address;
@@ -29,6 +30,7 @@ contract ElumStaking is Ownable{
         require (multiplier >= 10000, "Multiplier should be greater than 1.0");
         STAKE_TYPE memory stakeItem;
 
+        stakeItem.id = stakeTypeList.length;
         stakeItem.period = period;
         stakeItem.amount = amount;
         stakeItem.multiplier = multiplier;
@@ -170,6 +172,10 @@ contract ElumStaking is Ownable{
             NFT_TO_INFO[nftID].type_id      = stakeType;
             NFT_TO_INFO[nftID].startTime    = block.timestamp;
         }
+    }
+
+    function getStakeTypeList() public view returns(STAKE_TYPE[] memory) {
+        return stakeTypeList;
     }
     /* End User Module */
 }

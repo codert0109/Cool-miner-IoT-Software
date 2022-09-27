@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/EntireLayout";
 import { createStyles, Table, Progress, Anchor, Button, Text, TextInput, Group, ScrollArea, SimpleGrid } from '@mantine/core';
-import NFTStore from "../components/Blockchain/NFT";
 import Swal from 'sweetalert2'
 import axios from "axios";
 import { useStore } from '@/store/index';

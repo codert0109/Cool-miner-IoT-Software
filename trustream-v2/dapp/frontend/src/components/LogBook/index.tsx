@@ -51,7 +51,6 @@ export default function () {
                     ]}
                 />
             </Group>
-            {tab == 'Staked' && <StakedView data={StackMockData.data} />}
             {tab == 'Reward' && <RewardView data={RewardMockData.data}/>}
         </div>
     );

@@ -57,7 +57,7 @@ async function main() {
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
-
+                                      
   // await AddWhiteLists(ContractObj)
   saveFrontendFiles(ContractInfo)
 }

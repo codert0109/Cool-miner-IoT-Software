@@ -19,10 +19,10 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function({label, className = ""}) {
+export default function({label, className = "", onClick = null}) {
     const { classes } = useStyles();
     return (
-        <div className={`${className} ${classes.labelstyle}`}>
+        <div onClick={(e) => { onClick ? onClick() : ''} } className={`${className} ${classes.labelstyle}`}>
             <span>{label}</span>
         </div>
     );
