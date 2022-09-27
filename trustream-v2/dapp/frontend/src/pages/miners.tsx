@@ -7,13 +7,12 @@ import { NetworkState } from '@/store/lib/NetworkState';
 import $ from "axios";
 import { recoverPersonalSignature } from "eth-sig-util";
 import Swal from 'sweetalert2';
-import NFTContractABI from '../contracts/NFT.json';
+import NFTContractABI from '../contracts/ElumNFT.json';
 import ContractAddress from '../contracts/contract-address.json';
 import { useEffect, useState } from "react";
 import Box from "@/components/Container/Box";
 import { getNFTIDFromAddress } from "../utils";
 import { observer } from 'mobx-react-lite';
-import { CLEANUP_LEAKED_REACTIONS_AFTER_MILLIS } from "mobx-react-lite/dist/utils/reactionCleanupTrackingCommon";
 
 const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
@@ -108,7 +107,7 @@ export default observer(() => {
                 let curNFTStatus = [];
                 data.forEach(item => {
                     curNFTStatus.push({
-                        NFT: item,
+                        NFT: parseInt(item.toString()),
                         Miner: 'Loading',
                         Connection: 'Loading'
                     });
@@ -118,10 +117,9 @@ export default observer(() => {
 
                 data.forEach(item => {
                     auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
-                        nft_id: item
+                        nft_id: item.toString()
                     }).then((data) => {
                         let info = data.data.data;
-                        
                         if (info.session) {
                             setNFTStatus([{
                                 NFT: info.nft_id,
@@ -152,9 +150,12 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     useEffect(() => {
-        setInterval(() => {
+        let timerID = setInterval(() => {
             UpdateLocalMinerInfo();
         }, 2000);
+        return () => {
+            clearInterval(timerID);
+        };
     }, []);
 
     useEffect(() => {
@@ -162,7 +163,7 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     const checkNFT = async () => {
-        const NFTContractAddress = ContractAddress.NFT;
+        const NFTContractAddress = ContractAddress.ElumNFT;
         try {
             let data = await god.currentNetwork.execContract({
                 address: NFTContractAddress,

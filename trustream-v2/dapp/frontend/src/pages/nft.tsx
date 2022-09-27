@@ -49,15 +49,15 @@ const useStyles = createStyles((theme) => ({
     marginBottom: {
         marginBottom: '10px'
     },
-    marketplace : {
-        fontSize : '1.5rem',
-        paddingLeft : 10
+    marketplace: {
+        fontSize: '1.5rem',
+        paddingLeft: 10
     }
 }));
 
 export default observer(() => {
     const { classes, theme } = useStyles();
-    const { god } = useStore();
+    const { god, nft } = useStore();
 
     const [tableData, setTableData] = useState([]);
     const [account, setAccount] = useState(null);
@@ -78,6 +78,69 @@ export default observer(() => {
         setAccount(info.account);
         setLoading(false);
     };
+
+    useEffect(() => {
+        if (god.currentNetwork.account === undefined)
+            return;
+        console.log('nft.getNFTLists called', god.currentNetwork.account);
+        nft.getNFTLists().then(async (data) => {
+            console.log('getNFTLists', data);
+            let items: any = data;
+            let normalInfo: any = await nft.getNFTInfo(0);
+
+            console.log('getNFTInfo', normalInfo);
+
+            if (items.length === 1) {
+                onStatus({
+                    account: god.currentNetwork.account,
+                    Info: [
+                        {
+                            type: 'NormalNFT',
+                            price: normalInfo.price / Math.pow(10, 18),
+                            totalSupply: normalInfo.totalSupply - normalInfo.remainSupply,
+                            remainSupply : normalInfo.remainSupply,
+                            maxSupply: normalInfo.totalSupply,
+                            balance: 1,
+                            id_list : [ ...items ]
+                        },
+                        {
+                            type: 'SpecialNFT',
+                            price: 5,
+                            totalSupply: 0,
+                            maxSupply: 1000,
+                            remainSupply : 1000,
+                            balance: 0,
+                            id_list : []
+                        },
+                    ]
+                });
+            } else {
+                onStatus({
+                    account: god.currentNetwork.account,
+                    Info: [
+                        {
+                            type: 'NormalNFT',
+                            price: normalInfo.price / Math.pow(10, 18),
+                            totalSupply: normalInfo.totalSupply - normalInfo.remainSupply,
+                            remainSupply : normalInfo.remainSupply,
+                            maxSupply: normalInfo.totalSupply,
+                            balance: 0,
+                            id_list : []
+                        },
+                        {
+                            type: 'SpecialNFT',
+                            price: 5,
+                            totalSupply: 0,
+                            maxSupply: 1000,
+                            remainSupply : 1000,
+                            balance: 0,
+                            id_list : []
+                        },
+                    ]
+                });
+            }
+        });
+    }, [god.currentNetwork.account]);
 
     // Update when url changes detect
     useEffect(() => {
@@ -166,15 +229,12 @@ export default observer(() => {
 
         let totalPrice = _normalCnt * _normalPrice + _specialCnt * _specialPrice;
 
-        totalPrice = new BigNumber(`${totalPrice}e18`);
+        let PriceinWei = new BigNumber(totalPrice) * new BigNumber(Math.pow(10, 18));
 
-        const tx = window._NFT.verifyNFT(_normalCnt, _specialCnt, {
-            value: totalPrice.toString(),
-            from: account
-        });
+        const tx = nft.buyNFT(0, 1, PriceinWei.toString());
 
         try {
-            const receipt = await tx;
+            const receipt : any = await tx;
             if (receipt.status == 0) {
                 Swal.fire(
                     'Error!',
@@ -200,7 +260,7 @@ export default observer(() => {
                 return;
             } else {
                 let reason = error.reason;
-                if (reason.indexOf('You are not a beta tester.') !== -1) {
+                if (reason.indexOf('The wallet address should be in the approved list.') !== -1) {
                     reason = "Your wallet account is not approved to buy this NFT.";
                 }
                 Swal.fire(
@@ -258,55 +318,16 @@ export default observer(() => {
     const getInfo = () => {
         return tableData.filter((item, index) => index == 0).map((row) => {
             return {
-                price: row.price,
-                left: row.maxSupply - row.totalSupply
+                price   : row.price,
+                left    : row.remainSupply,
+                id      : row.id_list.length > 0 ? row.id_list[0].toString() : -1
             }
         })[0];
     }
 
     return (
         <Layout>
-            <NFTStore onStatus={onStatus} />
             {isloading && <Loading />}
-            {/* {!isloading &&
-                <>
-                    <ScrollArea>
-                        {!hasNFT() && !hasBalance() &&
-                            <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
-                                Claim Tokens
-                            </Button>}
-                        <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Price</th>
-                                    <th>Supply</th>
-                                    <th>Owned</th>
-                                </tr>
-                            </thead>
-                            <tbody>{rows}</tbody>
-                        </Table>
-                    </ScrollArea>
-                    <SimpleGrid
-                        cols={4}
-                        breakpoints={[
-                            { maxWidth: 'xl', cols: 4 },
-                            { maxWidth: 'md', cols: 4 },
-                            { maxWidth: 'sm', cols: 2 },
-                        ]}
-                        className={classes.gridDiv}
-                    >
-                        <Button disabled={hasNFT()} onClick={onBuyNFT} className={classes.gridDivBtn}>
-                            Buy NFT
-                        </Button>
-                        <div></div>
-                        <FloatingLabelInput onChange={setWalletAddress} label="Wallet Address" placeholder="Input an wallet address." />
-                        <Button disabled={!hasNFT()} onClick={onTransferNFT} className={classes.gridDivBtn}>
-                            Transfer NFT
-                        </Button>
-                    </SimpleGrid>
-                </>
-            } */}
             {!isloading &&
                 <>
                     {!hasNFT() && !hasBalance() &&
@@ -317,7 +338,7 @@ export default observer(() => {
                         nftStatus={hasNFT()}
                         title="Testnet Miner"
                         imgurl="/images/nft/TestNet.png"
-                        price={getInfo().price + " IOTX"}/>}
+                        price={getInfo().price + " IOTX"} />}
                     <div className={classes.marketplace}>MARKETPLACE</div>
                     <SimpleGrid
                         cols={3}
@@ -331,7 +352,8 @@ export default observer(() => {
                             price={getInfo().price + " IOTX"}
                             comment={"Qty available " + getInfo().left}
                             callback={onBuyNFT}
-                            disabled={hasNFT()} />
+                            disabled={hasNFT()}
+                            id={getInfo().id} />
                         <NFTMinerNode
                             title="Public Pool Miner - mainnet"
                             imgurl="/images/nft/PublicPool.png"

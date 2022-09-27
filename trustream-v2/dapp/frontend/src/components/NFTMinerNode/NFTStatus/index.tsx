@@ -1,6 +1,6 @@
 import { createStyles, Modal, Button } from "@mantine/core";
 import { useEffect, useState } from "react";
-import NFTContractABI from '../../../contracts/NFT.json';
+import NFTContractABI from '../../../contracts/ElumNFT.json';
 import ContractAddress from '../../../contracts/contract-address.json';
 import { useStore } from '../../../store/index';
 import { getContractAddressFormat , getNFTIDFromAddress} from "../../../utils";
@@ -101,7 +101,7 @@ export default function NFTStatus({ nftStatus, title, imgurl, price }) {
     const [acquiredTime, setAcquiredTime] = useState("");
 
     useEffect(() => {
-        const NFTContractAddress = ContractAddress.NFT;
+        const NFTContractAddress = ContractAddress.ElumNFT;
         god.currentNetwork.execContract({
             address: NFTContractAddress,
             abi: NFTContractABI.abi,
@@ -179,7 +179,7 @@ export default function NFTStatus({ nftStatus, title, imgurl, price }) {
                     <img style={{ height: "100%" }} src="/images/nft/TestNet.png"></img>
                     <span className={classes.textinfo}>
                         <span>Testnet Miner </span>
-                        | <span style={{ whiteSpace: 'nowrap' }}>contract address {ContractAddress.NFT} </span>
+                        | <span style={{ whiteSpace: 'nowrap' }}>contract address {ContractAddress.ElumNFT} </span>
                         | <span style={{ whiteSpace: 'nowrap' }}>acquired on {acquiredTime}</span>
                     </span>
                 </div>

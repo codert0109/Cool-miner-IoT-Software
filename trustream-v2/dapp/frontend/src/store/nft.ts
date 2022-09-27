@@ -1,8 +1,8 @@
 // implement web3 -> backend authentication
 import { makeAutoObservable } from 'mobx';
 import RootStore from './root';
-import { publicConfig } from "../config/public";
-import { getNFTIDFromAddress } from '../utils';
+import ContractAddress from '../contracts/contract-address.json';
+import TokenContractABI from '../contracts/ElumNFT.json';
 
 export class NFTStore {
     rootStore: RootStore;
@@ -15,10 +15,27 @@ export class NFTStore {
         });
     }
 
-    async getNFTLists() {
-        // Should be update to use smart contracts.
+    callContract(method : string, params : Array<any>, options : Object = {}) {
         const { god } = this.rootStore;
+        return god.currentNetwork.execContract({
+            address : ContractAddress.ElumNFT,
+            abi : TokenContractABI.abi,
+            method : method,
+            params : [...params],
+            options : options
+        });
+    }
 
-        return [ getNFTIDFromAddress(god.currentNetwork.account) ] ;
+    async getNFTLists() {
+        const { god } = this.rootStore;
+        return this.callContract('balanceOf', [god.currentNetwork.account]);
+    }
+
+    async getNFTInfo(id) {
+        return this.callContract('NFT_TYPE_INFO', [id]);
+    }
+
+    async buyNFT(type_id, amount, value) {
+        return this.callContract('buyNFT', [type_id, amount], { value });
     }
 }

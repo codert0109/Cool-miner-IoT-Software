@@ -37,6 +37,7 @@ export class TokenStore {
             let tx = await this.callContract('balanceOf', [god.currentNetwork.account]);
             return tx.toString();
         } catch(err) {
+            console.error('getBalance return error', err, god.currentNetwork.account);
             return '0';
         }
     }
@@ -49,6 +50,7 @@ export class TokenStore {
             let value : number = Number(await tx);
             return value;
         } catch(err) {
+            console.error('getPrice return error', err);
             return 0;
         }
     }

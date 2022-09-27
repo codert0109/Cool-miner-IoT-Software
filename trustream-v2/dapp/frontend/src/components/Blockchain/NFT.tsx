@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { ethers } from "ethers";
 const { ethereum } = require('../../global.js').getWindow();
-import NFTArtifact from "../../contracts/NFT.json";
+import NFTArtifact from "../../contracts/ElumNFT.json";
 import contractAddress from "../../contracts/contract-address.json";
 import { useStore } from '../../store/index';
 import { NetworkState } from '@/store/lib/NetworkState';

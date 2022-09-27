@@ -53,7 +53,7 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = "" }) {
+export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = "", id = -1}) {
     const { god } = useStore();
     const { classes, theme } = useStyles();
     const [modalOpen, setModalOpen] = useState(false);
@@ -104,7 +104,7 @@ export default function ({ title, imgurl, price, comment, disabled = false, call
                                     </tr>
                                     <tr>
                                         <td>Token ID</td>
-                                        <td className={classes.text_right_align}>{getNFTIDFromAddress(god.currentNetwork.account)}</td>
+                                        <td className={classes.text_right_align}>{id}</td>
                                     </tr>
                                     <tr>
                                         <td>Token Standard</td>

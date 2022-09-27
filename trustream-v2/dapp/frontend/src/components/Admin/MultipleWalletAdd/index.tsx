@@ -11,7 +11,7 @@ import {
 import Swal from 'sweetalert2'
 import { getAddressFormat } from '../../../utils';
 
-import NFTContractABI from '../../../contracts/NFT.json';
+import NFTContractABI from '../../../contracts/ElumNFT.json';
 import ContractAddress from '../../../contracts/contract-address.json';
 
 
@@ -68,13 +68,13 @@ export default function () {
   }
 
   const addWalletAddress = (addressList) => {
-    const NFTContractAddress = ContractAddress.NFT;
+    const NFTContractAddress = ContractAddress.ElumNFT;
     isPending(true);
     god.currentNetwork.execContract({
       address: NFTContractAddress,
       abi: NFTContractABI.abi,
-      method: 'insertWhiteListArray',
-      params: [addressList]
+      method: 'affectWhiteList',
+      params: [addressList, true]
     }).then(async (tx) => {
       const receipt = await tx;
       await receipt.wait();

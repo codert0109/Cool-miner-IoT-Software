@@ -13,16 +13,16 @@ contract ElumNFT is Ownable, IElumNFT {
     uint256 public NFT_ID_COUNTER = 0;
 
     // Stores available NFT type lists.
-    mapping (uint256 => NFT_TYPE)       internal NFT_TYPE_INFO;
+    mapping (uint256 => NFT_TYPE)       public NFT_TYPE_INFO;
 
     // Mapping address to the array of NFT ids.
     mapping (address => NFT_BALANCE)    internal USER_TO_NFT;
 
     // Mapping NFT id to NFT_Info
-    mapping (uint256 => NFT_INFO)       internal NFT_TO_INFO;
+    mapping (uint256 => NFT_INFO)       public NFT_TO_INFO;
 
     // Mapping of Approved users that can mine data
-    mapping (address => bool)           internal whiteLists;
+    mapping (address => bool)           public whiteLists;
 
     // Token address
     address public token_address;
@@ -140,5 +140,14 @@ contract ElumNFT is Ownable, IElumNFT {
 
         return NFT_TO_INFO[nftID].owner == _address;
     }
+
+// Temporary Function. Needs to be updated.
+    function getAcquiredTime(address _address) public view returns (uint256) {
+        uint256[] memory id_lists = balanceOf(_address);
+        if (id_lists.length == 0)
+            return 0;
+        return NFT_TO_INFO[id_lists[0]].acquireTime;
+    }
+
     /* End User Module */
 }

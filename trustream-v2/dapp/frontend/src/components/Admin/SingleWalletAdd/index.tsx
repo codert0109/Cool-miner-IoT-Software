@@ -2,7 +2,7 @@ import { FloatingLabelInput } from "@/components/FloatingLabelInput";
 import { createStyles, Button, ScrollArea, SimpleGrid, Loader } from '@mantine/core';
 import { useStore } from '@/store/index';
 import React, { useState } from "react";
-import NFTContractABI from '../../../contracts/NFT.json';
+import NFTContractABI from '../../../contracts/ElumNFT.json';
 import ContractAddress from '../../../contracts/contract-address.json';
 import Swal from 'sweetalert2'
 
@@ -29,13 +29,13 @@ export default function TableReviews() {
     const [pending, isPending] = useState(false);
 
     const onNewTesterAdd = () => {
-        const NFTContractAddress = ContractAddress.NFT;
+        const NFTContractAddress = ContractAddress.ElumNFT;
         isPending(true);
         god.currentNetwork.execContract({
           address : NFTContractAddress,
           abi : NFTContractABI.abi,
-          method : 'insertWhiteList',
-          params : [walletAddress]
+          method : 'affectWhiteList',
+          params : [[walletAddress], true]
         }).then(async (tx) => {
             const receipt = await tx;
             await receipt.wait();

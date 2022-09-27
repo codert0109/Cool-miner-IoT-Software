@@ -6,7 +6,7 @@ export function getAddressFormat(address) {
 }
 
 export function getContractAddressFormat() {
-    return getAddressFormat(ContractAddress.NFT);
+    return getAddressFormat(ContractAddress.ElumNFT);
 }
 
 export function getNFTIDFromAddress(address) {
