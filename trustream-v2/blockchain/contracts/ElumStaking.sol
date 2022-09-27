@@ -36,6 +36,16 @@ contract ElumStaking is Ownable{
         stakeTypeList.push(stakeItem);
     }
 
+    function addStakeTypeList(  uint256[] calldata period, 
+                                uint256[] calldata amount, 
+                                uint256[] calldata multiplier) public virtual onlyOwner {
+        require (period.length == amount.length && amount.length == multiplier.length,
+            "period & amount & multiplier length should be equal.");
+        
+        for (uint i = 0; i < period.length; i++) 
+            addStakeType(period[i], amount[i], multiplier[i]);
+    }
+
     function updateStakeType(uint index, uint256 period, uint256 amount, uint256 multiplier) public virtual onlyOwner {
         require (index < stakeTypeList.length, "index should be less than stakeTypeList.length");
         require (multiplier >= 10000, "Multiplier should be greater than 1.0");

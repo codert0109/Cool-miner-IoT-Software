@@ -25,6 +25,7 @@ const useStyles = createStyles((theme) => ({
     outline: 'none',
     width: '100%',
     height: '100%',
+    fontFamily : 'Proxima-Nova-Bold!important'
   }
 }));
 
