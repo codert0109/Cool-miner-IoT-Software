@@ -336,8 +336,8 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\AppStorage.sol": {
-      "lastModificationDate": 1664178134636,
-      "contentHash": "952704704b235daad708aa0af8cbbaff",
+      "lastModificationDate": 1664236241840,
+      "contentHash": "17fa5c0ddf34157dc342685447d28dcb",
       "sourceName": "contracts/AppStorage.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -368,47 +368,9 @@
       ],
       "artifacts": []
     },
-    "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\Staking.sol": {
-      "lastModificationDate": 1664183252756,
-      "contentHash": "cbd1c70752b90a8133d0726ae7f9deb9",
-      "sourceName": "contracts/Staking.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/access/Ownable.sol",
-        "./AppStorage.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Staking"
-      ]
-    },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumNFT.sol": {
-      "lastModificationDate": 1664185370185,
-      "contentHash": "3c23acd57ea15f8420252f56d3ab4d3b",
+      "lastModificationDate": 1664233350032,
+      "contentHash": "29834f82fdff3b7b3834cbd7f05b86ba",
       "sourceName": "contracts/ElumNFT.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -435,6 +397,7 @@
       },
       "imports": [
         "@openzeppelin/contracts/access/Ownable.sol",
+        "./interfaces/IElumNFT.sol",
         "./AppStorage.sol"
       ],
       "versionPragmas": [
@@ -477,6 +440,81 @@
       ],
       "artifacts": [
         "Counters"
+      ]
+    },
+    "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\interfaces\\IElumNFT.sol": {
+      "lastModificationDate": 1664231654460,
+      "contentHash": "a7e5e204bdaff13ca9cc64a9f0bdece4",
+      "sourceName": "contracts/interfaces/IElumNFT.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IElumNFT"
+      ]
+    },
+    "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumStaking.sol": {
+      "lastModificationDate": 1664244049578,
+      "contentHash": "ba072518941816c74ad8d06b4e789fda",
+      "sourceName": "contracts/ElumStaking.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "./interfaces/IElumNFT.sol",
+        "./AppStorage.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ElumStaking"
       ]
     }
   }

@@ -34,6 +34,10 @@ async function main() {
                             "3000000000000000000");
   await elumNFT.mint([0], [1000]);
 
+  const elumStaking = await deployContract('ElumStaking');
+  await elumStaking.setTokenAddress(elumToken.address);
+  await elumStaking.setNFTAddress(elumNFT.address);
+
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')

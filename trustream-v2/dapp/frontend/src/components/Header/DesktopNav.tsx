@@ -3,7 +3,7 @@ import { observer, Observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '@/store/index';
 import { helper } from '@/lib/helper';
 import { Box, Center, createStyles, Menu, Text } from '@mantine/core';
-import NFTContractABI from '../../contracts/NFT.json';
+import NFTContractABI from '../../contracts/ElumNFT.json';
 import ContractAddress from '../../contracts/contract-address.json';
 
 import {
@@ -135,7 +135,7 @@ const DesktopNav = observer((props) => {
   const [isAdmin, setAdmin] = useState(false);
 
   useEffect(() => {
-    const NFTContractAddress = ContractAddress.NFT;
+    const NFTContractAddress = ContractAddress.ElumNFT;
     god.currentNetwork.execContract({
       address : NFTContractAddress,
       abi : NFTContractABI.abi,

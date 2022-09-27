@@ -25,3 +25,11 @@ struct STAKE_TYPE {
     uint256 amount;
     uint256 multiplier; // Decimal 4 which means 14000 indicates 1.4
 }
+
+struct STAKE_INFO {
+    uint256 type_id;
+    uint256 startTime;
+    uint256 amount;     // This can be different with STAKE_TYPE.amount 
+                        // if Admin manually update the STAKE_TYPE.
+    address staker;
+}

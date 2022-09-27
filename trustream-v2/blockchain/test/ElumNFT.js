@@ -29,7 +29,7 @@ describe("ElumNFT contract", function () {
     expect(await hardhatElumNFT.balanceOf(owner.address)).to.eql([]);
     await hardhatElumNFT.affectWhiteList([owner.address], true);
 
-    await hardhatElumNFT.buyNFT(0, 2);
+    await hardhatElumNFT.buyNFT(0, 2, { value : (BN(3) * BN(2) * BN('1000000000000000000')).toString() });
     expect(await hardhatElumNFT.balanceOf(owner.address)).to.be.eql([BN(0), BN(1)]);
   });
 
@@ -46,8 +46,8 @@ describe("ElumNFT contract", function () {
     await hardhatElumNFT.affectWhiteList([owner.address], true);
     expect(await hardhatElumNFT.balanceOf(owner.address)).to.eql([]);
 
-    await hardhatElumNFT.buyNFT(0, 2);
-    await hardhatElumNFT.buyNFT(1, 3);
+    await hardhatElumNFT.buyNFT(0, 2, { value : (BN(3) * BN(2) * BN('1000000000000000000')).toString() });
+    await hardhatElumNFT.buyNFT(1, 3, { value : (BN(5) * BN(3) * BN('1000000000000000000')).toString() });
     expect(await hardhatElumNFT.balanceOf(owner.address))
         .to.be.eql([BN(0), BN(1), BN(2), BN(3), BN(4)]);
 

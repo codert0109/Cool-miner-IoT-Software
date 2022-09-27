@@ -3,9 +3,10 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interfaces/IElumNFT.sol";
 import "./AppStorage.sol";
 
-contract ElumNFT is Ownable {
+contract ElumNFT is Ownable, IElumNFT {
     event AffectWhiteList(address[], bool);
 
     uint256 public NFT_TYPE_COUNTER = 0;
@@ -84,7 +85,7 @@ contract ElumNFT is Ownable {
         require (nftType < NFT_TYPE_COUNTER, "NFT Type should be less than NFT_TYPE_COUNTER");
         require (NFT_TYPE_INFO[nftType].remainSupply >= amount, "Not enough supply.");
         
-        require (msg.value >= amount * NFT_TYPE_INFO[nftType].price);
+        require (msg.value >= amount * NFT_TYPE_INFO[nftType].price, "Not enough payment.");
 
         for (uint i = 0; i < amount; i++) {
             NFT_TO_INFO[NFT_ID_COUNTER].owner = msg.sender;
@@ -131,6 +132,13 @@ contract ElumNFT is Ownable {
 
     function balanceOf(address _address) public view virtual returns (uint256[] memory) {
         return USER_TO_NFT[_address].idList;
+    }
+
+    function isOwner(address _address, uint256 nftID) external view override virtual returns (bool) {
+        require (nftID < NFT_ID_COUNTER, "NFT ID should be less than NFT_ID_COUNTER");
+        require (_address != address(0), "Address cannot be null");
+
+        return NFT_TO_INFO[nftID].owner == _address;
     }
     /* End User Module */
 }

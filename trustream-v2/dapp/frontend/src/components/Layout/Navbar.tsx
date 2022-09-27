@@ -29,7 +29,7 @@ import { User } from './User';
 import { WalletInfo } from '../WalletInfo';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import NFTContractABI from '../../contracts/NFT.json';
+import NFTContractABI from '../../contracts/ElumNFT.json';
 import ContractAddress from '../../contracts/contract-address.json';
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -108,7 +108,7 @@ export const NavbarSimple = observer(() => {
   const [isAdmin, setAdmin] = useState(false);
 
   useEffect(() => {
-    const NFTContractAddress = ContractAddress.NFT;
+    const NFTContractAddress = ContractAddress.ElumNFT;
     god.currentNetwork.execContract({
       address : NFTContractAddress,
       abi : NFTContractABI.abi,
