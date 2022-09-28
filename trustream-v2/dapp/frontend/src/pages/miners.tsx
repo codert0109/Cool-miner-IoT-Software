@@ -3,9 +3,7 @@ import { createStyles, Button, ScrollArea } from '@mantine/core';
 import { Send } from 'tabler-icons-react';
 import { publicConfig } from "../config/public";
 import { useStore } from '../store/index';
-import { NetworkState } from '@/store/lib/NetworkState';
 import $ from "axios";
-import { recoverPersonalSignature } from "eth-sig-util";
 import Swal from 'sweetalert2';
 import NFTContractABI from '../contracts/ElumNFT.json';
 import ContractAddress from '../contracts/contract-address.json';
@@ -13,6 +11,7 @@ import { useEffect, useState } from "react";
 import Box from "@/components/Container/Box";
 import { getNFTIDFromAddress } from "../utils";
 import { observer } from 'mobx-react-lite';
+import { Select } from '@mantine/core';
 
 const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
@@ -53,8 +52,8 @@ const useStyles = createStyles((theme) => ({
         borderBottom: '1px solid black'
     },
 
-    btn_th : {
-        width : 110
+    btn_th: {
+        width: 110
     }
 }));
 
@@ -67,6 +66,11 @@ export default observer(() => {
     const [NFTStatus, setNFTStatus] = useState([]);
     const [minerName, setMinerName] = useState('');
     const [minerSession, setMinerSession] = useState('');
+    const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
+
+    useEffect(() => {
+        nft.refresh();
+    }, [god.currentNetwork.account]);
 
     const UpdateLocalMinerInfo = () => {
         const url = `${publicConfig.DEVICE_URL}/get_status`;
@@ -79,7 +83,7 @@ export default observer(() => {
                     setMinerSession('');
                 } else {
                     auth.$().post(`${BACKEND_URL}/api/nft_auth/verifySignature`, {
-                        signature : info.signature
+                        signature: info.signature
                     }).then((data) => {
                         if (data.data.status === 'OK') {
                             setMinerName('');
@@ -103,7 +107,7 @@ export default observer(() => {
     const UpdateNFTStatus = () => {
         nft.getNFTLists()
             .then((data) => {
-                let info : any = data;
+                let info: any = data;
                 setNFTLists(info);
                 let curNFTStatus = [];
                 info.forEach(item => {
@@ -202,10 +206,19 @@ export default observer(() => {
             return;
         }
 
+        if (selectedNFT == null) {
+            Swal.fire(
+                'Info',
+                `<p>You need to choose an NFT to secure your Mining Connection.</p>`,
+                'info'
+            )
+            return;
+        }
+
         const performAction = () => {
             auth.$().post(`${BACKEND_URL}/api/nft_auth/create`, {
                 address: god.currentNetwork.account,
-                nft_id: getNFTIDFromAddress(god.currentNetwork.account),
+                nft_id: selectedNFT,
                 miner: minerName // we should upgrade this one
             }).then((data) => {
                 Swal.fire({
@@ -336,16 +349,45 @@ export default observer(() => {
         );
     };
 
+    if (nft.loading) {
+        return (
+            <Layout></Layout>
+        )
+    }
+
+    const renderNFTSelectOptions = () => {
+        return nft.infoList.map((item, index) => {
+            return {
+                value : nft.idList[index].toString(),
+                label : "NFT " + nft.idList[index].toString(),
+                group : 'Testnet Miner'
+            }
+        });
+    };
+
     return (
         <Layout>
-            <Button
-                style={{ marginBottom: '10px' }}
-                onClick={onSecureMinerConnection}
-                rightIcon={<Send size={18} />}
-                disabled={minerName === ''}
-                sx={{ paddingRight: 12 }}>
-                {minerName !== '' ? `Secure ${minerName} Connection` : `Secure Connection`}
-            </Button>
+            <div style={{display : 'flex'}}>
+                <Select
+                    placeholder={nft.infoList.length > 0 ? "Choose NFT to Mine" : "No NFTs to assign"}
+                    data={renderNFTSelectOptions()}
+                    style={{
+                        marginRight : 10
+                    }}
+                    onChange={setSelectedNFT}
+                />
+
+                <Button
+                    style={{ marginBottom: '10px' }}
+                    onClick={onSecureMinerConnection}
+                    rightIcon={<Send size={18} />}
+                    disabled={minerName === ''}
+                    sx={{ paddingRight: 12 }}>
+                    {minerName !== '' ? `Secure ${minerName} Connection` : `Secure Connection`}
+                </Button>
+            </div>
+
+
             <Box label="My Miners">
                 <table className={classes.NFTTable}>
                     <thead className={classes.thead}>
@@ -358,40 +400,40 @@ export default observer(() => {
                     </thead>
                     <tbody>
                         {
-                            NFTStatus.length == 0 ? 
+                            NFTStatus.length == 0 ?
                                 <tr key={0}>
-                                    <td colSpan={4} rowSpan={1} style={{ textAlign : 'center' }}>
+                                    <td colSpan={4} rowSpan={1} style={{ textAlign: 'center' }}>
                                         No miners currently assigned.
                                     </td>
                                 </tr>
-                            : NFTStatus.map((item, index) =>
-                                <tr key={index}>
-                                    <td className={classes.center} key="1">
-                                        {item.Miner}
-                                    </td>
-                                    <td className={`${classes.green} ${classes.center}`} key="2">
-                                        {item.Connection}
-                                    </td>
-                                    <td className={`${classes.green} ${classes.center}`} key="3">
-                                        <div>
-                                            {item.NFT}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {item.Connection === 'Assigned' &&
-                                                <Button
-                                                    onClick={() => onRemoveConnection(item.NFT)}
-                                                    className={classes.button}
-                                                    // variant="white"
-                                                    size="xs">
-                                                    Remove Miner
-                                                </Button>
-                                            }
-                                        </div>
-                                    </td>
-                                </tr>
-                            )
+                                : NFTStatus.map((item, index) =>
+                                    <tr key={index}>
+                                        <td className={classes.center} key="1">
+                                            {item.Miner}
+                                        </td>
+                                        <td className={`${classes.green} ${classes.center}`} key="2">
+                                            {item.Connection}
+                                        </td>
+                                        <td className={`${classes.green} ${classes.center}`} key="3">
+                                            <div>
+                                                {item.NFT}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {item.Connection === 'Assigned' &&
+                                                    <Button
+                                                        onClick={() => onRemoveConnection(item.NFT)}
+                                                        className={classes.button}
+                                                        // variant="white"
+                                                        size="xs">
+                                                        Remove Miner
+                                                    </Button>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
                         }
                     </tbody>
                 </table>

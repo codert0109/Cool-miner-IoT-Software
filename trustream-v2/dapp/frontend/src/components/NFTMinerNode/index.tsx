@@ -1,4 +1,4 @@
-import { createStyles, Button, Modal } from '@mantine/core';
+import { createStyles, Button, Modal, Loader } from '@mantine/core';
 import Swal from 'sweetalert2'
 import React, { useState } from "react";
 import { getContractAddressFormat , getNFTIDFromAddress} from "../../utils";
@@ -53,7 +53,7 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = "", id = -1}) {
+export default function ({ title, imgurl, price, comment, disabled = false, callback = null, text = "", id = -1, pending = false}) {
     const { god } = useStore();
     const { classes, theme } = useStyles();
     const [modalOpen, setModalOpen] = useState(false);
@@ -90,7 +90,7 @@ export default function ({ title, imgurl, price, comment, disabled = false, call
                     </div>}
                     {isDetailShow === false && <div>
                         <Button disabled={disabled} onClick={onBuy} className={classes.buybtn}>
-                            BUY
+                            {pending && <Loader size="xs" style={{ marginRight : 10}} />} BUY
                         </Button>
                     </div>}
                     {

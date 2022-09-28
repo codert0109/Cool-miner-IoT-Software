@@ -83,6 +83,23 @@ export default observer((props: Props) => {
 
   const [stakeTypeList, setStakeTypeList] = useState([]);
 
+  useEffect(() => {
+    if (props.period != undefined) {
+      setActivePeriod(props.period)
+    }
+  }, [props.period]);
+
+  useEffect(() => {
+    if (props.amount != undefined) {
+      setAmount(props.amount)
+    }
+  }, [props.amount]);
+
+  useEffect(() => {
+    if (props.id != undefined)
+      setActiveNFT(props.id)
+  }, [props.id]);
+
   const refresh = async () => {
     let value: any;
     value = await nft.getNFTLists();
@@ -156,7 +173,7 @@ export default observer((props: Props) => {
 
     let maxIndex = -1;
 
-    console.log('stakeTypeList', stakeTypeList, activePeriod, amount);
+    console.log('stakeTypeList', stakeTypeList, activePeriod, amount, props.id);
     stakeTypeList.forEach((item, index) => {
       if (item.period == activePeriod * 86400 && item.amount <= amount) {
         if (maxIndex == -1 || stakeTypeList[maxIndex].multiplier < item.multiplier)
@@ -175,7 +192,7 @@ export default observer((props: Props) => {
 
     Swal.fire({
       title: 'Info',
-      html: `<p>You will stake ${stakeTypeList[maxIndex].amount} tokens.</p>
+      html: `<p>You will stake ${stakeTypeList[maxIndex].amount} tokens to ${props.id ? props.id : activeNFT} NFT.</p>
              <p>Period: ${stakeTypeList[maxIndex].period / 86400} days</p>
              <p>Multiplier: ${stakeTypeList[maxIndex].multiplier / 10000}</p>`,
       icon: 'info',
@@ -188,7 +205,7 @@ export default observer((props: Props) => {
           const receipt = await tx;
           await receipt.wait();
 
-          stake.stakeNFT(activeNFT, stakeTypeList[maxIndex].id)
+          stake.stakeNFT(props.id ? props.id : activeNFT, stakeTypeList[maxIndex].id)
             .then(async (tx) => {
               const receipt = await tx;
               await receipt.wait();
@@ -226,6 +243,7 @@ export default observer((props: Props) => {
   };
 
   const renderNFTSelect = () => {
+    let idList = props.id == undefined ? nftList : [props.id];
     return (
       <select
         placeholder='Input an Number'
@@ -233,7 +251,7 @@ export default observer((props: Props) => {
         className={classes.inputtext}
         onChange={onInputNFTChange}>
         {
-          nftList.map(item => <option value={item}>{item}</option>)
+          idList.map(item => <option value={item}>{item}</option>)
         }
       </select>
     );
@@ -255,6 +273,16 @@ export default observer((props: Props) => {
           onClick={() => onSelectLabel(item)} label={item} />
       </Grid.Col>
     )
+  };
+
+  const getButtonDisableStatus = () => {
+    console.log('period', props.period, activePeriod);
+    console.log('amount', props.amount, amount);
+    if (props.period != undefined && activePeriod < props.period)
+      return true;
+    if (props.amount != undefined && amount < props.amount)
+      return true;
+    return false;
   };
 
   return (
@@ -302,8 +330,9 @@ export default observer((props: Props) => {
             className={classes.button}
             onClick={() => onStaking()}
             color="yellow"
+            disabled={getButtonDisableStatus()}
           >
-            Stake
+            { props.id ? 'Restake' : 'Stake' }
           </Button>
         </Grid.Col>
       </Grid>
@@ -311,4 +340,8 @@ export default observer((props: Props) => {
   );
 });
 
-interface Props { }
+interface Props { 
+  id? : number,
+  period? : number,
+  amount? : number
+}

@@ -51,189 +51,127 @@ const useStyles = createStyles((theme) => ({
     marketplace: {
         fontSize: '1.5rem',
         paddingLeft: 10
+    },
+    caption: {
+        fontSize: '1.5rem',
+        paddingLeft: 10
+    },
+    infodiv: {
+        padding: 5,
+        paddingLeft: 0,
+        marginTop: 10,
+        marginLeft: 10,
+        fontSize: '1.2rem',
+        marginBottom: 10,
+        cursor: 'pointer',
+        height: 40,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    warning: {
+        border: '2px solid #1864ab',
+        borderLeft: '5px solid #1864ab',
+        backgroundColor: '#4784e4',
+        paddingLeft: 10,
+        color : '#FFFFFF'
     }
 }));
 
 export default observer(() => {
     const { classes, theme } = useStyles();
     const { god, nft } = useStore();
-
-    const [tableData, setTableData] = useState([]);
-    const [account, setAccount] = useState(null);
-
-    const [isBuying, setBuyStatus] = useState(false);
-
-    const [normalBuyCnt, setNormalBuyCnt] = useState(1);
-    const [specialBuyCnt, setSpecialBuyCnt] = useState(0);
-
-    const [normalTransferCnt, setNormalTransferCnt] = useState(1);
-    const [specialTransferCnt, setSpecialTransferCnt] = useState(0);
-    const [walletTransferArddress, setWalletAddress] = useState(0);
-
-    const [isloading, setLoading] = useState(true);
-
-    const onStatus = (info) => {
-        setTableData(info.Info);
-        setAccount(info.account);
-        setLoading(false);
-    };
+    const [pending, isPending] = useState(false);
 
     useEffect(() => {
-        if (god.currentNetwork.account === undefined)
-            return;
-        console.log('nft.getNFTLists called', god.currentNetwork.account);
-        nft.getNFTLists().then(async (data) => {
-            console.log('getNFTLists', data);
-            let items: any = data;
-            let normalInfo: any = await nft.getNFTInfo(0);
-
-            console.log('getNFTInfo', normalInfo);
-
-            if (items.length === 1) {
-                onStatus({
-                    account: god.currentNetwork.account,
-                    Info: [
-                        {
-                            type: 'NormalNFT',
-                            price: normalInfo.price / Math.pow(10, 18),
-                            totalSupply: normalInfo.totalSupply - normalInfo.remainSupply,
-                            remainSupply : normalInfo.remainSupply,
-                            maxSupply: normalInfo.totalSupply,
-                            balance: 1,
-                            id_list : [ ...items ]
-                        },
-                        {
-                            type: 'SpecialNFT',
-                            price: 5,
-                            totalSupply: 0,
-                            maxSupply: 1000,
-                            remainSupply : 1000,
-                            balance: 0,
-                            id_list : []
-                        },
-                    ]
-                });
-            } else {
-                onStatus({
-                    account: god.currentNetwork.account,
-                    Info: [
-                        {
-                            type: 'NormalNFT',
-                            price: normalInfo.price / Math.pow(10, 18),
-                            totalSupply: normalInfo.totalSupply - normalInfo.remainSupply,
-                            remainSupply : normalInfo.remainSupply,
-                            maxSupply: normalInfo.totalSupply,
-                            balance: 0,
-                            id_list : []
-                        },
-                        {
-                            type: 'SpecialNFT',
-                            price: 5,
-                            totalSupply: 0,
-                            maxSupply: 1000,
-                            remainSupply : 1000,
-                            balance: 0,
-                            id_list : []
-                        },
-                    ]
-                });
-            }
-        });
+        nft.refresh();
     }, [god.currentNetwork.account]);
 
     // Update when url changes detect
     useEffect(() => {
         Router.events.on('routeChangeComplete', () => {
-            setLoading(true);
+            nft.refresh();
         });
     }, []);
 
-    const onTransferNFT = async () => {
-        let _normalCnt = parseInt(normalTransferCnt.toString());
-        let _specialCnt = parseInt(specialTransferCnt.toString());
-        if (_normalCnt < 0 || _specialCnt < 0 || (_normalCnt + _specialCnt == 0)) {
+    // const onTransferNFT = async () => {
+    //     let _normalCnt = parseInt(normalTransferCnt.toString());
+    //     let _specialCnt = parseInt(specialTransferCnt.toString());
+    //     if (_normalCnt < 0 || _specialCnt < 0 || (_normalCnt + _specialCnt == 0)) {
+    //         Swal.fire(
+    //             'Error!',
+    //             'Transfer Number Should Be Positive.',
+    //             'error'
+    //         )
+    //         return;
+    //     }
+
+    //     if (walletTransferArddress == 0) {
+    //         Swal.fire(
+    //             'Error!',
+    //             'Wallet cannot be empty.',
+    //             'error'
+    //         )
+    //         return;
+    //     }
+
+    //     const tx = window._NFT.transferNFT(_normalCnt, _specialCnt, walletTransferArddress);
+
+    //     try {
+    //         const receipt = await tx;
+    //         if (receipt.status == 0) {
+    //             Swal.fire(
+    //                 'Error!',
+    //                 'Action failed',
+    //                 'error'
+    //             )
+    //         } else {
+    //             await receipt.wait();
+    //             Swal.fire(
+    //                 'Awesome!',
+    //                 'You transfered NFTs!',
+    //                 'success'
+    //             )
+    //         }
+    //     } catch (error) {
+    //         const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+    //         if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
+    //             Swal.fire(
+    //                 'Error!',
+    //                 'You rejected transaction.',
+    //                 'error'
+    //             )
+    //             return;
+    //         } else {
+
+    //             Swal.fire(
+    //                 'Error!',
+    //                 'Something went wrong.',
+    //                 'error'
+    //             )
+    //         }
+    //     }
+    // };
+
+    const onBuyNFT = async (type_id: number) => {
+        if (nft.loading) {
             Swal.fire(
                 'Error!',
-                'Transfer Number Should Be Positive.',
+                'Cannot Buy NFT while loading information.',
                 'error'
             )
             return;
         }
 
-        if (walletTransferArddress == 0) {
-            Swal.fire(
-                'Error!',
-                'Wallet cannot be empty.',
-                'error'
-            )
-            return;
-        }
-
-        const tx = window._NFT.transferNFT(_normalCnt, _specialCnt, walletTransferArddress);
-
-        try {
-            const receipt = await tx;
-            if (receipt.status == 0) {
-                Swal.fire(
-                    'Error!',
-                    'Action failed',
-                    'error'
-                )
-            } else {
-                await receipt.wait();
-                Swal.fire(
-                    'Awesome!',
-                    'You transfered NFTs!',
-                    'success'
-                )
-            }
-        } catch (error) {
-            const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
-            if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
-                Swal.fire(
-                    'Error!',
-                    'You rejected transaction.',
-                    'error'
-                )
-                return;
-            } else {
-
-                Swal.fire(
-                    'Error!',
-                    'Something went wrong.',
-                    'error'
-                )
-            }
-        }
-    };
-
-    const onBuyNFT = async () => {
-        let _normalCnt = parseInt(normalBuyCnt.toString());
-        let _specialCnt = parseInt(specialBuyCnt.toString());
-
-        let _normalPrice = -1, _specialPrice = -1;
-
-        tableData.forEach((item, index) => {
-            if (item.type == 'NormalNFT') {
-                _normalPrice = item.price;
-            } else if (item.type == 'SpecialNFT') {
-                _specialPrice = item.price;
-            }
-        });
-
-        if (_normalPrice == -1) {
-            console.log('not received price data');
-            return;
-        }
-
-        let totalPrice = _normalCnt * _normalPrice + _specialCnt * _specialPrice;
+        let totalPrice = nft.typeList[type_id].price;
 
         let PriceinWei = new BigNumber(totalPrice) * new BigNumber(Math.pow(10, 18));
 
-        const tx = nft.buyNFT(0, 1, PriceinWei.toString());
+        const tx = nft.buyNFT(type_id, 1, PriceinWei.toString());
+
+        isPending(true);
 
         try {
-            const receipt : any = await tx;
+            const receipt: any = await tx;
             if (receipt.status == 0) {
                 Swal.fire(
                     'Error!',
@@ -247,6 +185,7 @@ export default observer(() => {
                     'Your NFT purchase has been completed!',
                     'success'
                 )
+                nft.refresh();
             }
         } catch (error) {
             const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -268,11 +207,13 @@ export default observer(() => {
                     'error'
                 )
             }
+        } finally {
+            isPending(false);
         }
     };
 
     const hasNFT = () => {
-        return tableData[0] ? tableData[0].balance > 0 : false;
+        return nft.idList.length > 0;
     };
 
     const hasBalance = () => {
@@ -280,6 +221,13 @@ export default observer(() => {
     };
 
     const onClaimTokens = () => {
+        if (nft.loading) {
+            Swal.fire(
+                'Error!',
+                'Cannot Buy NFT while loading information.',
+                'error'
+            )
+        }
         if (hasNFT() || hasBalance()) {
             Swal.fire(
                 'Error!',
@@ -288,7 +236,7 @@ export default observer(() => {
             )
             return;
         }
-        axios.post(`${BACKEND_URL}/api/claim_tokens`, { account })
+        axios.post(`${BACKEND_URL}/api/claim_tokens`, { account: god.currentNetwork.account })
             .then((data) => {
                 if (data.data == 'success') {
                     god.pollingData();
@@ -314,30 +262,46 @@ export default observer(() => {
             });
     };
 
-    const getInfo = () => {
-        return tableData.filter((item, index) => index == 0).map((row) => {
-            return {
-                price   : row.price,
-                left    : row.remainSupply,
-                id      : row.id_list.length > 0 ? row.id_list[0].toString() : -1
-            }
-        })[0];
-    }
+    const renderOWNEDNFT = () => {
+        if (hasNFT() == false) {
+            return (
+                <div className={classes.infodiv + ' ' + classes.warning}>
+                    You need to buy an NFT in order to mine.
+                </div>
+            )
+        }
+
+        return (
+            <>
+                <div className={classes.caption}>OWNED</div>
+                {
+                    nft.infoList.map((item, index) => {
+                        return (
+                            <NFTStatus
+                                title="Testnet Miner"
+                                imgurl="/images/nft/TestNet.png"
+                                price={nft.typeList[item.nftType].price + " IOTX"} 
+                                acquiredTime={item.acquireTime}
+                                id={nft.idList[index]}
+                                />
+                        )
+                    })
+                }
+            </>
+        );
+    };
 
     return (
         <Layout>
-            {isloading && <Loading />}
-            {!isloading &&
+            {nft.loading && <Loading />}
+            {!nft.loading &&
                 <>
                     {!hasNFT() && !hasBalance() &&
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
                             Claim Tokens
                         </Button>}
-                    {<NFTStatus
-                        nftStatus={hasNFT()}
-                        title="Testnet Miner"
-                        imgurl="/images/nft/TestNet.png"
-                        price={getInfo().price + " IOTX"} />}
+                    {renderOWNEDNFT()}
+
                     <div className={classes.marketplace}>MARKETPLACE</div>
                     <SimpleGrid
                         cols={3}
@@ -348,11 +312,12 @@ export default observer(() => {
                         <NFTMinerNode
                             title="Testnet Miner"
                             imgurl="/images/nft/TestNet.png"
-                            price={getInfo().price + " IOTX"}
-                            comment={"Qty available " + getInfo().left}
-                            callback={onBuyNFT}
-                            disabled={hasNFT()}
-                            id={getInfo().id} />
+                            price={nft.typeList[0].price + " IOTX"}
+                            comment={"Qty available " + nft.typeList[0].remainSupply}
+                            callback={() => onBuyNFT(0)}
+                            pending={pending}
+                            disabled={pending}
+                            id={nft.typeList[0].totalSupply - nft.typeList[0].remainSupply} />
                         <NFTMinerNode
                             title="Public Pool Miner - mainnet"
                             imgurl="/images/nft/PublicPool.png"

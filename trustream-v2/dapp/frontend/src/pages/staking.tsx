@@ -36,10 +36,10 @@ export default observer((props: Props) => {
           <Token />
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
-          <StakeTokens />
+          <StakeTokens/>
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
-          <StakingLog />
+          <StakingLog/>
         </Grid.Col>
       </Grid>
     </Layout>

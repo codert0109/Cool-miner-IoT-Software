@@ -168,7 +168,7 @@ export const NavbarSimple = observer(() => {
         // backgroundColor: '#C7C7C7C0',
         backgroundColor : theme.colorScheme == 'dark' ? '#000000C0' : '#C7C7C7F0',
         boxShadow : 'rgb(255 255 255 / 19%) 2px 0px 10px 0px',
-        zIndex : 1000
+        zIndex : 101
       }}
       p="md" 
       hiddenBreakpoint="sm" 

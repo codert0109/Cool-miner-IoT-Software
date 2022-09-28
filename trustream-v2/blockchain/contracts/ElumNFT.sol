@@ -13,7 +13,7 @@ contract ElumNFT is Ownable, IElumNFT {
     uint256 public NFT_ID_COUNTER = 0;
 
     // Stores available NFT type lists.
-    mapping (uint256 => NFT_TYPE)       public NFT_TYPE_INFO;
+    NFT_TYPE[] public NFT_TYPE_INFO;
 
     // Mapping address to the array of NFT ids.
     mapping (address => NFT_BALANCE)    internal USER_TO_NFT;
@@ -36,10 +36,14 @@ contract ElumNFT is Ownable, IElumNFT {
     function addNewType(string calldata metadataURI, 
                         uint256 price) 
                         public virtual onlyOwner returns (uint256) {
-        NFT_TYPE_INFO[NFT_TYPE_COUNTER].metadataURI = metadataURI;
-        NFT_TYPE_INFO[NFT_TYPE_COUNTER].price = price;
-        NFT_TYPE_INFO[NFT_TYPE_COUNTER].totalSupply = 0;
-        NFT_TYPE_INFO[NFT_TYPE_COUNTER].remainSupply = 0;
+        NFT_TYPE memory info;
+        
+        info.metadataURI = metadataURI;
+        info.price = price;
+        info.totalSupply = 0;
+        info.remainSupply = 0;
+        NFT_TYPE_INFO.push(info);
+
         ++ NFT_TYPE_COUNTER;
 
         return NFT_TYPE_COUNTER - 1;
@@ -96,6 +100,8 @@ contract ElumNFT is Ownable, IElumNFT {
             ++ NFT_ID_COUNTER;
         }
 
+        NFT_TYPE_INFO[nftType].remainSupply -= amount;
+
         return true;
     }
 
@@ -141,7 +147,10 @@ contract ElumNFT is Ownable, IElumNFT {
         return NFT_TO_INFO[nftID].owner == _address;
     }
 
-// Temporary Function. Needs to be updated.
+    function getNFTTypeInfo() public view returns (NFT_TYPE[] memory) {
+        return NFT_TYPE_INFO;
+    }
+
     function getAcquiredTime(address _address) public view returns (uint256) {
         uint256[] memory id_lists = balanceOf(_address);
         if (id_lists.length == 0)
