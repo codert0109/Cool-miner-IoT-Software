@@ -294,7 +294,7 @@ export default observer(() => {
     return (
         <Layout>
             {nft.loading && <Loading />}
-            {!nft.loading &&
+            {!nft.loading && nft.typeList.length > 0 &&
                 <>
                     {!hasNFT() && !hasBalance() &&
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
