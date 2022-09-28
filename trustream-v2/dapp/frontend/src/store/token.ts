@@ -57,6 +57,10 @@ export class TokenStore {
         }
     }
 
+    async transfer(address, amount) {
+        return this.callContract('transfer', [address, amount]);
+    }
+
     async getPrice() {
         // Should be update to use smart contracts.
         const { god } = this.rootStore;
