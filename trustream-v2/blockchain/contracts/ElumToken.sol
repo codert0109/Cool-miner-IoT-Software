@@ -20,6 +20,7 @@ contract ElumToken is IElumToken, ERC20, Ownable {
         tokenPrice = _price;
     }
 
+    /* Begin of Owner Module */
     function setTokenPrice(uint256 newPrice) external virtual onlyOwner {
         tokenPrice = newPrice;
     }
@@ -27,6 +28,11 @@ contract ElumToken is IElumToken, ERC20, Ownable {
     function setRewardContract(address _rewardContract) external override virtual onlyOwner {
         rewardContract = _rewardContract;
     }
+
+    function withDraw(address payable _address) public virtual onlyOwner {
+        _address.transfer(address(this).balance);
+    }
+    /* End of Owner Module */
 
     function buyTokens(uint256 amount) external payable {
         require (msg.value >= amount * tokenPrice, "Not enough payment.");

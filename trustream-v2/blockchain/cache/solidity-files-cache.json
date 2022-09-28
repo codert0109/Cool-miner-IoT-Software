@@ -220,8 +220,8 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumToken.sol": {
-      "lastModificationDate": 1664183562826,
-      "contentHash": "11c291c6c30d38766819f72306324245",
+      "lastModificationDate": 1664329587625,
+      "contentHash": "3ed3d2ad172d30151ca1c590c1f6549a",
       "sourceName": "contracts/ElumToken.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -478,8 +478,8 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumStaking.sol": {
-      "lastModificationDate": 1664271056634,
-      "contentHash": "640a9cb222e1dc6c4baa7386ae3d66df",
+      "lastModificationDate": 1664329305691,
+      "contentHash": "6953355ed2f4ec9ec066ca3244596644",
       "sourceName": "contracts/ElumStaking.sol",
       "solcConfig": {
         "version": "0.8.4",

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from "@/components/Container/Box";
-import { createStyles, Grid, Button, NumberInput } from '@mantine/core';
+import { createStyles, Grid, Button, NumberInput, Loader } from '@mantine/core';
 import WhiteLabel from "@/components/WhiteLabel";
 import { useStore } from '../../store/index';
 import Swal from 'sweetalert2';
@@ -26,25 +26,25 @@ const useStyles = createStyles((theme) => ({
     width: '100%',
     height: '100%',
     fontFamily : 'Proxima-Nova-Bold!important'
+  },
+  vertcenter : {
+    alignItems : 'center'
+  },
+  center_container : {
+    height : 24,
+    display : 'flex',
+    alignItems : 'center'
   }
 }));
 
 export default observer((props: Props) => {
   const { god, token } = useStore();
   const { classes } = useStyles();
-  const [price, setPrice] = useState(0);
   const [amount, setAmount] = useState(0);
 
-  const refresh = async () => {
-    let value: number;
-    value = await token.getPrice();
-    value /= Math.pow(10, 18);
-    setPrice(value);
-  };
-
   useEffect(() => {
-    refresh();
-  }, []);
+    token.refresh();
+  }, [god.currentNetwork.account]);
 
   const onInputChange = (e) => {
     if (e.target.value == '')
@@ -54,14 +54,14 @@ export default observer((props: Props) => {
   };
 
   const onBuy = () => {
-    if (amount == 0) {
+    if (amount <= 0) {
       Swal.fire(
         'Info',
         `<p>Please input a positive number to buy tokens.</p>`,
         'info'
       );
     } else {
-      const value = BigInt(amount) * BigInt(price * Math.pow(10, 18));
+      const value = BigInt(amount) * BigInt(token.price * Math.pow(10, 18));
       token.buy(amount, value.toString())
         .then(async (tx) => {
           const receipt = await tx;
@@ -71,6 +71,7 @@ export default observer((props: Props) => {
             `<p>You bought ${amount} tokens successfully.</p>`,
             'success'
           );
+          token.refresh();
         })
         .catch((err) => {
           console.log('error', err);
@@ -83,6 +84,17 @@ export default observer((props: Props) => {
     }
   };
 
+  const renderElementWithLoader = (element) => {
+    if (token.loading) {
+      return (
+        <div className={classes.center_container}>
+          <Loader size={18}/>
+        </div>
+      )
+    }
+    return element;
+  };
+
   return (
     <Box label="Buy ELUM Tokens" bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }}>
@@ -92,13 +104,15 @@ export default observer((props: Props) => {
               <WhiteLabel className="" label="Token Amount" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label={
-                <input
-                  type="text"
-                  placeholder='Input an Number'
-                  value={amount}
-                  className={classes.inputtext}
-                  onChange={onInputChange}></input>
+              <WhiteLabel className={classes.vertcenter} label={
+                renderElementWithLoader(
+                  <input
+                    type="text"
+                    placeholder='Input an Number'
+                    value={amount}
+                    className={classes.inputtext}
+                    onChange={onInputChange}></input>
+                )
               } />
             </Grid.Col>
           </Grid>
@@ -109,7 +123,13 @@ export default observer((props: Props) => {
               <WhiteLabel className="" label="Price" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label={`${price} IOTX`} />
+              <WhiteLabel className="" label={
+                renderElementWithLoader(
+                  <>
+                    {token.price} IOTX
+                  </>
+                )
+              } />
             </Grid.Col>
           </Grid>
         </Grid.Col>
@@ -118,6 +138,7 @@ export default observer((props: Props) => {
             color='green'
             size="xs"
             className={classes.button}
+            disabled={token.loading}
             onClick={() => onBuy()}>Buy</Button>
 
         </Grid.Col>

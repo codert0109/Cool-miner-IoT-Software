@@ -45,7 +45,7 @@ export default observer((props: Props) => {
 
         let stakeInfo: any = await stake.getStakingInfo(props.id);
 
-        if (stakeInfo == null) {
+        if (stakeInfo == null || stakeInfo.amount == 0) {
             setStakeInfo(null);
         } else {
             setStakeInfo({
@@ -60,6 +60,8 @@ export default observer((props: Props) => {
     useEffect(() => {
         refresh();
     }, [god.currentNetwork.account, props.id]);
+
+    console.log('currentStakeInfo', stakeInfo);
 
     if (stakeInfo == null || stakeInfo.type_id == undefined) {
         return (

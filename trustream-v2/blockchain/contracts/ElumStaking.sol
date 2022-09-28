@@ -13,9 +13,9 @@ contract ElumStaking is Ownable{
 
     STAKE_TYPE[] public stakeTypeList;
     mapping (uint => STAKE_INFO) public NFT_TO_INFO;
+    mapping (address => uint) public STAKED_TOKENS;
 
     /* Begin OnlyOwner Module */
-
     function setTokenAddress(address _token_address) public virtual onlyOwner {
         require (_token_address != address(0), "invalid token address");
         token_address = _token_address;
@@ -63,6 +63,9 @@ contract ElumStaking is Ownable{
         address staker = NFT_TO_INFO[nftID].staker;
         if (staker == address(0)) 
             return;
+        
+        STAKED_TOKENS[staker] -= NFT_TO_INFO[nftID].amount;
+
         IERC20(token_address).transfer(staker, NFT_TO_INFO[nftID].amount);
         NFT_TO_INFO[nftID].type_id = 0;
         NFT_TO_INFO[nftID].startTime = 0;
@@ -104,17 +107,20 @@ contract ElumStaking is Ownable{
         _withdrawStaker(nftID);
     }
 
-    function withdrawToken(uint nftID) public virtual {
-        require (isStakingExist(nftID) == true, "Call withdrawStaker insteadOf withdrawToken.");
-        require (NFT_TO_INFO[nftID].staker != address(0), "no staker here");
+    /**
+     * This function is responsible to withdraw remaining tokens if the requirement has been changed.
+     */
+    // function withdrawToken(uint nftID) public virtual {
+    //     require (isStakingExist(nftID) == true, "Call withdrawStaker insteadOf withdrawToken.");
+    //     require (NFT_TO_INFO[nftID].staker != address(0), "no staker here");
 
-        uint256 stake_type = NFT_TO_INFO[nftID].type_id;
-        require (NFT_TO_INFO[nftID].amount > stakeTypeList[stake_type].amount, "Nothing to withdraw.");
+    //     uint256 stake_type = NFT_TO_INFO[nftID].type_id;
+    //     require (NFT_TO_INFO[nftID].amount > stakeTypeList[stake_type].amount, "Nothing to withdraw.");
 
-        uint256 amount = NFT_TO_INFO[nftID].amount - stakeTypeList[stake_type].amount;
+    //     uint256 amount = NFT_TO_INFO[nftID].amount - stakeTypeList[stake_type].amount;
 
-        IERC20(token_address).transfer(NFT_TO_INFO[nftID].staker, amount);
-    }
+    //     IERC20(token_address).transfer(NFT_TO_INFO[nftID].staker, amount);
+    // }
 
     function stakeNFT(uint nftID, uint256 stakeType) public virtual NFTAccess(nftID) {
 
@@ -144,14 +150,18 @@ contract ElumStaking is Ownable{
             require(IERC20(token_address).allowance(msg.sender, address(this)) >= requireAmount, "Required Amount of Tokens should be allowed.");
 
             // # Cond1
-            if (requireAmount > 0)
+            if (requireAmount > 0) {
                 IERC20(token_address).transferFrom(msg.sender, address(this), requireAmount);
+                STAKED_TOKENS[msg.sender] += requireAmount;
+            }
 
             uint256 leftAmount = requireAmount + curAmount - newAmount;
 
             // # Cond2
-            if (leftAmount > 0)
+            if (leftAmount > 0) {
                 IERC20(token_address).transfer(msg.sender, leftAmount);
+                STAKED_TOKENS[msg.sender] -= leftAmount;
+            }
 
             // !INFORMATION: Cond1 and Cond2 will not satisfy together.
 
@@ -166,6 +176,7 @@ contract ElumStaking is Ownable{
             // Update Stake Info
             require(IERC20(token_address).allowance(msg.sender, address(this)) >= newAmount, "Required Amount of Tokens should be allowed.");
             IERC20(token_address).transferFrom(msg.sender, address(this), newAmount);
+            STAKED_TOKENS[msg.sender]       += newAmount;
 
             NFT_TO_INFO[nftID].staker       = msg.sender;
             NFT_TO_INFO[nftID].amount       = newAmount;

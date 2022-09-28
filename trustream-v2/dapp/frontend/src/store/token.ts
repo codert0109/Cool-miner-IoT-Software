@@ -8,8 +8,10 @@ import ContractAddress from '../contracts/contract-address.json';
 import TokenContractABI from '../contracts/ElumToken.json';
 
 export class TokenStore {
-    rootStore: RootStore;
-    balance: string;
+    rootStore   : RootStore;
+    balance     : string = '0';
+    price       : number = 0;
+    loading     : boolean = true;
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -28,6 +30,19 @@ export class TokenStore {
             params : [...params],
             options : options
         });
+    }
+
+    async refresh() {
+        try {
+            this.loading = true;
+            this.balance = await this.getBalance();
+            this.price = await this.getPrice();
+            this.price /= Math.pow(10, 18);
+            this.loading = false;
+        } catch (err) {
+            this.loading = false;
+            console.log('token.refresh error', err);
+        }
     }
 
     async getBalance() {

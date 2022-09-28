@@ -9,7 +9,9 @@ import StakeContractABI from '../contracts/ElumStaking.json';
 
 export class StakeStore {
     rootStore: RootStore;
-    balance: string;
+    balance: string = '0';
+    staked_tokens : string = '0';
+    loading : boolean = true;
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -28,6 +30,20 @@ export class StakeStore {
             params : [...params],
             options : options
         });
+    }
+
+    async refresh() {
+        const { god } = this.rootStore;
+        try {
+            this.loading = true;
+            let tx = await this.callContract('STAKED_TOKENS', [god.currentNetwork.account]);
+            this.staked_tokens = String(tx);
+            this.loading = false;
+        } catch (err) {
+            this.loading = false;
+            this.staked_tokens = '0';
+            console.error('stake.refresh error', err);
+        }
     }
 
     async getStakingList() {

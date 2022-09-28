@@ -57,7 +57,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   active : {
-    backgroundColor : '#2f9e44'
+    backgroundColor : '#2f9e44',
+    color : 'white'
   },
 
   inputtext: {
