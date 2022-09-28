@@ -63,7 +63,7 @@ export default observer((props: Props) => {
               <WhiteLabel className={classes.split} label="Claimed to date" />
             </Grid.Col>
             <Grid.Col sm={12} className={classes.padding0}>
-              <WhiteLabel className={classes.split} label="3,545" />
+              <WhiteLabel className={classes.split} label="0" />
             </Grid.Col>
           </Grid>
         </Grid.Col>
@@ -73,7 +73,7 @@ export default observer((props: Props) => {
               <WhiteLabel className={classes.split} label="Available to Claim" />
             </Grid.Col>
             <Grid.Col sm={12} className={classes.padding0}>
-              <WhiteLabel className={classes.split} label="3,545" />
+              <WhiteLabel className={classes.split} label="0" />
             </Grid.Col>
             <Grid.Col sm={12} className={classes.padding0}>
               <Button className={classes.split} color="green">Claim Now</Button>
