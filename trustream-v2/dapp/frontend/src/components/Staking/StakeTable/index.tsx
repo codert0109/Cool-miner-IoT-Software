@@ -27,23 +27,16 @@ const useStyles = createStyles((theme) => ({
 }));
 
 // This will be interact with backend server.
-const stakingTable = {
-    level: ['Bronze', 'Silver', 'Gold', 'Platinum', 'All Star'],
-    amount: [500, 1000, 1500, 2000, 2500],
-    period: ['45 Days', '90 Days', '180 Days', '360 Days'],
-    multiplier: [[11000, 11500, 12500, 14000],
-    [12000, 13000, 14000, 15500],
-    [13500, 14500, 15500, 17000],
-    [15000, 16000, 17000, 18500],
-    [16500, 17500, 18500, 20000]]
-};
-
 export default observer((props: Props) => {
     const { classes } = useStyles();
-    const { god, token } = useStore();
+    const { god, stake } = useStore();
+
+    useEffect(() => {
+        stake.refresh();
+    }, [god.currentNetwork.account]);
 
     const renderElementWithLoader = (element) => {
-        if (token.loading) {
+        if (stake.loading) {
             return (
                 <div className={classes.center_container}>
                     <Loader size={18} />
@@ -65,16 +58,16 @@ export default observer((props: Props) => {
                             Token Required
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stakingTable.period[0]}
+                            {stake.stakingTable.period[0]}
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stakingTable.period[1]}
+                            {stake.stakingTable.period[1]}
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stakingTable.period[2]}
+                            {stake.stakingTable.period[2]}
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stakingTable.period[3]}
+                            {stake.stakingTable.period[3]}
                         </Grid.Col>
                     </Grid>
                 )
@@ -83,7 +76,7 @@ export default observer((props: Props) => {
     };
 
     const renderBody = () => {
-        return stakingTable.level.map((curLabel, index) => {
+        return stake.stakingTable.level.map((curLabel, index) => {
             return (
                 <WhiteLabel label={
                     renderElementWithLoader(
@@ -92,19 +85,19 @@ export default observer((props: Props) => {
                                 {curLabel}
                             </Grid.Col>
                             <Grid.Col span={17}>
-                                {stakingTable.amount[index]}
+                                {stake.stakingTable.amount[index]}
                             </Grid.Col>
                             <Grid.Col span={10}>
-                                {formatMultiplier(stakingTable.multiplier[index][0])}
+                                {formatMultiplier(stake.stakingTable.multiplier[index][0])}
                             </Grid.Col>
                             <Grid.Col span={10}>
-                                {formatMultiplier(stakingTable.multiplier[index][1])}
+                                {formatMultiplier(stake.stakingTable.multiplier[index][1])}
                             </Grid.Col>
                             <Grid.Col span={10}>
-                                {formatMultiplier(stakingTable.multiplier[index][2])}
+                                {formatMultiplier(stake.stakingTable.multiplier[index][2])}
                             </Grid.Col>
                             <Grid.Col span={10}>
-                                {formatMultiplier(stakingTable.multiplier[index][3])}
+                                {formatMultiplier(stake.stakingTable.multiplier[index][3])}
                             </Grid.Col>
                         </Grid>
                     )
@@ -114,6 +107,8 @@ export default observer((props: Props) => {
     };
 
     const renderTable = () => {
+        // if (stake.stakingTable.period.length != 4)
+        //     return <></>
         return (
             <>
                 {renderHead()}

@@ -5,7 +5,7 @@ const MINER_CONFIG = require('../config/miner.config');
 
 // Core API Functions for Device_Data
 const checkActive = (address, callback) => {
-  Device_Data.findOne({ where : { address}, order: [['start_time', 'DESC']]})
+  Device_Data.findOne({ where : { address }, order: [['start_time', 'DESC']]})
     .then((data) => {
       if (data === null)
         callback(false);
@@ -22,9 +22,44 @@ const checkActive = (address, callback) => {
     });
 };
 
+const getActiveMiner = (address, callback) => {
+  db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM "testapp"."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`)
+    .then((data) => {
+      callback(data[0][0], true);
+    })
+    .catch((err) => {
+      callback(err, false)
+    });
+};
+
 // RESTful APIs for Device_Data
 
 // Retrieve all Tutorials from the database.
+
+exports.getActiveMiner = (req, res) => {
+  const { address } = req.body;
+  if (address == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+  } else {
+    getActiveMiner(address, function(data, flg) {
+      if (flg == false) {
+        res.send({
+          status : 'ERR',
+          message : 'Bad request',
+          error : data
+        })
+        return;
+      }
+      res.send({
+        status : 'OK',
+        data
+      })
+    });
+  }
+};
 
 exports.isActive = (req, res) => {
   let address = req.query.address;

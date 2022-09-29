@@ -82,8 +82,6 @@ export default observer((props: Props) => {
 
   const periodList = [45, 90, 180, 360];
   const [activePeriod, setActivePeriod] = useState(-1);
-  const [nftList, setNFTList] = useState([]);
-
   const [stakeTypeList, setStakeTypeList] = useState([]);
 
   useEffect(() => {
@@ -132,11 +130,10 @@ export default observer((props: Props) => {
         `<p>You need to choose period to stake.</p>`,
         'info'
       );
+      return;
     }
 
     let curIndex = -1;
-    
-    console.log('stakeTypeList', stakeTypeList, activePeriod, amount);
     stakeTypeList.forEach((item, index) => {
       if (item.period == activePeriod * 86400) {
         curIndex = index;
@@ -213,8 +210,6 @@ export default observer((props: Props) => {
   };
 
   const getButtonDisableStatus = () => {
-    console.log('period', props.period, activePeriod);
-    console.log('amount', props.amount, amount);
     if (props.period != undefined && activePeriod < props.period)
       return true;
     if (props.amount != undefined && amount < props.amount)

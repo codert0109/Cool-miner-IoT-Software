@@ -4,10 +4,11 @@ module.exports = app => {
 
   var router = require("express").Router();
   
-  router.get("/",               device_data.findAll);
-  router.get("/isActive",       device_data.isActive);
-  router.get("/clean",          check_admin_auth,   device_data.clean);
-  router.get("/miner",          device_data.getMinerName);
+  router.get("/",                 device_data.findAll);
+  router.get("/isActive",         device_data.isActive);
+  router.get("/clean",            check_admin_auth,   device_data.clean);
+  router.get("/miner",            device_data.getMinerName);
+  router.get("/getActiveMiner",   device_data.getActiveMiner);
 
   app.use("/api/device_status", router);
 };

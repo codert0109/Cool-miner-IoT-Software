@@ -4,6 +4,8 @@ import RootStore from './root';
 import { publicConfig } from "../config/public";
 import { getNFTIDFromAddress } from '../utils';
 
+import $ from "axios";
+
 import ContractAddress from '../contracts/contract-address.json';
 import StakeContractABI from '../contracts/ElumStaking.json';
 
@@ -12,6 +14,12 @@ export class StakeStore {
     balance: string = '0';
     staked_tokens : string = '0';
     loading : boolean = true;
+    stakingTable = {
+        level : [],
+        amount : [],
+        period : [],
+        multiplier : []
+    };
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -38,6 +46,11 @@ export class StakeStore {
             this.loading = true;
             let tx : any = await this.callContract('ADDRESS_TO_INFO', [god.currentNetwork.account]);
             this.staked_tokens = String(tx.amount);
+
+            let info : any = await $.get(`${publicConfig.BACKEND_URL}/api/staking/getparam`); 
+            this.stakingTable = info.data.data;
+
+            
         } catch (err) {
             this.staked_tokens = '0';
             console.error('stake.refresh error', err);
