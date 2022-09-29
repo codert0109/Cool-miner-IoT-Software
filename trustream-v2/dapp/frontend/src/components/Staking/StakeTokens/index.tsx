@@ -68,6 +68,10 @@ const useStyles = createStyles((theme) => ({
     width: '100%',
     height: '100%',
     fontFamily: 'Proxima-Nova-Bold!important'
+  },
+
+  nowrap : {
+    whiteSpace : 'nowrap'
   }
 }));
 
@@ -291,7 +295,7 @@ export default observer((props: Props) => {
         <Grid.Col lg={3} md={6} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="Amount to Stake" />
+              <WhiteLabel className={classes.nowrap} label="Amount to Stake" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label={

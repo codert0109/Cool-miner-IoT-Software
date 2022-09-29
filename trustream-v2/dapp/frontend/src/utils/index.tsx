@@ -9,6 +9,10 @@ export function getContractAddressFormat() {
     return getAddressFormat(ContractAddress.ElumNFT);
 }
 
+export function formatMultiplier(num) {
+    return num / 100 + '%';
+}
+
 export function getNFTIDFromAddress(address) {
     let str = address.substring(2, 6);
     let info = "0123456789ABCDEF";
