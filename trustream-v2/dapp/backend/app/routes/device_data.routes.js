@@ -8,7 +8,7 @@ module.exports = app => {
   router.get("/isActive",         device_data.isActive);
   router.get("/clean",            check_admin_auth,   device_data.clean);
   router.get("/miner",            device_data.getMinerName);
-  router.get("/getActiveMiner",   device_data.getActiveMiner);
+  router.post("/getActiveMiner",   device_data.getActiveMiner);
 
   app.use("/api/device_status", router);
 };

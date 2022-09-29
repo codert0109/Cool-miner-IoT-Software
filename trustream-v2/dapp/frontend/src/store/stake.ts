@@ -14,6 +14,7 @@ export class StakeStore {
     balance: string = '0';
     staked_tokens : string = '0';
     loading : boolean = true;
+    activeMinerCnt : number = 0;
     stakingTable = {
         level : [],
         amount : [],
@@ -47,10 +48,17 @@ export class StakeStore {
             let tx : any = await this.callContract('ADDRESS_TO_INFO', [god.currentNetwork.account]);
             this.staked_tokens = String(tx.amount);
 
-            let info : any = await $.get(`${publicConfig.BACKEND_URL}/api/staking/getparam`); 
-            this.stakingTable = info.data.data;
+            let ret1 : any = await $.get(`${publicConfig.BACKEND_URL}/api/staking/getparam`); 
+            this.stakingTable = ret1.data.data;
 
+            let ret2 : any = await $.post(`${publicConfig.BACKEND_URL}/api/device_status/getActiveMiner`, {
+                address : god.currentNetwork.account
+            });
             
+            this.activeMinerCnt = ret2.data.CNT;
+
+            console.log('ret2', ret2);
+
         } catch (err) {
             this.staked_tokens = '0';
             console.error('stake.refresh error', err);

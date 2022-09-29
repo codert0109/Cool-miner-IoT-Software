@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
-import { createStyles, Table, Button, Progress, Anchor, Text, Group, ScrollArea, Box, Modal } from '@mantine/core';
+import { createStyles, Button, Progress, Text, Group, Loader, Modal } from '@mantine/core';
 import { useStore } from '@/store/index';
 import StakeTokens from '@/components/Staking/StakeTokens';
 import { getLocalTimeStringFromSeconds } from '@/utils/index';
@@ -26,10 +26,11 @@ export default observer((props: Props) => {
     const [stakeTypeList, setStakeTypeList] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
 
+    useEffect(() => {
+        stake.refresh();
+    }, [god.currentNetwork.account]);
+
     const timeTotal = props.expireTime - props.startTime;
-
-    console.log('props', props);
-
 
     const timePast = (Date.now() - props.startTime * 1000) / 1000;
     const timeLeft = timeTotal - timePast;
@@ -39,6 +40,44 @@ export default observer((props: Props) => {
 
     const onEdit = () => {
         setModalOpen(true);
+    };
+
+    const renderMiningLevel = () => {
+        if (stake.loading) {
+            return (
+                <>
+                    <td><Loader /></td>
+                    <td><Loader /></td>
+                    <td><Loader /></td>
+                </>
+            )
+        }
+
+        let cnt = Math.max(1, stake.activeMinerCnt);
+        let amount = props.amount / cnt;
+        let multiplier = -1;
+        let level = "";
+
+        for (let i = 0; i < stake.stakingTable.level.length; i++) {
+            for (let j = 0; j < stake.stakingTable.period.length; j++) {
+                if (stake.stakingTable.amount[i] > amount)
+                    continue;
+                if (parseInt(stake.stakingTable.period[i]) * 86400 > props.expireTime - props.startTime)
+                    continue;
+                if (multiplier == -1 || multiplier < stake.stakingTable.multiplier[i][j]) {
+                    multiplier = stake.stakingTable.multiplier[i][j];
+                    level = stake.stakingTable.level[i];
+                }
+            }
+        }
+
+        return (
+            <>
+                <td>{cnt}</td>
+                <td>{multiplier}</td>
+                <td>{level}</td>
+            </>
+        )
     };
 
     return (
@@ -89,9 +128,7 @@ export default observer((props: Props) => {
                         ]}
                     />
                 </td>
-                <td>Unknown</td>
-                <td>Unknown</td>
-                <td>Unknown</td>
+                {renderMiningLevel()}
                 <td>
                     <Button onClick={() => onEdit()} color='teal' size="xs">
                         Edit | Extend
