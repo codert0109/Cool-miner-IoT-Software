@@ -32,7 +32,13 @@ export default observer((props: Props) => {
 
     const timeTotal = props.expireTime - props.startTime;
 
-    const timePast = (Date.now() - props.startTime * 1000) / 1000;
+    let timePast = (Date.now() - props.startTime * 1000) / 1000;
+
+    if (timePast < 0) 
+        timePast = 0;
+    else if (timePast > timeTotal) 
+        timePast = timeTotal;
+        
     const timeLeft = timeTotal - timePast;
 
     const timePastP = timePast * 100 / timeTotal;
@@ -46,14 +52,16 @@ export default observer((props: Props) => {
         if (stake.loading) {
             return (
                 <>
-                    <td><Loader /></td>
-                    <td><Loader /></td>
-                    <td><Loader /></td>
+                    <td><Loader size="sm"/></td>
+                    <td><Loader size="sm"/></td>
+                    <td><Loader size="sm"/></td>
                 </>
             )
         }
 
         let cnt = Math.max(1, stake.activeMinerCnt);
+
+        console.log('stake.activeMinerCnt', stake.activeMinerCnt);
         let amount = props.amount / cnt;
         let multiplier = -1;
         let level = "";
@@ -62,7 +70,7 @@ export default observer((props: Props) => {
             for (let j = 0; j < stake.stakingTable.period.length; j++) {
                 if (stake.stakingTable.amount[i] > amount)
                     continue;
-                if (parseInt(stake.stakingTable.period[i]) * 86400 > props.expireTime - props.startTime)
+                if (parseInt(stake.stakingTable.period[j]) * 86400 > props.expireTime - props.startTime)
                     continue;
                 if (multiplier == -1 || multiplier < stake.stakingTable.multiplier[i][j]) {
                     multiplier = stake.stakingTable.multiplier[i][j];
@@ -73,9 +81,9 @@ export default observer((props: Props) => {
 
         return (
             <>
-                <td>{cnt}</td>
-                <td>{multiplier}</td>
-                <td>{level}</td>
+                <td>{stake.activeMinerCnt}</td>
+                <td>{multiplier == -1 ? 'X 1.0' : `X ${multiplier / 10000}`}</td>
+                <td>{level == '' ? 'No level' : level}</td>
             </>
         )
     };
@@ -96,7 +104,7 @@ export default observer((props: Props) => {
                 }}>
                 <StakeTokens 
                     period={(props.expireTime - props.startTime) / 86400} 
-                    amount={props.amount}/>
+                    amount={0}/>
             </Modal>
             <tr key={props.key}>
                 <td>

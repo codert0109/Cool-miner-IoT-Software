@@ -73,7 +73,9 @@ export default observer((props: Props) => {
       return (
         <tr>
           <td colSpan={7}>
-            There is no staking
+            <div style={{ textAlign : 'center'}}>
+              There is no staking
+            </div>
           </td>
         </tr>
       );

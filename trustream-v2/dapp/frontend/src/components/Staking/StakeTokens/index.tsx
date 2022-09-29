@@ -212,8 +212,8 @@ export default observer((props: Props) => {
   const getButtonDisableStatus = () => {
     if (props.period != undefined && activePeriod < props.period)
       return true;
-    if (props.amount != undefined && amount < props.amount)
-      return true;
+    // if (props.amount != undefined && amount < props.amount)
+    //   return true;
     return false;
   };
 
