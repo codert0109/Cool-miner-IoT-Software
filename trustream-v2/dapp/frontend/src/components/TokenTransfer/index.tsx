@@ -26,20 +26,20 @@ const useStyles = createStyles((theme) => ({
     outline: 'none',
     width: '100%',
     height: '100%',
-    fontFamily : 'Proxima-Nova-Bold!important',
-    textAlign : 'center'
+    fontFamily: 'Proxima-Nova-Bold!important',
+    textAlign: 'center'
   },
-  vertcenter : {
-    alignItems : 'center'
+  vertcenter: {
+    alignItems: 'center'
   },
-  center_container : {
-    height : 24,
-    display : 'flex',
-    alignItems : 'center'
+  center_container: {
+    height: 24,
+    display: 'flex',
+    alignItems: 'center'
   },
-  textcenter : {
-    textAlign :'center',
-    whiteSpace : 'nowrap'
+  textcenter: {
+    textAlign: 'center',
+    whiteSpace: 'nowrap'
   }
 }));
 
@@ -47,6 +47,7 @@ export default observer((props: Props) => {
   const { god, token } = useStore();
   const { classes } = useStyles();
   const [amount, setAmount] = useState(0);
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
     token.refresh();
@@ -59,33 +60,34 @@ export default observer((props: Props) => {
       setAmount(parseInt(e.target.value));
   };
 
-  const onBuy = () => {
+  const onInputAddressChange = (e) => {
+    setAddress(e.target.value);
+  };
+
+  const onTransfer = () => {
     if (amount <= 0) {
       Swal.fire(
         'Info',
-        `<p>Please input a positive number to buy tokens.</p>`,
+        `<p>Please input a positive number to transfer tokens.</p>`,
         'info'
       );
     } else {
-      const value = BigInt(amount) * BigInt(token.price * Math.pow(10, 18));
-      token.buy(amount, value.toString())
+      token.transfer(address, amount)
         .then(async (tx) => {
           const receipt = await tx;
           await receipt.wait();
           Swal.fire(
             'Success',
-            `<p>You bought ${amount} tokens successfully.</p>`,
+            `<p>Token transfered successfully!</p>`,
             'success'
-          );
-          token.refresh();
+          )
         })
         .catch((err) => {
-          console.log('error', err);
           Swal.fire(
             'Error',
-            `<p>Errors occured while processing</p>`,
+            `<p>Errors occured while transfering</p>`,
             'error'
-          );
+          )
         });
     }
   };
@@ -94,7 +96,7 @@ export default observer((props: Props) => {
     if (token.loading) {
       return (
         <div className={classes.center_container}>
-          <Loader size={18}/>
+          <Loader size={18} />
         </div>
       )
     }
@@ -102,15 +104,34 @@ export default observer((props: Props) => {
   };
 
   return (
-    <Box label="Buy ELUM Tokens" bodyClass={classes.gridPadding}>
+    <Box label="Transfer ELUM Tokens" bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }}>
         <Grid.Col md={4} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.textcenter} label="Token Amount" />
+              <WhiteLabel className={classes.textcenter} label="Wallet address" />
             </Grid.Col>
-            <Grid.Col md={12} sm={12} style={{ paddingTop : 0}}>
+            <Grid.Col md={12} sm={12} style={{ paddingTop: 0 }}>
               <WhiteLabel className={classes.vertcenter} label={
+                renderElementWithLoader(
+                  <input
+                    type="text"
+                    placeholder='0x...'
+                    value={address}
+                    className={classes.inputtext}
+                    onChange={onInputAddressChange}></input>
+                )
+              } />
+            </Grid.Col>
+          </Grid>
+        </Grid.Col>
+        <Grid.Col md={4} sm={12}>
+          <Grid>
+            <Grid.Col md={12} sm={12}>
+              <WhiteLabel className={classes.textcenter} label="Amount" />
+            </Grid.Col>
+            <Grid.Col md={12} sm={12} style={{ paddingTop: 0 }}>
+              <WhiteLabel className={classes.textcenter} label={
                 renderElementWithLoader(
                   <input
                     type="text"
@@ -124,28 +145,12 @@ export default observer((props: Props) => {
           </Grid>
         </Grid.Col>
         <Grid.Col md={4} sm={12}>
-          <Grid>
-            <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.textcenter} label="Price" />
-            </Grid.Col>
-            <Grid.Col md={12} sm={12} style={{ paddingTop : 0}}>
-              <WhiteLabel className={classes.textcenter} label={
-                renderElementWithLoader(
-                  <>
-                    {token.price} IOTX
-                  </>
-                )
-              } />
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-        <Grid.Col md={4} sm={12}>
           <Button
-            color='green'
+            color='orange'
             size="xs"
             className={classes.button}
             disabled={token.loading}
-            onClick={() => onBuy()}>Buy</Button>
+            onClick={() => onTransfer()}>Transfer</Button>
         </Grid.Col>
       </Grid>
     </Box>

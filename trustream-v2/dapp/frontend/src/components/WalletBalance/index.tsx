@@ -114,7 +114,7 @@ export default observer((props: Props) => {
                     </MantineProvider>
                 </Grid.Col>
             </Grid>
-            <Grid style={{ width: '100%' }} className={classes.secondMargin}>
+            {/* <Grid style={{ width: '100%' }} className={classes.secondMargin}>
                 <Grid.Col sm={6} md={3} className={classes.padding0}>
                     <WhiteLabel label={
                         <input
@@ -142,7 +142,7 @@ export default observer((props: Props) => {
                         color="orange"
                         onClick={() => onTransferToken()}>Transfer Your Tokens</Button>
                 </Grid.Col>
-            </Grid>
+            </Grid> */}
         </Box>
     );
 });

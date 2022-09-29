@@ -14,40 +14,35 @@ const useStyles = createStyles((theme) => ({
   expand: {
     width: 0
   },
-  split: {
-    marginBottom: 3,
-    marginTop: 1,
-    height: 38,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width : '100%'
+  button: {
+    fontSize : '1.2rem',
+    width: '100%',
+    height : '100%',
   },
 
-  gridPadding: {
-    [BREAKPOINT]: {
-      paddingTop: 8,
-      paddingBottom: 8
-    }
-  },
-  padding0: {
-    padding: 0
-  },
-
-  padding_left: {
-    padding: 0,
-    paddingLeft: 4,
-    [BREAKPOINT]: {
-      paddingLeft: 0
+  padding0 : {
+    [BREAKPOINT] : {
+      paddingLeft : 0,
+      paddingRight : 0
     }
   },
 
-  padding_right: {
-    padding: 0,
-    paddingRight: 4,
-    [BREAKPOINT]: {
-      paddingRight: 0
+  padding_left0: {
+    paddingLeft : 0,
+    [BREAKPOINT] : {
+      paddingRight : 0
     }
+  },
+
+  padding_right0: {
+    paddingRight : 0,
+    [BREAKPOINT] : {
+      paddingLeft : 0
+    }
+  },
+
+  textcenter : {
+    textAlign : 'center'
   }
 }));
 
@@ -56,29 +51,29 @@ export default observer((props: Props) => {
 
   return (
     <Box label="Token Rewards">
-      <Grid className={join(classes.w100, classes.gridPadding)}>
-        <Grid.Col sm={12} md={6}>
-          <Grid className={classes.padding_right}>
-            <Grid.Col sm={12} className={classes.padding0}>
-              <WhiteLabel className={classes.split} label="Claimed to date" />
+      <Grid className={join(classes.w100)}>
+        <Grid.Col sm={12} md={4} className={classes.padding_left0}>
+          <Grid>
+            <Grid.Col sm={12}>
+              <WhiteLabel label="Claimed" className={classes.textcenter}/>
             </Grid.Col>
-            <Grid.Col sm={12} className={classes.padding0}>
-              <WhiteLabel className={classes.split} label="0" />
+            <Grid.Col sm={12} style={{ paddingTop : 0}}>
+              <WhiteLabel label="0" className={classes.textcenter}/>
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col sm={12} md={6}>
-          <Grid className={classes.padding_left}>
-            <Grid.Col sm={12} className={classes.padding0}>
-              <WhiteLabel className={classes.split} label="Available to Claim" />
+        <Grid.Col sm={12} md={4} className={classes.padding0}>
+          <Grid>
+            <Grid.Col sm={12}>
+              <WhiteLabel label="Available" className={classes.textcenter}/>
             </Grid.Col>
-            <Grid.Col sm={12} className={classes.padding0}>
-              <WhiteLabel className={classes.split} label="0" />
-            </Grid.Col>
-            <Grid.Col sm={12} className={classes.padding0}>
-              <Button className={classes.split} color="green">Claim Now</Button>
+            <Grid.Col sm={12} style={{ paddingTop : 0}}>
+              <WhiteLabel label="0" className={classes.textcenter}/>
             </Grid.Col>
           </Grid>
+        </Grid.Col>
+        <Grid.Col sm={12} md={4} className={classes.padding_right0}>
+          <Button className={classes.button} color="green">Claim Now</Button>
         </Grid.Col>
       </Grid>
     </Box>
