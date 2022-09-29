@@ -36,8 +36,8 @@ export class StakeStore {
         const { god } = this.rootStore;
         try {
             this.loading = true;
-            let tx = await this.callContract('STAKED_TOKENS', [god.currentNetwork.account]);
-            this.staked_tokens = String(tx);
+            let tx : any = await this.callContract('ADDRESS_TO_INFO', [god.currentNetwork.account]);
+            this.staked_tokens = String(tx.amount);
         } catch (err) {
             this.staked_tokens = '0';
             console.error('stake.refresh error', err);
@@ -58,10 +58,10 @@ export class StakeStore {
         }
     }
 
-    async getStakingInfo(nftID) {
+    async getStakingInfo() {
         const { god } = this.rootStore;
         try {
-            let tx = await this.callContract('NFT_TO_INFO', [nftID]);
+            let tx = await this.callContract('ADDRESS_TO_INFO', [god.currentNetwork.account]);
             return tx;
         } catch(err) {
             console.error('getStakingList return error', err, god.currentNetwork.account);
@@ -69,7 +69,7 @@ export class StakeStore {
         }
     }
 
-    stakeNFT(nftID, stakeType) {
-        return this.callContract('stakeNFT', [nftID, stakeType]);
+    stake(stakeType, amount) {
+        return this.callContract('stake', [stakeType, amount]);
     }
 } 

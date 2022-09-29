@@ -35,60 +35,47 @@ describe('ElumStaking contract', function () {
     const ElumStaking = await ethers.getContractFactory('ElumStaking')
     hardhatElumStaking = await ElumStaking.deploy()
     await hardhatElumStaking.setTokenAddress(hardhatElumToken.address)
-    await hardhatElumStaking.setNFTAddress(hardhatElumNFT.address)
   })
 
   it('Staking NFT Function Test.', async function () {
-    await expect(hardhatElumStaking.stakeNFT(0, 0)).to.be.revertedWith(
-      'stakeType should be less than stakeTypeList.length',
+    await expect(hardhatElumStaking.stake(0, 0)).to.be.revertedWith(
+      'StakeType should be less than stakeTypeList.length',
     )
 
-    await hardhatElumStaking.addStakeType(86400 * 45, 10,   14000)
-    await hardhatElumStaking.addStakeType(86400 * 90, 100,  15000)
+    await hardhatElumStaking.addStakeType(86400 * 45)
+    await hardhatElumStaking.addStakeType(86400 * 90)
 
-    await expect(hardhatElumStaking.stakeNFT(0, 0)).to.be.revertedWith(
-      'Required Amount of Tokens should be allowed.',
-    )
+    await expect(hardhatElumStaking.stake(0, 10)).to.be.revertedWith('Amount of Tokens should be allowed.')
 
     await hardhatElumToken.approve(hardhatElumStaking.address, 10)
 
-    await hardhatElumStaking.stakeNFT(0, 0)
+    await hardhatElumStaking.stake(0, 10)
 
-    let result1 = await hardhatElumStaking.NFT_TO_INFO(0)
+    let result1 = await hardhatElumStaking.ADDRESS_TO_INFO(owner.address)
 
     expect(result1.type_id).to.be.eql(BN(0))
     expect(result1.startTime).to.be.eql(BN(await timestamp()))
+    expect(result1.expireTime).to.be.eql(BN(await timestamp()).add(BN(86400 * 45)))
     expect(result1.amount).to.be.eql(BN(10))
-    expect(result1.staker).to.be.equal(owner.address)
 
-    await expect (hardhatElumStaking.withdrawStaker(0))
-            .to.be.revertedWith('Cannot withdraw staking Tokens.');
+    await expect (hardhatElumStaking.withdrawStaker(owner.address))
+            .to.be.revertedWith("Staking Period hasn't expired.");
 
     await forwardTime(86400 * 44);
 
-    await expect (hardhatElumStaking.withdrawStaker(0))
-            .to.be.revertedWith('Cannot withdraw staking Tokens.');
+    await expect (hardhatElumStaking.withdrawStaker(owner.address))
+            .to.be.revertedWith("Staking Period hasn't expired.");
 
     expect (await hardhatElumToken.balanceOf(owner.address))
             .to.be.equal(BN(190));
 
     await forwardTime(86400);
-    await hardhatElumStaking.withdrawStaker(0);
+    await hardhatElumStaking.withdrawStaker(owner.address);
 
     expect (await hardhatElumToken.balanceOf(owner.address))
             .to.be.equal(BN(200));
 
     await hardhatElumToken.approve(hardhatElumStaking.address, 10)
-    await hardhatElumStaking.stakeNFT(0, 0)
-    
-    await expect(hardhatElumStaking.stakeNFT(0, 1))
-            .to.be.revertedWith('Required Amount of Tokens should be allowed.')    
-
-    await hardhatElumToken.approve(hardhatElumStaking.address, 89)
-    await expect(hardhatElumStaking.stakeNFT(0, 1))
-            .to.be.revertedWith('Required Amount of Tokens should be allowed.')    
-
-    await hardhatElumToken.approve(hardhatElumStaking.address, 90)
-    await hardhatElumStaking.stakeNFT(0, 1)
+    await hardhatElumStaking.stake(0, 0)
   })
 })

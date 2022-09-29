@@ -78,7 +78,6 @@ const useStyles = createStyles((theme) => ({
 export default observer((props: Props) => {
   const { classes, theme } = useStyles();
   const [amount, setAmount] = useState(0);
-  const [activeNFT, setActiveNFT] = useState(-1);
   const { god, nft, stake, token } = useStore();
 
   const periodList = [45, 90, 180, 360];
@@ -99,33 +98,16 @@ export default observer((props: Props) => {
     }
   }, [props.amount]);
 
-  useEffect(() => {
-    if (props.id != undefined)
-      setActiveNFT(props.id)
-  }, [props.id]);
-
   const refresh = async () => {
-    let value: any;
-    value = await nft.getNFTLists();
-    let idList = value.map(item => parseInt(item.toString()));
-    setNFTList(idList);
-
-    if (idList.length > 0)
-      setActiveNFT(idList[0]);
-
     let stakeTypeList : any = await stake.getStakingList();
     stakeTypeList = stakeTypeList.map((item : any) => {
       return {
-        amount : parseInt(item.amount.toString()),
         period : parseInt(item.period.toString()),
-        id : parseInt(item.id.toString()),
-        multiplier : parseInt(item.multiplier.toString())
+        id : parseInt(item.id.toString())
       }
     });
     
     setStakeTypeList(stakeTypeList);
-    
-    console.log('stakeTypeList', stakeTypeList);
   };
 
   useEffect(() => {
@@ -139,26 +121,11 @@ export default observer((props: Props) => {
       setAmount(parseInt(e.target.value));
   };
 
-  const onInputNFTChange = (e) => {
-    if (e.target.value == '')
-      setActiveNFT(-1);
-    else
-      setActiveNFT(parseInt(e.target.value));
-  };
-
   const onSelectLabel = (item) => {
     setActivePeriod(item);
   };
 
   const onStaking = () => {
-    if (activeNFT == -1) {
-      Swal.fire(
-        'Info',
-        `<p>You need to choose NFT to stake.</p>`,
-        'info'
-      );
-      return;
-    }
     if (activePeriod == -1) {
       Swal.fire(
         'Info',
@@ -166,26 +133,17 @@ export default observer((props: Props) => {
         'info'
       );
     }
-    if (amount < 500) {
-      Swal.fire(
-        'Info',
-        `<p>You need to stake at most 500 tokens.</p>`,
-        'info'
-      );
-      return;
-    }
 
-    let maxIndex = -1;
-
-    console.log('stakeTypeList', stakeTypeList, activePeriod, amount, props.id);
+    let curIndex = -1;
+    
+    console.log('stakeTypeList', stakeTypeList, activePeriod, amount);
     stakeTypeList.forEach((item, index) => {
-      if (item.period == activePeriod * 86400 && item.amount <= amount) {
-        if (maxIndex == -1 || stakeTypeList[maxIndex].multiplier < item.multiplier)
-          maxIndex = index;
+      if (item.period == activePeriod * 86400) {
+        curIndex = index;
       }
     });
 
-    if (maxIndex == -1) {
+    if (curIndex == -1) {
       Swal.fire(
         'Info',
         `<p>There is no suitable staking type to satisfy your requirement.</p>`,
@@ -196,20 +154,18 @@ export default observer((props: Props) => {
 
     Swal.fire({
       title: 'Info',
-      html: `<p>You will stake ${stakeTypeList[maxIndex].amount} tokens to ${props.id ? props.id : activeNFT} NFT.</p>
-             <p>Period: ${stakeTypeList[maxIndex].period / 86400} days</p>
-             <p>Multiplier: ${stakeTypeList[maxIndex].multiplier / 10000}</p>`,
+      html: `<p>You will stake ${amount} tokens.</p>
+             <p>Period: ${stakeTypeList[curIndex].period / 86400} days</p>`,
       icon: 'info',
       showCancelButton: true
     }).then((result) => {
       if (!result.isConfirmed) return;
-      console.log('token', token);
-      token.allowToken(ContractAddress.ElumStaking, stakeTypeList[maxIndex].amount)
+      token.allowToken(ContractAddress.ElumStaking, amount)
         .then(async (tx) => {
           const receipt = await tx;
           await receipt.wait();
 
-          stake.stakeNFT(props.id ? props.id : activeNFT, stakeTypeList[maxIndex].id)
+          stake.stake(curIndex, amount)
             .then(async (tx) => {
               const receipt = await tx;
               await receipt.wait();
@@ -231,7 +187,7 @@ export default observer((props: Props) => {
         .catch((err) => {
           Swal.fire(
             'Error',
-            `<p>Errors occured while approving ${stakeTypeList[maxIndex].amount} tokens to Staking Contract.</p>
+            `<p>Errors occured while approving ${amount} tokens to Staking Contract.</p>
              <p>Please check your token balance.</p>`,
             'error'
           );
@@ -244,29 +200,6 @@ export default observer((props: Props) => {
         'error'
       );
     });
-  };
-
-  const renderNFTSelect = () => {
-    let idList = props.id == undefined ? nftList : [props.id];
-    return (
-      <select
-        placeholder='Input an Number'
-        value={activeNFT}
-        className={classes.inputtext}
-        onChange={onInputNFTChange}>
-        {
-          idList.map(item => <option value={item}>{item}</option>)
-        }
-      </select>
-    );
-  };
-
-  const renderNFTSelectWrapper = () => {
-    return (
-      <WhiteLabel className="" label={
-        renderNFTSelect()
-      } />
-    );
   };
 
   const renderPeriodList = () => {
@@ -292,7 +225,7 @@ export default observer((props: Props) => {
   return (
     <Box label="Stake Tokens" bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }}>
-        <Grid.Col lg={3} md={6} sm={12}>
+        <Grid.Col md={4} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className={classes.nowrap} label="Amount to Stake" />
@@ -309,27 +242,15 @@ export default observer((props: Props) => {
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col lg={3} md={6} sm={12}>
-          <Grid>
-            <Grid.Col md={12} sm={12}>
-              <WhiteLabel className="" label="NFT id" />
-            </Grid.Col>
-            <Grid.Col md={12} sm={12}>
-              {nftList.length == 0 && <WhiteLabel className={classes.text} label="You need to buy a NFT." />}
-              {nftList.length > 0 && renderNFTSelectWrapper()}
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-        <Grid.Col lg={3} md={6} sm={12}>
+        <Grid.Col md={4} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label="Stake Duration" />
             </Grid.Col>
-
             { renderPeriodList() }
           </Grid>
         </Grid.Col>
-        <Grid.Col lg={3} md={6} sm={12}>
+        <Grid.Col md={4} sm={12}>
           <Button
             className={classes.button}
             onClick={() => onStaking()}

@@ -39,27 +39,11 @@ export default function () {
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        {/* <Grid.Col sm={12} md={6}>
-          <UPTIME label="Public Pool Mining" />
-        </Grid.Col>
-        <Grid.Col sm={12} md={6}>
-          <WalletBalance/>
-        </Grid.Col>
-        <Grid.Col sm={12} md={6}>
-          <ServerStatus />
-        </Grid.Col>
-        <Grid.Col sm={12} md={6}>
-          <TokenRewards />
-        </Grid.Col>
-        <Grid.Col sm={12} md={12}>
-          <Token />
-        </Grid.Col>
         <Grid.Col sm={12} md={12}>
           <Box label="Release Updates">
             <UpdateInfoTable/>
           </Box>
         </Grid.Col>
-        */}
       </Grid>
     </Layout>
   );

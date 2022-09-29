@@ -21,8 +21,7 @@ describe("ElumToken contract", function () {
 
     const ElumStaking = await ethers.getContractFactory("ElumStaking");
     hardhatElumStaking = await ElumStaking.deploy()
-    hardhatElumStaking.setTokenAddress(hardhatElumToken.address);
-    hardhatElumStaking.setNFTAddress(hardhatElumNFT.address);
+    await hardhatElumStaking.setTokenAddress(hardhatElumToken.address);
   });
 
   it("BuyTokens should work.", async function () {

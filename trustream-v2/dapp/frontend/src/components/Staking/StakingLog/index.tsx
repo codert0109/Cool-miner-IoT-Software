@@ -17,7 +17,7 @@ export default function () {
     const { classes } = useStyles();
 
     return (
-        <Box label="Staking Log">
+        <Box label="Staking Status">
             <StakedView/>
         </Box>
     );

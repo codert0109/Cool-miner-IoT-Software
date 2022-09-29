@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createStyles, Table, Button, Progress, Anchor, Text, Group, ScrollArea, Box } from '@mantine/core';
+import { createStyles, Table, Button, Progress, Anchor, Text, Group, ScrollArea, Box, ListItem } from '@mantine/core';
 import WhiteLabel from "@/components/WhiteLabel";
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import { useStore } from '@/store/index';
@@ -17,131 +17,74 @@ interface TableReviewsProps {
   data: {
     Date: string,
     Amount: number,
-    NFT: number,
+    Miners: number,
+    Level: string,
     Multiplier: string,
     TimeRemaining: number,
     TotalTime: number
   }[];
 }
 
-
-const tableData: TableReviewsProps = {
-  "data": [
-    {
-      "Date": "2022.09.19",
-      "Amount": 800,
-      "NFT": 1545,
-      "Multiplier": "X 1.4",
-      "TimeRemaining": 44,
-      "TotalTime": 45
-    },
-    {
-      "Date": "2022.08.15",
-      "Amount": 700,
-      "NFT": 8975,
-      "Multiplier": "X 1.7",
-      "TimeRemaining": 54,
-      "TotalTime": 90
-    },
-    {
-      "Date": "2022.07.12",
-      "Amount": 350,
-      "NFT": 6541,
-      "Multiplier": "X 1.7",
-      "TimeRemaining": 20,
-      "TotalTime": 90
-    },
-    {
-      "Date": "2022.07.05",
-      "Amount": 250,
-      "NFT": 2541,
-      "Multiplier": "X 2",
-      "TimeRemaining": 283,
-      "TotalTime": 360
-    },
-    {
-      "Date": "2022.06.06",
-      "Amount": 400,
-      "NFT": 8745,
-      "Multiplier": "X 2",
-      "TimeRemaining": 254,
-      "TotalTime": 360
-    }
-  ]
-};
+interface STAKE_INFO {
+  type_id: number,
+  startTime: number,
+  expireTime: number,
+  amount: number
+}
 
 interface Props { }
 
 export default observer((props: Props) => {
-  const { classes, theme } = useStyles();
-  const { god, nft, stake, token } = useStore();
+  const { god, stake } = useStore();
 
-  const [nftList, setNFTList] = useState([]);
+  const [stakeInfo, setStakeInfo] = useState<STAKE_INFO>({
+    type_id: 0,
+    startTime: 0,
+    expireTime: 0,
+    amount: 0
+  });
 
   const refresh = async () => {
-    let value: any;
-    value = await nft.getNFTLists();
-    let idList = value.map(item => parseInt(item.toString()));
-    setNFTList(idList);
+    let value: any = await stake.getStakingInfo();
+
+    if (value == null || value.amount == 0) {
+      setStakeInfo({
+        type_id: 0,
+        startTime: 0,
+        expireTime: 0,
+        amount: 0
+      });
+    } else {
+      setStakeInfo({
+        type_id: parseInt(value.type_id.toString()),
+        startTime: parseInt(value.startTime.toString()),
+        expireTime: parseInt(value.expireTime.toString()),
+        amount: parseInt(value.amount.toString())
+      });
+    }
   };
 
   useEffect(() => {
     refresh();
   }, [god.currentNetwork.account]);
 
-  const rows = nftList.map((row, index) => {
-    return <StakeNode id={row} key={index}/>
-  });
+  const renderBody = () => {
+    if (stakeInfo.amount == 0) {
+      return (
+        <tr>
+          <td colSpan={7}>
+            There is no staking
+          </td>
+        </tr>
+      );
+    }
 
-  // const rows = data.map((row, index) => {
-  // const timeTotal = row.TotalTime;
-  // const timePast = row.TotalTime - row.TimeRemaining;
-  // const timeLeft = timeTotal - timePast;
-
-  // const timePastP = timePast * 100 / timeTotal;
-  // const timeLeftP = 100 - timePastP;
-
-  // return (
-  //   <>
-  //   </>
-  // <tr key={index}>
-  //   <td>
-  //     {row.Date}
-  //   </td>
-  //   <td style = {{ textAlign : 'center'}} >{row.Amount}</td>
-  //   <td>{Intl.NumberFormat().format(row.NFT)}</td>
-  //   <td>
-  //     <Group position="apart">
-  //       <Text size="xs" color="teal" weight={700}>
-  //         {timePast.toFixed(0)}days passed
-  //       </Text>
-  //       <Text size="xs" color="red" weight={700}>
-  //         {timeLeft.toFixed(0)}days left
-  //       </Text>
-  //     </Group>
-  //     <Progress
-  //       classNames={{ bar: classes.progressBar }}
-  //       sections={[
-  //         {
-  //           value: timePastP,
-  //           color: theme.colorScheme === 'dark' ? theme.colors.teal[9] : theme.colors.teal[6],
-  //         },
-  //         {
-  //           value: timeLeftP,
-  //           color: theme.colorScheme === 'dark' ? theme.colors.red[9] : theme.colors.red[6],
-  //         },
-  //       ]}
-  //     />
-  //   </td>
-  //   <td style = {{ paddingLeft : 20}} >
-  //     {row.Multiplier}
-  //   </td>
-  //   <td>
-  //     <Button color='teal' size="xs">Edit</Button>
-  //   </td>
-  // </tr>
-  // );
-  // });
+    return <StakeNode
+      key={0}
+      startTime={stakeInfo.startTime}
+      expireTime={stakeInfo.expireTime}
+      amount={stakeInfo.amount} />
+  };
 
   const tableView = () => {
     return (
@@ -150,15 +93,16 @@ export default observer((props: Props) => {
           <thead>
             <tr>
               <th style={{ color: 'black' }} >Date</th>
-              <th style={{ color: 'black', textAlign: 'center' }} >Amount</th>
-              <th style={{ color: 'black' }} >NFT id</th>
-              <th style={{ color: 'black' }} >Time Remaining</th>
-              <th style={{ color: 'black' }} >Multiplier</th>
-              <th style={{ color: 'black' }} >Upgrade</th>
+              <th style={{ color: 'black', textAlign: 'center' }} >Staked Amount</th>
+              <th style={{ color: 'black' }} >Staking Period</th>
+              <th style={{ color: 'black' }} >Active Miner(s)</th>
+              <th style={{ color: 'black' }} >Current Multiplier</th>
+              <th style={{ color: 'black' }} >Level</th>
+              <th style={{ color: 'black' }} >Edit</th>
             </tr>
           </thead>
           <tbody>
-            {rows}
+            {renderBody()}
           </tbody>
         </Table>
       </ScrollArea>

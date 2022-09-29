@@ -22,14 +22,12 @@ struct NFT_INFO {
 struct STAKE_TYPE {
     uint256 id;
     uint256 period;
-    uint256 amount;
-    uint256 multiplier; // Decimal 4 which means 14000 indicates 1.4
 }
 
 struct STAKE_INFO {
-    uint256 type_id;
-    uint256 startTime;
-    uint256 amount;     // This can be different with STAKE_TYPE.amount 
-                        // if Admin manually update the STAKE_TYPE.
-    address staker;
+    uint256 type_id;        // reference id for staking type
+    uint256 startTime;      // the time that staker start
+    uint256 expireTime;     // expireTime - startTime can be different 
+                            // with stake type period because the period can be updated any time.
+    uint256 amount;         // this can be any number.
 }

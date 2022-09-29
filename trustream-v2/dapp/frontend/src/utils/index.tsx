@@ -9,6 +9,11 @@ export function getContractAddressFormat() {
     return getAddressFormat(ContractAddress.ElumNFT);
 }
 
+export function getLocalTimeStringFromSeconds(seconds) {
+    let x = new Date(seconds * 1000);
+    return x.toLocaleString();
+}
+
 export function formatMultiplier(num) {
     return num / 100 + '%';
 }
