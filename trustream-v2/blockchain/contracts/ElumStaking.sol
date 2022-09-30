@@ -19,24 +19,29 @@ contract ElumStaking is Ownable{
         token_address = _token_address;
     }
 
-    function addStakeType(uint256 period) public virtual onlyOwner {
+    function addStakeType(uint256 period, string memory label) public virtual onlyOwner {
         STAKE_TYPE memory stakeItem;
 
-        stakeItem.id = stakeTypeList.length;
-        stakeItem.period = period;
+        stakeItem.id        = stakeTypeList.length;
+        stakeItem.period    = period;
+        stakeItem.label     = label;
 
         stakeTypeList.push(stakeItem);
     }
 
-    function addStakeTypeList(  uint256[] calldata period) public virtual onlyOwner {        
-        for (uint i = 0; i < period.length; i++) 
-            addStakeType(period[i]);
+    function addStakeTypeList(  uint256[] calldata period, string[] memory label) public virtual onlyOwner {        
+        require (period.length == label.length, "two array lengths should be the same.");
+
+        for (uint i = 0; i < period.length; i++) {
+            addStakeType(period[i], label[i]);
+        }
     }
 
-    function updateStakeType(uint index, uint256 period) public virtual onlyOwner {
+    function updateStakeType(uint index, uint256 period, string memory label) public virtual onlyOwner {
         require (index < stakeTypeList.length, "index should be less than stakeTypeList.length");
 
         stakeTypeList[index].period = period;
+        stakeTypeList[index].label  = label;
     }
 
     /* End OnlyOwner Module */

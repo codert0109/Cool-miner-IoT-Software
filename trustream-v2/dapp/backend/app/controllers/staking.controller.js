@@ -7,8 +7,10 @@ exports.getStakingParameters = (req, res) => {
         data :  {
             level   : ['Bronze', 'Silver', 'Gold', 'Platinum', 'All Star'],
             amount  : [500, 1000, 1500, 2000, 2500],
-            // period  : [45 * days, 90 * days, 180 * days, 360 * days],      // to deploy to main server
-            period  : [45 * secs, 90 * secs, 180 * secs, 360 * secs],      // to deploy to test server
+            // period  : [45 * days, 90 * days, 180 * days, 360 * days],        // to deploy to main server
+            // period_label : ['45 days', '90 days', '180 days', '360 days'],
+            period  : [45 * secs, 90 * secs, 180 * secs, 360 * secs],           // to deploy to test server
+            period_label : ['45s', '90s', '180s', '360s'],
             multiplier:    [[11000, 11500, 12500, 14000],
                             [12000, 13000, 14000, 15500],
                             [13500, 14500, 15500, 17000],

@@ -4,7 +4,7 @@ import Box from "@/components/Container/Box";
 import WhiteLabel from "@/components/WhiteLabel";
 import { createStyles, Loader, Grid } from '@mantine/core';
 import { useStore } from '../../../store/index';
-import { formatMultiplier } from '@/utils/index';
+import { formatMultiplier, formatTime } from '@/utils/index';
 
 const useStyles = createStyles((theme) => ({
     textAlign: {
@@ -58,16 +58,16 @@ export default observer((props: Props) => {
                             Token Required
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stake.stakingTable.period[0]}
+                            {stake.stakingTable.period_label[0]}
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stake.stakingTable.period[1]}
+                            {stake.stakingTable.period_label[1]}
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stake.stakingTable.period[2]}
+                            {stake.stakingTable.period_label[2]}
                         </Grid.Col>
                         <Grid.Col span={10}>
-                            {stake.stakingTable.period[3]}
+                            {stake.stakingTable.period_label[3]}
                         </Grid.Col>
                     </Grid>
                 )

@@ -2,10 +2,7 @@
 import { makeAutoObservable } from 'mobx';
 import RootStore from './root';
 import { publicConfig } from "../config/public";
-import { getNFTIDFromAddress } from '../utils';
-
 import $ from "axios";
-
 import ContractAddress from '../contracts/contract-address.json';
 import StakeContractABI from '../contracts/ElumStaking.json';
 
@@ -16,11 +13,25 @@ export class StakeStore {
     loading : boolean = true;
     activeMinerCnt : number = 0;
 
+    /**
+     * This table come from blockchain.
+     * This table contains period & label lists.
+     */
+    stakeTypeList = [];
+
+    /**
+     * This table comes from webserver.
+     * This table should be equal to stakeTypeList.
+     * This table have multiplier extra field and period_label string.
+     * The multiplier can be changed dynamically.
+     * The period_label will be useful to display information.
+     */
     stakingTable = {
         level : [],
         amount : [],
         period : [],
-        multiplier : []
+        multiplier : [],
+        period_label : []
     };
 
     constructor(rootStore: RootStore) {
@@ -46,7 +57,7 @@ export class StakeStore {
         const { god } = this.rootStore;
         try {
             this.loading = true;
-            let tx : any = await this.callContract('ADDRESS_TO_INFO', [god.currentNetwork.account]);
+            let tx : any = await this.getStakingInfo();
             this.staked_tokens = String(tx.amount);
 
             let ret1 : any = await $.get(`${publicConfig.BACKEND_URL}/api/staking/getparam`); 
@@ -55,8 +66,9 @@ export class StakeStore {
             let ret2 : any = await $.post(`${publicConfig.BACKEND_URL}/api/device_status/getActiveMiner`, {
                 address : god.currentNetwork.account
             });
-
             this.activeMinerCnt = ret2.data.data.CNT;
+
+            this.stakeTypeList = await this.getStakingList();
         } catch (err) {
             this.staked_tokens = '0';
             console.error('stake.refresh error', err);
@@ -69,8 +81,14 @@ export class StakeStore {
         // Should be update to use smart contracts.
         const { god } = this.rootStore;
         try {
-            let tx = await this.callContract('getStakeTypeList', []);
-            return tx;
+            let stakeTypeList : any = await this.callContract('getStakeTypeList', []);            
+            return stakeTypeList.map((item : any) => {
+                return {
+                    period : parseInt(item.period.toString()),
+                    id : parseInt(item.id.toString()),
+                    label : item.label
+                }
+            });
         } catch(err) {
             console.error('getStakingList return error', err, god.currentNetwork.account);
             return [];
@@ -88,6 +106,7 @@ export class StakeStore {
         }
     }
 
+    // operation functions
     stake(stakeType, amount) {
         return this.callContract('stake', [stakeType, amount]);
     }

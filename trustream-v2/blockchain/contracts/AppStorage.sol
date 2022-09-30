@@ -22,6 +22,7 @@ struct NFT_INFO {
 struct STAKE_TYPE {
     uint256 id;
     uint256 period;
+    string  label;
 }
 
 struct STAKE_INFO {

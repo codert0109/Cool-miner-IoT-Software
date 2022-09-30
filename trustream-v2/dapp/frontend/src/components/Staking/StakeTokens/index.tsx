@@ -76,13 +76,11 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default observer((props: Props) => {
-  const { classes, theme } = useStyles();
+  const { classes } = useStyles();
   const [amount, setAmount] = useState(0);
-  const { god, nft, stake, token } = useStore();
+  const { god, stake, token } = useStore();
 
-  const periodList = [45, 90, 180, 360];
   const [activePeriod, setActivePeriod] = useState(-1);
-  const [stakeTypeList, setStakeTypeList] = useState([]);
 
   useEffect(() => {
     if (props.period != undefined) {
@@ -97,15 +95,7 @@ export default observer((props: Props) => {
   }, [props.amount]);
 
   const refresh = async () => {
-    let stakeTypeList : any = await stake.getStakingList();
-    stakeTypeList = stakeTypeList.map((item : any) => {
-      return {
-        period : parseInt(item.period.toString()),
-        id : parseInt(item.id.toString())
-      }
-    });
-    
-    setStakeTypeList(stakeTypeList);
+    stake.refresh();
   };
 
   useEffect(() => {
@@ -134,8 +124,8 @@ export default observer((props: Props) => {
     }
 
     let curIndex = -1;
-    stakeTypeList.forEach((item, index) => {
-      if (item.period == activePeriod * 86400) {
+    stake.stakeTypeList.forEach((item, index) => {
+      if (item.period == activePeriod) {
         curIndex = index;
       }
     });
@@ -152,7 +142,7 @@ export default observer((props: Props) => {
     Swal.fire({
       title: 'Info',
       html: `<p>You will stake ${amount} tokens.</p>
-             <p>Period: ${stakeTypeList[curIndex].period / 86400} days</p>`,
+             <p>Period: ${stake.stakingTable[curIndex].period_label}</p>`,
       icon: 'info',
       showCancelButton: true
     }).then((result) => {
@@ -200,11 +190,11 @@ export default observer((props: Props) => {
   };
 
   const renderPeriodList = () => {
-    return periodList.map(item =>             
+    return stake.stakeTypeList.map((item, index) =>             
       <Grid.Col md={3} sm={3}>
         <WhiteLabel 
-          className={join(classes.textCenter, activePeriod == item ? classes.active : '')} 
-          onClick={() => onSelectLabel(item)} label={item} />
+          className={join(classes.textCenter, activePeriod == item.period ? classes.active : '')} 
+          onClick={() => onSelectLabel(item.period)} label={item.label} />
       </Grid.Col>
     )
   };
