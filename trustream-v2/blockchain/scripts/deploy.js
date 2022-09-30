@@ -36,8 +36,13 @@ async function main() {
 
   const elumStaking = await deployContract('ElumStaking');
   await elumStaking.setTokenAddress(elumToken.address);
-  const days = 24 * 60 * 60;
-  await elumStaking.addStakeTypeList([45*days,  90*days,  180*days, 360*days]);
+
+  // for deploy to main server (45 days, 90 days, 180 seconds, 360 seconds)
+  // const days = 24 * 60 * 60;
+  // await elumStaking.addStakeTypeList([45*days,  90*days,  180*days, 360*days]);
+
+  // for deploy to test server (45 seconds, 90 seconds, 180 seconds, 360 seconds)
+  await elumStaking.addStakeTypeList([45,  90,  180, 360]);
 
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
