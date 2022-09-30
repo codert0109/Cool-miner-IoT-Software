@@ -1,7 +1,7 @@
 import { createStyles, Button, Modal, Loader } from '@mantine/core';
 import Swal from 'sweetalert2'
 import React, { useState } from "react";
-import { getContractAddressFormat , getNFTIDFromAddress} from "../../utils";
+import { getContractAddressFormat } from "../../utils";
 import { useStore } from '../../store/index';
 
 const BREAKPOINT = '@media (max-width: 900px)';

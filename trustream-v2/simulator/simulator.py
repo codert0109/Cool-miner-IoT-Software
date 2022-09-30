@@ -41,7 +41,7 @@ class Message:
       self.end_time = self.start_time + 2
       self.miner = 'testminer'
       self.version = '2.1.5'
-      self.nftID = '363'
+      self.nftID = '0'
 
 
 class Signature:
@@ -55,7 +55,7 @@ class Signature:
 
         self.hex = base64.b64encode(signed_message.signature).decode("utf-8")
 
-        self.hex = "wytrnewccjuyfaabueessrwhranpsjznamrllxzh"
+        self.hex = "zlpqzufvczxyzmwmvlnljlurergitexyjblzcrhk"
 
 class DataFrame:
     def __init__(self, message: Message, privKey : bytes):

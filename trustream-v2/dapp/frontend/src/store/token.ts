@@ -1,8 +1,6 @@
 // implement web3 -> backend authentication
 import { makeAutoObservable } from 'mobx';
 import RootStore from './root';
-import { publicConfig } from "../config/public";
-import { getNFTIDFromAddress } from '../utils';
 
 import ContractAddress from '../contracts/contract-address.json';
 import TokenContractABI from '../contracts/ElumToken.json';

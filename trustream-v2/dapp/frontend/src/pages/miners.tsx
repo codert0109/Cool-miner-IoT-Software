@@ -9,7 +9,6 @@ import NFTContractABI from '../contracts/ElumNFT.json';
 import ContractAddress from '../contracts/contract-address.json';
 import { useEffect, useState } from "react";
 import Box from "@/components/Container/Box";
-import { getNFTIDFromAddress } from "../utils";
 import { observer } from 'mobx-react-lite';
 import { Select } from '@mantine/core';
 
@@ -231,7 +230,7 @@ export default observer(() => {
                 const url = `${publicConfig.DEVICE_URL}/set_signature`;
 
                 const wallet = god.currentNetwork.account;
-                const nftID = getNFTIDFromAddress(wallet);
+                const nftID = selectedNFT;
 
                 $.post(url, { signature: data.data.session, nftID, wallet }, {
 
