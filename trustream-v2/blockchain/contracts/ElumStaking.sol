@@ -78,5 +78,9 @@ contract ElumStaking is Ownable{
         return stakeTypeList;
     }
 
+    function getCurrentTime() public view returns (uint) {
+        return block.timestamp;
+    }
+
     /* End User Module */
 }

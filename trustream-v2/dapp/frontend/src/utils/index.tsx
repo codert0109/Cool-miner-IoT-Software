@@ -24,17 +24,27 @@ export function getLocalTimeStringFromSeconds(seconds) {
  */
 export function formatTime(seconds : number) {
     const unit_val = [1,    60,     3600,   86400];
-    const unit_str = ['sec','min',  'hour', 'day'];
+    const unit_str = ['s',  'm',    'h',    'd'];
+
+    let timeValue = [];
 
     for (let i = unit_val.length - 1; i >= 0; i--) {
-        if (seconds >= unit_val[i]) {
-            let cur : number = Math.round(seconds / unit_val[i] * 100) / 100;
-            if (cur > 1 - 1e-8) {       // should add 's' suffix.
-                return `${cur}${unit_str[i]}s`;
-            }
+        timeValue[i] = Math.floor(seconds / unit_val[i]);
+        seconds -= timeValue[i] * unit_val[i];
+    }
+
+    let cnt = 0;
+    let ans = '';
+    for (let i = unit_val.length - 1; i >= 0; i--) {
+        if (timeValue[i] > 0) {
+            ans += `${timeValue[i]}${unit_str[i]}`;
+            ++ cnt;
+            if (cnt == 2) break;
         }
     }
-    return '0s'
+    if (ans == '')
+        ans = '0s';
+    return ans;
 }
 
 export function formatMultiplier(num) {

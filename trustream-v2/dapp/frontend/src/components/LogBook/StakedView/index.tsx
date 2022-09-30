@@ -37,39 +37,12 @@ interface Props { }
 export default observer((props: Props) => {
   const { god, stake } = useStore();
 
-  const [stakeInfo, setStakeInfo] = useState<STAKE_INFO>({
-    type_id: 0,
-    startTime: 0,
-    expireTime: 0,
-    amount: 0
-  });
-
-  const refresh = async () => {
-    let value: any = await stake.getStakingInfo();
-
-    if (value == null || value.amount == 0) {
-      setStakeInfo({
-        type_id: 0,
-        startTime: 0,
-        expireTime: 0,
-        amount: 0
-      });
-    } else {
-      setStakeInfo({
-        type_id: parseInt(value.type_id.toString()),
-        startTime: parseInt(value.startTime.toString()),
-        expireTime: parseInt(value.expireTime.toString()),
-        amount: parseInt(value.amount.toString())
-      });
-    }
-  };
-
-  useEffect(() => {
-    refresh();
-  }, [god.currentNetwork.account]);
+  // useEffect(() => {
+  //   stake.refresh();
+  // }, [god.currentNetwork.account]);
 
   const renderBody = () => {
-    if (stakeInfo.amount == 0) {
+    if (stake.stakedInfo.amount == 0) {
       return (
         <tr>
           <td colSpan={7}>
@@ -81,11 +54,7 @@ export default observer((props: Props) => {
       );
     }
 
-    return <StakeNode
-      key={0}
-      startTime={stakeInfo.startTime}
-      expireTime={stakeInfo.expireTime}
-      amount={stakeInfo.amount} />
+    return <StakeNode/>
   };
 
   const tableView = () => {

@@ -48,9 +48,9 @@ export default observer((props: Props) => {
   const { classes } = useStyles();
   const [amount, setAmount] = useState(0);
 
-  useEffect(() => {
-    token.refresh();
-  }, [god.currentNetwork.account]);
+  // useEffect(() => {
+  //   token.refresh();
+  // }, [god.currentNetwork.account]);
 
   const onInputChange = (e) => {
     if (e.target.value == '')

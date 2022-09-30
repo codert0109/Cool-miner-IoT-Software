@@ -49,9 +49,9 @@ export default observer((props: Props) => {
   const [amount, setAmount] = useState(0);
   const [address, setAddress] = useState('');
 
-  useEffect(() => {
-    token.refresh();
-  }, [god.currentNetwork.account]);
+  // useEffect(() => {
+  //   token.refresh();
+  // }, [god.currentNetwork.account]);
 
   const onInputChange = (e) => {
     if (e.target.value == '')

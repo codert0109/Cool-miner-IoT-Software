@@ -23,9 +23,9 @@ export default observer((props: Props) => {
   const { classes } = useStyles();
   const { god, token } = useStore();
 
-  useEffect(() => {
-    token.refresh();
-  }, [god.currentNetwork.account]);
+  // useEffect(() => {
+  //   token.refresh();
+  // }, [god.currentNetwork.account]);
 
   const renderElementWithLoader = (element) => {
     if (token.loading) {

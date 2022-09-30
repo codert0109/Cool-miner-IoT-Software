@@ -25,9 +25,9 @@ export default observer((props: Props) => {
   const { classes } = useStyles();
   const { god, stake } = useStore();
 
-  useEffect(() => {
-    stake.refresh();
-  }, [god.currentNetwork.account]);
+  // useEffect(() => {
+  //   stake.refresh();
+  // }, [god.currentNetwork.account]);
 
   const renderElementWithLoader = (element) => {
     if (stake.loading) {
@@ -44,7 +44,7 @@ export default observer((props: Props) => {
     <Box label="Currently Staked">
       <WhiteLabel label={
         renderElementWithLoader(
-          <>{stake.staked_tokens}</>
+          <>{stake.stakedInfo.amount}</>
         )
       } className={classes.textAlign}  />
     </Box>

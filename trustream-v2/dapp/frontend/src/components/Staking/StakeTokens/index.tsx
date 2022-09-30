@@ -4,7 +4,7 @@ import { useInterval } from '@mantine/hooks';
 import Box from "@/components/Container/Box";
 import WhiteLabel from "@/components/WhiteLabel";
 import { Grid } from "@mantine/core";
-import { createStyles, Button, Progress } from '@mantine/core';
+import { createStyles, Button, Loader } from '@mantine/core';
 import { useStore } from '@/store/index';
 import join from 'classnames';
 import Swal from 'sweetalert2';
@@ -43,12 +43,22 @@ const useStyles = createStyles((theme) => ({
     overflow: 'hidden'
   },
 
+  refresh: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
   textCenter: {
     textAlign: 'center',
     paddingLeft: 0,
     paddingRight: 0,
-    cursor : 'pointer',
-    userSelect : 'none'
+    cursor: 'pointer',
+    userSelect: 'none'
   },
 
   gridPadding: {
@@ -56,9 +66,16 @@ const useStyles = createStyles((theme) => ({
     paddingRight: '0px !important'
   },
 
-  active : {
-    backgroundColor : '#2f9e44',
-    color : 'white'
+  active: {
+    backgroundColor: '#2f9e44',
+    color: 'white'
+  },
+
+  disable: {
+    backgroundColor: 'rgb(93, 109, 255)',
+    color: 'white',
+    cursor: 'not-allowed',
+    pointerEvents: 'none'
   },
 
   inputtext: {
@@ -70,37 +87,35 @@ const useStyles = createStyles((theme) => ({
     fontFamily: 'Proxima-Nova-Bold!important'
   },
 
-  nowrap : {
-    whiteSpace : 'nowrap'
+  nowrap: {
+    whiteSpace: 'nowrap'
+  },
+
+  centerAlign: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 0,
+    paddingTop: 3
   }
 }));
 
 export default observer((props: Props) => {
   const { classes } = useStyles();
   const [amount, setAmount] = useState(0);
+  const [prevamount, setPrevAmount] = useState(0);
   const { god, stake, token } = useStore();
 
   const [activePeriod, setActivePeriod] = useState(-1);
 
   useEffect(() => {
+    if (props.amount != undefined) {
+      setPrevAmount(props.amount)
+    }
     if (props.period != undefined) {
       setActivePeriod(props.period)
     }
-  }, [props.period]);
-
-  useEffect(() => {
-    if (props.amount != undefined) {
-      setAmount(props.amount)
-    }
-  }, [props.amount]);
-
-  const refresh = async () => {
-    stake.refresh();
-  };
-
-  useEffect(() => {
-    refresh();
-  }, [god.currentNetwork.account]);
+  }, [props.amount, props.period]);
 
   const onInputAmountChange = (e) => {
     if (e.target.value == '')
@@ -142,7 +157,7 @@ export default observer((props: Props) => {
     Swal.fire({
       title: 'Info',
       html: `<p>You will stake ${amount} tokens.</p>
-             <p>Period: ${stake.stakingTable[curIndex].period_label}</p>`,
+             <p>Period: ${stake.stakingTable.period_label[curIndex]}</p>`,
       icon: 'info',
       showCancelButton: true
     }).then((result) => {
@@ -159,9 +174,12 @@ export default observer((props: Props) => {
 
               Swal.fire(
                 'Success',
-                `<p>You staked successfully!</p>`,
+                `<p>You staked ${amount} tokens successfully!</p>`,
                 'success'
               );
+
+              token.refresh();
+              stake.refresh();
             })
             .catch((err) => {
               Swal.fire(
@@ -190,10 +208,36 @@ export default observer((props: Props) => {
   };
 
   const renderPeriodList = () => {
-    return stake.stakeTypeList.map((item, index) =>             
+    if (stake.stakeTypeList.length == 0) {
+      return <Grid.Col md={12} sm={12}>
+        <WhiteLabel
+          className={join(classes.centerAlign)}
+          label={
+            <div>
+              <Loader size="xs" />
+            </div>
+          } />
+      </Grid.Col>
+    }
+
+    const getClassName = (item) => {
+      if (activePeriod == item.period)
+        return join(classes.textCenter, classes.active)
+      console.log('type', props.type);
+      if (props.type == 'edit') {
+        if (activePeriod < item.period)
+          return join(classes.textCenter)
+        else
+          return join(classes.textCenter, classes.disable)
+      } else {
+        return join(classes.textCenter)
+      }
+    }
+
+    return stake.stakeTypeList.map((item, index) =>
       <Grid.Col md={3} sm={3}>
-        <WhiteLabel 
-          className={join(classes.textCenter, activePeriod == item.period ? classes.active : '')} 
+        <WhiteLabel
+          className={getClassName(item)}
           onClick={() => onSelectLabel(item.period)} label={item.label} />
       </Grid.Col>
     )
@@ -207,10 +251,56 @@ export default observer((props: Props) => {
     return false;
   };
 
+  const mdCols = props.type == 'edit' ? 3 : 4;
+
+  const renderCurrentAmount = () => {
+    return (
+      <Grid.Col md={mdCols} sm={12}>
+        <Grid>
+          <Grid.Col md={12} sm={12}>
+            <WhiteLabel className={classes.nowrap} label="Current Staked ELUM" />
+          </Grid.Col>
+          <Grid.Col md={12} sm={12}>
+            <WhiteLabel className="" label={prevamount} />
+          </Grid.Col>
+        </Grid>
+      </Grid.Col>
+    )
+  };
+
+
+  const renderLabel = () => {
+    return props.type == 'edit' ? 'Edit Staking Contract' : "Stake Tokens";
+  };
+
+  const renderClose = () => {
+    const onClose = () => {
+      if (props.onClose != undefined)
+        props.onClose();
+    };
+    return (
+      <div className={classes.refresh} onClick={onClose}>
+        <span>X</span>
+      </div>
+    )
+  };
+
+  const renderHeader = () => {
+    return (
+      <>
+        {renderLabel()}
+        {props.type == 'edit' && renderClose()}
+      </>
+    );
+  };
+
   return (
-    <Box label="Stake Tokens" bodyClass={classes.gridPadding}>
+    <Box
+      label={renderHeader()}
+      bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }}>
-        <Grid.Col md={4} sm={12}>
+        {props.type == 'edit' && renderCurrentAmount()}
+        <Grid.Col md={mdCols} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className={classes.nowrap} label="Amount to Stake" />
@@ -227,22 +317,22 @@ export default observer((props: Props) => {
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col md={4} sm={12}>
+        <Grid.Col md={mdCols} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label="Stake Duration" />
             </Grid.Col>
-            { renderPeriodList() }
+            {renderPeriodList()}
           </Grid>
         </Grid.Col>
-        <Grid.Col md={4} sm={12}>
+        <Grid.Col md={mdCols} sm={12}>
           <Button
             className={classes.button}
             onClick={() => onStaking()}
             color="yellow"
             disabled={getButtonDisableStatus()}
           >
-            { props.id ? 'Restake' : 'Stake' }
+            {props.id ? 'Restake' : 'Stake'}
           </Button>
         </Grid.Col>
       </Grid>
@@ -250,8 +340,10 @@ export default observer((props: Props) => {
   );
 });
 
-interface Props { 
-  id? : number,
-  period? : number,
-  amount? : number
+interface Props {
+  type: string,
+  id?: number,
+  period?: number,
+  amount?: number
+  onClose?: () => void
 }

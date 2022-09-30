@@ -31,9 +31,9 @@ export default observer((props: Props) => {
     const { classes } = useStyles();
     const { god, stake } = useStore();
 
-    useEffect(() => {
-        stake.refresh();
-    }, [god.currentNetwork.account]);
+    // useEffect(() => {
+    //     stake.refresh();
+    // }, [god.currentNetwork.account]);
 
     const renderElementWithLoader = (element) => {
         if (stake.loading) {
