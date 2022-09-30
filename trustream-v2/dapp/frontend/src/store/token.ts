@@ -38,10 +38,10 @@ export class TokenStore {
             this.balance = await this.getBalance();
             this.price = await this.getPrice();
             this.price /= Math.pow(10, 18);
-            this.loading = false;
         } catch (err) {
-            this.loading = false;
             console.log('token.refresh error', err);
+        } finally {
+            this.loading = false;
         }
     }
 

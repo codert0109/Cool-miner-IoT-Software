@@ -8,18 +8,20 @@ import WalletBalance from "@/components/WalletBalance";
 import TokenRewards from "@/components/TokenRewards";
 import Token from "@/components/Token";
 import TokenTransfer from "@/components/TokenTransfer";
+import { useLocalObservable, observer } from 'mobx-react-lite';
 
 import React, { useEffect } from 'react';
 import { useStore } from '@/store/index';
 
-export default function () {
-  const { god, stake, token } = useStore();
+export default observer((props) => {
+  const { god, token } = useStore();
 
   useEffect(() => {
     if (god.currentNetwork.account != undefined) {
       token.refresh();
     }
   }, [god.currentNetwork.account]);
+
 
   return (
     <Layout>
@@ -58,4 +60,4 @@ export default function () {
       </Grid>
     </Layout>
   );
-}
+});
