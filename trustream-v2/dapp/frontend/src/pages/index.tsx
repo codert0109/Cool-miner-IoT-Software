@@ -9,7 +9,18 @@ import TokenRewards from "@/components/TokenRewards";
 import Token from "@/components/Token";
 import TokenTransfer from "@/components/TokenTransfer";
 
+import React, { useEffect } from 'react';
+import { useStore } from '@/store/index';
+
 export default function () {
+  const { god, stake, token } = useStore();
+
+  useEffect(() => {
+    if (god.currentNetwork.account != undefined) {
+      token.refresh();
+    }
+  }, [god.currentNetwork.account]);
+
   return (
     <Layout>
       <Grid>

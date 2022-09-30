@@ -104,7 +104,7 @@ export default observer((props: Props) => {
   };
 
   return (
-    <Box label="Transfer ELUM Tokens" bodyClass={classes.gridPadding}>
+    <Box label="Transfer ELUM" bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }}>
         <Grid.Col md={4} sm={12}>
           <Grid>

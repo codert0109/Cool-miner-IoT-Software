@@ -22,7 +22,7 @@ export default observer((props: Props) => {
   const { classes } = useStyles();
 
   return (
-    <Box label="Buy ELUM Tokens" bodyClass={classes.gridPadding}>
+    <Box label="Buy ELUM" bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }} columns={60}>
         <Grid.Col lg={12} md={20} sm={60}>
           <Grid>
