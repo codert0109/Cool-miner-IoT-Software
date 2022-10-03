@@ -183,41 +183,55 @@ export default observer((props: Props) => {
       if (props.onConfirmStart != undefined)
         props.onConfirmStart();
 
-      token.allowToken(ContractAddress.ElumStaking, amount)
-        .then(async (tx) => {
-          const receipt = await tx;
-          await receipt.wait();
+      Swal.fire({
+        title: 'Info',
+        html: `You need to approve ${amount} tokens to the staking contract before staking.`,
+        icon: 'info',
+        showCancelButton: true
+      }).then((result) => {
+        if (!result.isConfirmed) return;
+        token.allowToken(ContractAddress.ElumStaking, amount)
+          .then(async (tx) => {
+            const receipt = await tx;
+            await receipt.wait();
 
-          stake.stake(curIndex, amount)
-            .then(async (tx) => {
-              const receipt = await tx;
-              await receipt.wait();
+            stake.stake(curIndex, amount)
+              .then(async (tx) => {
+                const receipt = await tx;
+                await receipt.wait();
 
-              Swal.fire(
-                'Success',
-                `<p>You staked ${amount} tokens successfully!</p>`,
-                'success'
-              );
+                Swal.fire(
+                  'Success',
+                  `<p>You staked ${amount} tokens successfully!</p>`,
+                  'success'
+                );
 
-              token.refresh();
-              stake.refresh();
-            })
-            .catch((err) => {
-              Swal.fire(
-                'Error',
-                `<p>Errors occured while staking</p>`,
-                'error'
-              );
-            });
-        })
-        .catch((err) => {
-          Swal.fire(
-            'Error',
-            `<p>Errors occured while approving ${amount} tokens to Staking Contract.</p>
+                token.refresh();
+                stake.refresh();
+              })
+              .catch((err) => {
+                Swal.fire(
+                  'Error',
+                  `<p>Errors occured while staking</p>`,
+                  'error'
+                );
+              });
+          })
+          .catch((err) => {
+            Swal.fire(
+              'Error',
+              `<p>Errors occured while approving ${amount} tokens to Staking Contract.</p>
              <p>Please check your token balance.</p>`,
-            'error'
-          );
-        });
+              'error'
+            );
+          });
+      }).catch((err) => {
+        Swal.fire(
+          'Error',
+          `<p>Errors occured while staking</p>`,
+          'error'
+        );
+      });
     }).catch((err) => {
       console.error('staketokens', err);
       Swal.fire(
