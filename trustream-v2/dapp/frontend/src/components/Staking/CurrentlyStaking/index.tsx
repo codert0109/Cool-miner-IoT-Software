@@ -41,7 +41,7 @@ export default observer((props: Props) => {
   };
 
   return (
-    <Box label="Currently Staked">
+    <Box label="ELUM Staked">
       <WhiteLabel label={
         renderElementWithLoader(
           <>{stake.stakedInfo.amount}</>

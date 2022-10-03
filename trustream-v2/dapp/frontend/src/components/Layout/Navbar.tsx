@@ -163,6 +163,7 @@ export const NavbarSimple = observer(() => {
   return (
 
     <Navbar 
+      // key="Navbar"
       style={{ 
         // backgroundColor: '#000000C0',
         // backgroundColor: '#C7C7C7C0',

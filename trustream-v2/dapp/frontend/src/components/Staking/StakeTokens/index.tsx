@@ -223,7 +223,6 @@ export default observer((props: Props) => {
     const getClassName = (item) => {
       if (activePeriod == item.period)
         return join(classes.textCenter, classes.active)
-      console.log('type', props.type);
       if (props.type == 'edit') {
         if (activePeriod < item.period)
           return join(classes.textCenter)
@@ -303,7 +302,7 @@ export default observer((props: Props) => {
         <Grid.Col md={mdCols} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.nowrap} label="Amount to Stake" />
+              <WhiteLabel className={classes.nowrap} label="Amount to add to Contract" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label={

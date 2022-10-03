@@ -5,7 +5,6 @@ import { createStyles, Grid, Button, NumberInput, Loader } from '@mantine/core';
 import WhiteLabel from "@/components/WhiteLabel";
 import { useStore } from '../../store/index';
 import Swal from 'sweetalert2';
-import join from 'classnames';
 
 const useStyles = createStyles((theme) => ({
   gridPadding: {
@@ -44,13 +43,18 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default observer((props: Props) => {
-  const { god, token } = useStore();
+  const { token } = useStore();
   const { classes } = useStyles();
   const [amount, setAmount] = useState(0);
+  const [totalcost, setTotalCost] = useState(0);
 
   // useEffect(() => {
   //   token.refresh();
   // }, [god.currentNetwork.account]);
+
+  useEffect(() => {
+    setTotalCost(amount * token.price);
+  }, [token.price, amount]);
 
   const onInputChange = (e) => {
     if (e.target.value == '')
@@ -104,10 +108,10 @@ export default observer((props: Props) => {
   return (
     <Box label="Buy ELUM Tokens" bodyClass={classes.gridPadding}>
       <Grid style={{ width: '100%' }}>
-        <Grid.Col md={4} sm={12}>
+        <Grid.Col md={3} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.textcenter} label="Token Amount" />
+              <WhiteLabel className={classes.textcenter} label="Purchase Amount" />
             </Grid.Col>
             <Grid.Col md={12} sm={12} style={{ paddingTop : 0}}>
               <WhiteLabel className={classes.vertcenter} label={
@@ -123,10 +127,10 @@ export default observer((props: Props) => {
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col md={4} sm={12}>
+        <Grid.Col md={3} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.textcenter} label="Price" />
+              <WhiteLabel className={classes.textcenter} label="Token Price" />
             </Grid.Col>
             <Grid.Col md={12} sm={12} style={{ paddingTop : 0}}>
               <WhiteLabel className={classes.textcenter} label={
@@ -139,7 +143,17 @@ export default observer((props: Props) => {
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col md={4} sm={12}>
+        <Grid.Col md={3} sm={12}>
+          <Grid>
+            <Grid.Col md={12} sm={12}>
+              <WhiteLabel className={classes.textcenter} label="Total Cost" />
+            </Grid.Col>
+            <Grid.Col md={12} sm={12} style={{ paddingTop : 0}}>
+              <WhiteLabel className={classes.textcenter} label={`${totalcost} IOTX`} />
+            </Grid.Col>
+          </Grid>
+        </Grid.Col>
+        <Grid.Col md={3} sm={12}>
           <Button
             color='green'
             size="xs"

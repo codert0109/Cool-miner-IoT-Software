@@ -39,7 +39,7 @@ export default observer((props: Props) => {
   };
 
   return (
-    <Box label="Available to stake">
+    <Box label="ELUM Available to Stake">
       <WhiteLabel label={ 
         renderElementWithLoader(
           <>{token.balance}</>
