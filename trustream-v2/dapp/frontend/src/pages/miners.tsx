@@ -1,5 +1,5 @@
 import Layout from "@/components/EntireLayout";
-import { createStyles, Button, ScrollArea } from '@mantine/core';
+import { createStyles, Button, Loader } from '@mantine/core';
 import { Send } from 'tabler-icons-react';
 import { publicConfig } from "../config/public";
 import { useStore } from '../store/index';
@@ -64,7 +64,6 @@ export default observer(() => {
     const [NFTLists, setNFTLists] = useState([]);
     const [NFTStatus, setNFTStatus] = useState([]);
     const [minerName, setMinerName] = useState('');
-    const [minerSession, setMinerSession] = useState('');
     const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
 
     useEffect(() => {
@@ -73,71 +72,60 @@ export default observer(() => {
 
     const UpdateLocalMinerInfo = () => {
         const url = `${publicConfig.DEVICE_URL}/get_status`;
-
         $.get(url)
             .then((data) => {
                 let info = data.data;
                 if (info.message == 'an error has occured') {
                     setMinerName('');
-                    setMinerSession('');
                 } else {
                     auth.$().post(`${BACKEND_URL}/api/nft_auth/verifySignature`, {
                         signature: info.signature
                     }).then((data) => {
                         if (data.data.status === 'OK') {
                             setMinerName('');
-                            setMinerSession('');
                         } else {
                             setMinerName(info.miner);
-                            setMinerSession(info.signature);
                         }
                     }).catch((err) => {
                         setMinerName(info.miner);
-                        setMinerSession(info.signature);
                     });
                 }
             })
             .catch((err) => {
                 setMinerName('');
-                setMinerSession('');
             });
     };
 
     const UpdateNFTStatus = () => {
         nft.getNFTLists()
-            .then((data) => {
+            .then(async (data) => {
                 let info: any = data;
-                setNFTLists(info);
+                
                 let curNFTStatus = [];
-                info.forEach(item => {
-                    curNFTStatus.push({
-                        NFT: parseInt(item.toString()),
-                        Miner: 'Loading',
-                        Connection: 'Loading'
-                    });
-                });
 
-                setNFTStatus((e) => curNFTStatus);
-
-                info.forEach(item => {
-                    auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
-                        nft_id: item.toString()
-                    }).then((data) => {
+                for (let i = 0; i < info.length; i++) {
+                    let item = info[i].toString();
+                    try {
+                        let data = await auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
+                            nft_id: item
+                        });
                         let info = data.data.data;
-                        if (info.session) {
-                            setNFTStatus([{
-                                NFT: info.nft_id,
-                                Miner: info.miner ? info.miner : 'Not set',
-                                // This session is random fake session. Just check if it is null or not.
-                                Connection: info.session ? 'Assigned' : 'Not assigned'
-                            }]);
-                        } else {
-                            setNFTStatus([]);
-                        }
-                    }).catch((err) => {
-                        console.log(err);
-                    });
-                });
+                        curNFTStatus.push({
+                            NFT: info.nft_id,
+                            Miner: info.miner ? info.miner : 'Not set',
+                            // This session is random fake session. Just check if it is null or not.
+                            Connection: info.session ? 'Assigned' : 'Not assigned'
+                        });
+                    } catch (err) {
+                        curNFTStatus.push({
+                            NFT : parseInt(item),
+                            Miner : 'Not assigned',
+                            Connection : 'Not assigned'
+                        });
+                    }
+                }
+
+                setNFTStatus(curNFTStatus);
             })
             .catch((err) => {
                 setNFTLists([]);
@@ -321,7 +309,6 @@ export default observer(() => {
                     showCancelButton: true
                 }).then((result) => {
                     if (!result.isConfirmed) {
-                        // isPendingUptime(false);
                         return;
                     }
                     auth.login(
@@ -334,7 +321,6 @@ export default observer(() => {
                                 html: `<p>Errors Occured while login.</p>`,
                                 icon: 'error',
                             });
-                            // isPendingUptime(false);
                         });
                 }).catch(() => {
                     Swal.fire({
@@ -342,27 +328,28 @@ export default observer(() => {
                         html: `<p>Securing Miner Connection has been failed.</p>`,
                         icon: 'info',
                     });
-                    // isPendingUptime(false);
                 });
             }
         );
     };
 
-    if (nft.loading) {
-        return (
-            <Layout></Layout>
-        )
-    }
-
     const renderNFTSelectOptions = () => {
-        return nft.infoList.map((item, index) => {
+        return NFTStatus.filter(item => item.Connection == 'Not assigned').map((item, index) => {
             return {
-                value : nft.idList[index].toString(),
-                label : "NFT " + nft.idList[index].toString(),
+                value : item.NFT.toString(),
+                label : "NFT " + item.NFT.toString(),
                 group : 'Testnet Miner'
             }
         });
     };
+
+    if (nft.loading) {
+        return (
+            <Layout>
+                <Loader/>
+            </Layout>
+        )
+    }
 
     return (
         <Layout>

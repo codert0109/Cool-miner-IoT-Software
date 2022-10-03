@@ -154,14 +154,35 @@ export default observer((props: Props) => {
       return;
     }
 
+    if (props.type != 'edit' && amount == 0) {
+      Swal.fire(
+        'Info',
+        `<p>You need to stake positive number of tokens.</p>`,
+        'info'
+      );
+      return;
+    }
+
+    const getConfirmMessage = () => {
+      if (props.type == 'edit') {
+        if (amount == 0)
+          return `<p>You are restaking ${prevamount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
+        return `<p>You are restaking ${prevamount} tokens and adding ${amount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
+      }
+      return `<p>You are staking ${amount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
+    };
+
     Swal.fire({
       title: 'Info',
-      html: `<p>You will stake ${amount} tokens.</p>
-             <p>Period: ${stake.stakingTable.period_label[curIndex]}</p>`,
+      html: getConfirmMessage(),
       icon: 'info',
       showCancelButton: true
     }).then((result) => {
       if (!result.isConfirmed) return;
+
+      if (props.onConfirmStart != undefined)
+        props.onConfirmStart();
+
       token.allowToken(ContractAddress.ElumStaking, amount)
         .then(async (tx) => {
           const receipt = await tx;
@@ -224,7 +245,7 @@ export default observer((props: Props) => {
       if (activePeriod == item.period)
         return join(classes.textCenter, classes.active)
       if (props.type == 'edit') {
-        if (activePeriod < item.period)
+        if (props.period <= item.period)
           return join(classes.textCenter)
         else
           return join(classes.textCenter, classes.disable)
@@ -331,7 +352,7 @@ export default observer((props: Props) => {
             color="yellow"
             disabled={getButtonDisableStatus()}
           >
-            {props.id ? 'Restake' : 'Stake'}
+            {props.type == 'edit' ? 'Restake' : 'Stake'}
           </Button>
         </Grid.Col>
       </Grid>
@@ -341,8 +362,8 @@ export default observer((props: Props) => {
 
 interface Props {
   type: string,
-  id?: number,
   period?: number,
   amount?: number
-  onClose?: () => void
+  onClose?: () => void,
+  onConfirmStart?: () => void
 }

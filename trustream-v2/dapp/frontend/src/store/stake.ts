@@ -160,6 +160,18 @@ export class StakeStore {
         return this.callContract('withdrawStaker', [god.currentNetwork.account]);
     }
 
+    getStakingLabel() {
+        return this.labelFromPeriod(this.stakedInfo.expireTime - this.stakedInfo.startTime);
+    }
+
+    labelFromPeriod(period) {
+        for (let i = 0; i < this.stakingTable.period.length; i++) {
+            if (this.stakingTable.period[i] == period)
+                return this.stakingTable.period_label[i];
+        }
+        return null;
+    }
+
     /**
      * Returns current timestamp.
      */

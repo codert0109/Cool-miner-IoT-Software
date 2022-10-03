@@ -63,7 +63,6 @@ export class NFTStore {
             
             tx = await this.getNFTLists();
             this.idList = tx.map(item => parseInt(item.toString()));
-            console.log('nft.idList', tx);
 
             tx = await this.getNFTTypeLists();
             this.typeList = tx.map(item => {
@@ -74,7 +73,6 @@ export class NFTStore {
                     remainSupply : parseInt(item.remainSupply.toString())
                 }
             });
-            console.log('nft.typeList', tx)
             
             for (let i = 0; i < this.idList.length; i++) {
                 let tx : any = await this.getNFTInfo(this.idList[i]);
@@ -84,7 +82,6 @@ export class NFTStore {
                     acquireTime : parseInt(tx.acquireTime.toString())
                 };
             }
-            console.log('nft.infoList', tx);
         } catch (err) {
             console.error('nft.refresh error', err);
         } finally {

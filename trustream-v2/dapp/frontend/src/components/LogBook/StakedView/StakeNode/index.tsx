@@ -21,7 +21,7 @@ interface Props { }
 
 export default observer((props: Props) => {
     const { classes, theme } = useStyles();
-    const { god, stake, token } = useStore();
+    const { stake, token } = useStore();
     const [modalOpen, setModalOpen] = useState(false);
 
     const [timePast, setTimePast] = useState(0);
@@ -86,7 +86,7 @@ export default observer((props: Props) => {
 
         Swal.fire({
             title: 'Info',
-            html: `<p>You will restake again.</p>`,
+            html: `<p>You are restaking ${stake.stakedInfo.amount} tokens for a period of ${stake.getStakingLabel()}</p>`,
             icon: 'info',
             showCancelButton: true
         }).then((result) => {
@@ -130,7 +130,7 @@ export default observer((props: Props) => {
 
                 Swal.fire(
                     'Success',
-                    `<p>You withdrawed tokens successfully!</p>`,
+                    `<p>Your ELUM tokens have been transferred to your wallet successfully!</p>`,
                     'success'
                 );
 
@@ -157,6 +157,16 @@ export default observer((props: Props) => {
             )
         }
 
+        if (stake.stakingStatus() == stake.STAKING_STATUS.EXPIRED) {
+            return (
+                <>
+                    <td>{stake.activeMinerCnt}</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </>
+            )
+        }
+
         let cnt = Math.max(1, stake.activeMinerCnt);
 
         let amount = stake.stakedInfo.amount / cnt;
@@ -167,7 +177,7 @@ export default observer((props: Props) => {
             for (let j = 0; j < stake.stakingTable.period.length; j++) {
                 if (stake.stakingTable.amount[i] > amount)
                     continue;
-                if (parseInt(stake.stakingTable.period[j]) * 86400 > stake.stakedInfo.expireTime - stake.stakedInfo.startTime)
+                if (stake.stakingTable.period[j] > stake.stakedInfo.expireTime - stake.stakedInfo.startTime)
                     continue;
                 if (multiplier == -1 || multiplier < stake.stakingTable.multiplier[i][j]) {
                     multiplier = stake.stakingTable.multiplier[i][j];
@@ -270,7 +280,9 @@ export default observer((props: Props) => {
                 withCloseButton={false}
                 overlayColor={theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2]}
                 overlayOpacity={0}
-                overlayBlur={3} opened={modalOpen} onClose={function (): void {
+                overlayBlur={3} 
+                opened={modalOpen} 
+                onClose={function (): void {
                     setModalOpen(false);
                 }}
                 style={{
@@ -280,6 +292,9 @@ export default observer((props: Props) => {
                     type="edit"
                     onClose={() => {
                         setModalOpen(false)
+                    }}
+                    onConfirmStart={function(): void{
+                        setModalOpen(false);
                     }}
                     period={stake.stakedInfo.expireTime - stake.stakedInfo.startTime}
                     amount={stake.stakedInfo.amount} />

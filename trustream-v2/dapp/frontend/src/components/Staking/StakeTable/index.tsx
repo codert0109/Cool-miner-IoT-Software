@@ -55,7 +55,7 @@ export default observer((props: Props) => {
                             Level
                         </Grid.Col>
                         <Grid.Col span={17}>
-                            Token Required
+                            Tokens Required
                         </Grid.Col>
                         <Grid.Col span={10}>
                             {stake.stakingTable.period_label[0]}

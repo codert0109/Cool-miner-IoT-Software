@@ -109,7 +109,7 @@ export default observer((props: Props) => {
                             onClick={() => onStakeTokens()}
                             className={classes.button}
                             color="brightorange">
-                            Stake Your Tokens
+                            Stake ELUM
                         </Button>
                     </MantineProvider>
                 </Grid.Col>

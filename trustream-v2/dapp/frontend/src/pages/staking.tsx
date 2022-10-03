@@ -27,15 +27,10 @@ export default observer((props: Props) => {
 
   useEffect(() => {
     if (god.currentNetwork.account != undefined) {
-      console.log('account', god.currentNetwork.account);
       stake.refresh();
       token.refresh();
     }
   }, [god.currentNetwork.account]);
-
-  // if (stake.loading || token.loading) {
-  //   return <Layout><Loader size="sm"/></Layout>
-  // }
 
   return (
     <Layout>
@@ -46,7 +41,7 @@ export default observer((props: Props) => {
         <Grid.Col sm={6} md={4}>
           <CurrentlyStaking />
         </Grid.Col>
-        <Grid.Col sm={12} md={8}>
+        <Grid.Col sm={12} md={12}>
           <Token />
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
