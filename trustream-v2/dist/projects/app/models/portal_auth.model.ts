@@ -5,7 +5,7 @@ import { DeviceModel } from './device.model';
 @Table({
   tableName: 'device_auths'
 })
-export class DeviceAuthModel extends BaseModel<DeviceAuthModel> {
+export class PortalAuthModel extends BaseModel<PortalAuthModel> {
   @PrimaryKey
   @Column({
     type: DataType.STRING(64)

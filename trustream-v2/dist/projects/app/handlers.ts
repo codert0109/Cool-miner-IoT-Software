@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { 
   deviceDataRepository, 
   deviceRepository, 
-  deviceAuthRepository,
+  portalAuthRepository,
   deviceUptimeRepository, 
   nftAuthRepository
 } from './models'
