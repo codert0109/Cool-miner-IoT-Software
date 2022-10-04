@@ -21,7 +21,7 @@ export class AuthStore {
     }
 
     check_session(address, session, success_callback, fail_callback) {
-        $.post(`${BACKEND_URL}/api/device_auth/verify`, {
+        $.post(`${BACKEND_URL}/api/portal_auth/verify`, {
             address,
             signature: session
         }).then((data: any) => {
@@ -41,7 +41,7 @@ export class AuthStore {
 
         const getNounce = async () => {
             try {
-                let ret = await $.post(`${BACKEND_URL}/api/device_auth/getNounce`, {
+                let ret = await $.post(`${BACKEND_URL}/api/portal_auth/getNounce`, {
                     address: god.currentNetwork.account
                 });
                 return ret.data.nounce;
@@ -52,7 +52,7 @@ export class AuthStore {
 
         const getSessionID = async (password) => {
             try {
-                let ret = await $.post(`${BACKEND_URL}/api/device_auth/login`, {
+                let ret = await $.post(`${BACKEND_URL}/api/portal_auth/login`, {
                     address: god.currentNetwork.account,
                     password: password
                 });

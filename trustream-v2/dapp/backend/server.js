@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
 
 // register routes
 require('./app/routes/device_data.routes')(app)
-require('./app/routes/device_auth.routes')(app)
+require('./app/routes/portal_auth.routes')(app)
 require('./app/routes/device_uptime.routes')(app)
 require('./app/routes/claim_token.routes')(app)
 require('./app/routes/server_status.routes')(app)

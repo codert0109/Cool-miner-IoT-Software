@@ -130,6 +130,7 @@ export default observer((props: Props) => {
                         <p className={classes.p}>Staked tokens are divided by the number of active miners to calculate multipliers</p>
                         <p className={classes.p}>2000 tokens staked for 360 with 1 miner = 1.85x multiplier,</p>
                         <p className={classes.p}>if there are 2 miners, 1.55x multiplier.</p>
+                        <p className={classes.p}>A Miner is considered active if it has uploaded data within the current 60 minute epoch.</p>
                     </>
                 } className={classes.textAlign}/>
             </Grid.Col>

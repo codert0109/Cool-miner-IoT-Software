@@ -27,7 +27,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.device_datas   = require("./device_data.model.js")(sequelize, Sequelize);
-db.device_auth    = require("./device_auth.model.js")(sequelize, Sequelize);
+db.portal_auth    = require("./portal_auth.model.js")(sequelize, Sequelize);
 db.nft_auth       = require("./nft_auth.model.js")(sequelize, Sequelize);
 db.device_uptimes = require("./device_uptime.model.js")(sequelize, Sequelize);
 db.server_updates = require("./server_update.model.js")(sequelize, Sequelize);

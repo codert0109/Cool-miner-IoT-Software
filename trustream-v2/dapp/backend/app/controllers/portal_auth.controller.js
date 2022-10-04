@@ -4,10 +4,10 @@ const { CENTRAL_WALLET } = require('../config/db.config');
 const { getRandomNounce, getRandomSessionID, nounce_length } = require('../utils'); 
 
 const db = require('../models')
-const Device_Auth = db.device_auth
+const Portal_Auth = db.portal_auth
 const NFT_Auth = db.nft_auth;
 
-// Core API Functions for Device_Auth
+// Core API Functions for Portal_Auth
 
 function verifySignature(address, nounce, signature) {
   try {
@@ -29,10 +29,10 @@ function verifySignature(address, nounce, signature) {
 }
 
 function updateNounce(address, nounce, success_callback, error_callback) {
-  Device_Auth.findOne({ where: { address: address } })
+  Portal_Auth.findOne({ where: { address: address } })
     .then((data) => {
       if (data === null || data.address !== address) {
-        Device_Auth.create({
+        Portal_Auth.create({
           address,
           nounce,
         })
@@ -43,7 +43,7 @@ function updateNounce(address, nounce, success_callback, error_callback) {
             error_callback()
           })
       } else {
-        Device_Auth.update({ address, nounce }, { where: { id: data.id } })
+        Portal_Auth.update({ address, nounce }, { where: { id: data.id } })
           .then((data) => {
             success_callback()
           })
@@ -57,7 +57,7 @@ function updateNounce(address, nounce, success_callback, error_callback) {
     })
 }
 
-// RESTful APIs for Device_Auth
+// RESTful APIs for Portal_Auth
 exports.getNounce = (req, res) => {
   //  console.log('address:', req.body.address);
   if (req.body.address === undefined) {
@@ -90,7 +90,7 @@ exports.verifyFunction = (address, signature, success_callback, fail_callback) =
     return;
   }
 
-  Device_Auth.findOne({ where : { address,  session_id : signature }})
+  Portal_Auth.findOne({ where : { address,  session_id : signature }})
     .then((data) => {
       if (data === null) {
         fail_callback();
@@ -138,7 +138,7 @@ exports.verify = (req, res) => {
 
   const { address, signature } = req.body;
 
-  Device_Auth.findOne({ where : { address,  session_id : signature }})
+  Portal_Auth.findOne({ where : { address,  session_id : signature }})
     .then((data) => {
       if (data === null) {
         res.send({
@@ -177,7 +177,7 @@ exports.login = (req, res) => {
 
   const { address, password, remove_flag } = req.body
 
-  Device_Auth.findOne({ where: { address } })
+  Portal_Auth.findOne({ where: { address } })
     .then((data) => {
       if (data === null) {
         res.send({
@@ -202,7 +202,7 @@ exports.login = (req, res) => {
             const processNewSession = () => {
               // It is working now. Create random session id for that part.
               let sessionID = getRandomSessionID()
-              Device_Auth.update(
+              Portal_Auth.update(
                 {
                   session_id: sessionID,
                   session_start: Date.now(),

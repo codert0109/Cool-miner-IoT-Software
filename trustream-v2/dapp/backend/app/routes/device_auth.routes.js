@@ -1,11 +1,11 @@
 module.exports = app => {
-  const device_auth = require("../controllers/device_auth.controller.js");
+  const portal_auth = require("../controllers/portal_auth.controller.js");
 
   var router = require("express").Router();
 
-  router.post("/getNounce",   device_auth.getNounce);
-  router.post("/login",       device_auth.login);
-  router.post("/verify",      device_auth.verify);
+  router.post("/getNounce",   portal_auth.getNounce);
+  router.post("/login",       portal_auth.login);
+  router.post("/verify",      portal_auth.verify);
 
-  app.use("/api/device_auth", router);
+  app.use("/api/portal_auth", router);
 };

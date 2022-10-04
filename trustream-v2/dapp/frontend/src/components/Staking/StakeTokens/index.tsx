@@ -183,55 +183,67 @@ export default observer((props: Props) => {
       if (props.onConfirmStart != undefined)
         props.onConfirmStart();
 
-      Swal.fire({
-        title: 'Info',
-        html: `You need to approve ${amount} tokens to the staking contract before staking.`,
-        icon: 'info',
-        showCancelButton: true
-      }).then((result) => {
-        if (!result.isConfirmed) return;
-        token.allowToken(ContractAddress.ElumStaking, amount)
+      const stakeTokens = () => {
+        stake.stake(curIndex, amount)
           .then(async (tx) => {
             const receipt = await tx;
             await receipt.wait();
 
-            stake.stake(curIndex, amount)
-              .then(async (tx) => {
-                const receipt = await tx;
-                await receipt.wait();
+            Swal.fire(
+              'Success',
+              `<p>You staked ${prevamount + amount} tokens successfully!</p>`,
+              'success'
+            );
 
-                Swal.fire(
-                  'Success',
-                  `<p>You staked ${amount} tokens successfully!</p>`,
-                  'success'
-                );
-
-                token.refresh();
-                stake.refresh();
-              })
-              .catch((err) => {
-                Swal.fire(
-                  'Error',
-                  `<p>Errors occured while staking</p>`,
-                  'error'
-                );
-              });
+            token.refresh();
+            stake.refresh();
           })
           .catch((err) => {
             Swal.fire(
               'Error',
-              `<p>Errors occured while approving ${amount} tokens to Staking Contract.</p>
-             <p>Please check your token balance.</p>`,
+              `<p>Errors occured while staking</p>`,
               'error'
             );
           });
-      }).catch((err) => {
-        Swal.fire(
-          'Error',
-          `<p>Errors occured while staking</p>`,
-          'error'
-        );
-      });
+      };
+      
+      if (amount > 0) {
+        Swal.fire({
+          title: 'Info',
+          html: `<p>You will need to confirm 2 wallet transactions (depending on blockchain congestion, this could take 5 to 10 seconds per transaction).</p>
+                  <ul style="text-align:left;">
+                    <li>The first transaction is to allow the staking contract to gain access to the tokens you are staking.</li>
+                    <li>The second transaction is be to finalize the token staking transaction and lock up your tokens for the contract period.</li>
+                  </ul>`,
+          icon: 'info',
+          showCancelButton: true
+        }).then((result) => {
+          if (!result.isConfirmed) return;
+          token.allowToken(ContractAddress.ElumStaking, amount)
+            .then(async (tx) => {
+              const receipt = await tx;
+              await receipt.wait();
+              stakeTokens();
+            })
+            .catch((err) => {
+              Swal.fire(
+                'Error',
+                `<p>Errors occured while approving ${amount} tokens to Staking Contract.</p>
+              <p>Please check your token balance.</p>`,
+                'error'
+              );
+            });
+        }).catch((err) => {
+          Swal.fire(
+            'Error',
+            `<p>Errors occured while staking</p>`,
+            'error'
+          );
+        });
+      } else {
+        stakeTokens();
+      }
+      
     }).catch((err) => {
       console.error('staketokens', err);
       Swal.fire(
@@ -304,7 +316,7 @@ export default observer((props: Props) => {
 
 
   const renderLabel = () => {
-    return props.type == 'edit' ? 'Edit Staking Contract' : "Stake Tokens";
+    return props.type == 'edit' ? 'Edit Staking Contract' : "Stake ELUM";
   };
 
   const renderClose = () => {
@@ -337,7 +349,7 @@ export default observer((props: Props) => {
         <Grid.Col md={mdCols} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.nowrap} label="Amount to add to Contract" />
+              <WhiteLabel className={classes.nowrap} label="Quantity to stake" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label={

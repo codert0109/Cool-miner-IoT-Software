@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Device_Auth = sequelize.define("device_auth", {
+  const Portal_Auth = sequelize.define("portal_auth", {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -25,5 +25,5 @@ module.exports = (sequelize, Sequelize) => {
     }
   });
 
-  return Device_Auth;
+  return Portal_Auth;
 };

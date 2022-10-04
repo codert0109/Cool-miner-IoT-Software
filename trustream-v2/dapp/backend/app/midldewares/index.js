@@ -1,4 +1,4 @@
-const { verifyFunction, verifyAdminFunction } = require("../controllers/device_auth.controller.js");
+const { verifyFunction, verifyAdminFunction } = require("../controllers/portal_auth.controller.js");
 
 exports.check_auth = function(req, res, next) {
     let session = req.get('Authorization');

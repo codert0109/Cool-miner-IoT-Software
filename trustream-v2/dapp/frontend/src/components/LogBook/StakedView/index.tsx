@@ -13,18 +13,6 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-interface TableReviewsProps {
-  data: {
-    Date: string,
-    Amount: number,
-    Miners: number,
-    Level: string,
-    Multiplier: string,
-    TimeRemaining: number,
-    TotalTime: number
-  }[];
-}
-
 interface STAKE_INFO {
   type_id: number,
   startTime: number,
@@ -35,11 +23,7 @@ interface STAKE_INFO {
 interface Props { }
 
 export default observer((props: Props) => {
-  const { god, stake } = useStore();
-
-  // useEffect(() => {
-  //   stake.refresh();
-  // }, [god.currentNetwork.account]);
+  const { stake } = useStore();
 
   const renderBody = () => {
     if (stake.stakedInfo.amount == 0) {
