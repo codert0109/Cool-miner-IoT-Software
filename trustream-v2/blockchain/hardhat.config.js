@@ -1,22 +1,30 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-web3");
 require('dotenv').config()
-const fs = require('fs');
 
-const IOTEX_PRIVATE_KEY = process.env.IOTEX_PRIVATE_KEY;
+const config = require('./config/config');
+const contractAddressList = config.contractAddress();
 
-task("registerDevice", "Authorize a new device by adding it to the DevicesRegistry contract")
-  .addParam("deviceaddress", "The device's address (matching the private key the device uses to sign its data).")
-  .addParam("contractaddress", "The DevicesRegistry contract address.")
-  .setAction(async ({deviceaddress,contractaddress}) => {
-    console.log("Registering device:", deviceaddress, ",to contract: ", contractaddress);
-
-    const DevicesRegistry = await ethers.getContractFactory("DevicesRegistry");
-    const devicesRegistry = await DevicesRegistry.attach(contractaddress);
-    let ret = await devicesRegistry.registerDevice(deviceaddress);
-    console.log ("registerDevice:", ret);
+/**
+ * Tasks to set Token Price.
+ * Command: npx hardhat setTokenPrice --price {value} --network testnet
+ * For example: npx hardhat setTokenPrice --price 0.1 --network testnet
+ */
+task("setTokenPrice", "Set Token Price")
+  .addParam("price", "The token price by IoTex coin")
+  .setAction(async (taskArgs) => {
+    let price = taskArgs.price;
+    try {
+      console.log(`Setting Token price to ${price} IoTex coin`);
+      price = price * Math.pow(10, 18);
+      const ElumTokenContract = await ethers.getContractFactory("ElumToken");
+      const ElumToken = await ElumTokenContract.attach(contractAddressList.ElumToken);
+      await ElumToken.setTokenPrice(price.toString());
+      console.log(`Setting Success!`);
+    } catch (err) {
+      console.log('Errors occured in setPrice', err);
+    }
   });
-
 
 module.exports = {
   solidity: "0.8.4",
@@ -28,7 +36,7 @@ module.exports = {
       url: `https://babel-api.testnet.iotex.io`,
 
       // Input your Metamask testnet account private key here
-      accounts: [`${IOTEX_PRIVATE_KEY}`],
+      accounts: [`${process.env.IOTEX_PRIVATE_KEY}`],
     },
   },
 };
