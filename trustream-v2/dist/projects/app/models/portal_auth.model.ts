@@ -1,9 +1,8 @@
 import { Table, Column, DataType, PrimaryKey, ForeignKey, AutoIncrement } from 'sequelize-typescript';
 import BaseModel from './base';
-import { DeviceModel } from './device.model';
 
 @Table({
-  tableName: 'device_auths'
+  tableName: 'portal_auths'
 })
 export class PortalAuthModel extends BaseModel<PortalAuthModel> {
   @PrimaryKey

@@ -31,5 +31,9 @@ db.portal_auth    = require("./portal_auth.model.js")(sequelize, Sequelize);
 db.nft_auth       = require("./nft_auth.model.js")(sequelize, Sequelize);
 db.device_uptimes = require("./device_uptime.model.js")(sequelize, Sequelize);
 db.server_updates = require("./server_update.model.js")(sequelize, Sequelize);
+db.cameras        = require("./camera.model.js")(sequelize, Sequelize);
+db.pool1          = require("./pool1.model.js")(sequelize, Sequelize);
+db.pool2          = require("./pool2.model.js")(sequelize, Sequelize);
+db.pool3          = require("./pool3.model.js")(sequelize, Sequelize);
 
 module.exports = db;

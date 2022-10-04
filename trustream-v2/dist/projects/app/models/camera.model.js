@@ -12,43 +12,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PortalAuthModel = void 0;
+exports.CameraModel = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const base_1 = __importDefault(require("./base"));
-let PortalAuthModel = class PortalAuthModel extends base_1.default {
+let CameraModel = class CameraModel extends base_1.default {
 };
 __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.INTEGER
     }),
-    __metadata("design:type", String)
-], PortalAuthModel.prototype, "id", void 0);
+    __metadata("design:type", Number)
+], CameraModel.prototype, "id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.STRING(256)
     }),
     __metadata("design:type", String)
-], PortalAuthModel.prototype, "address", void 0);
+], CameraModel.prototype, "coordinates", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.STRING(256)
     }),
     __metadata("design:type", String)
-], PortalAuthModel.prototype, "session_id", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(64)
-    }),
-    __metadata("design:type", String)
-], PortalAuthModel.prototype, "nounce", void 0);
-PortalAuthModel = __decorate([
+], CameraModel.prototype, "link", void 0);
+CameraModel = __decorate([
     sequelize_typescript_1.Table({
-        tableName: 'portal_auths'
+        tableName: 'camera'
     })
-], PortalAuthModel);
-exports.PortalAuthModel = PortalAuthModel;
-//# sourceMappingURL=portal_auth.model.js.map
+], CameraModel);
+exports.CameraModel = CameraModel;
+//# sourceMappingURL=camera.model.js.map

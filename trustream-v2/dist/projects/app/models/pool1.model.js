@@ -12,43 +12,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PortalAuthModel = void 0;
+exports.Pool1Model = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const base_1 = __importDefault(require("./base"));
-let PortalAuthModel = class PortalAuthModel extends base_1.default {
+let Pool1Model = class Pool1Model extends base_1.default {
 };
 __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.INTEGER
     }),
-    __metadata("design:type", String)
-], PortalAuthModel.prototype, "id", void 0);
+    __metadata("design:type", Number)
+], Pool1Model.prototype, "id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.INTEGER
     }),
-    __metadata("design:type", String)
-], PortalAuthModel.prototype, "address", void 0);
+    __metadata("design:type", Number)
+], Pool1Model.prototype, "camera_id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        allowNull: false,
+        allowNull: true,
         type: sequelize_typescript_1.DataType.STRING(64)
     }),
     __metadata("design:type", String)
-], PortalAuthModel.prototype, "session_id", void 0);
+], Pool1Model.prototype, "status", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        allowNull: false,
+        allowNull: true,
         type: sequelize_typescript_1.DataType.STRING(64)
     }),
     __metadata("design:type", String)
-], PortalAuthModel.prototype, "nounce", void 0);
-PortalAuthModel = __decorate([
+], Pool1Model.prototype, "used", void 0);
+Pool1Model = __decorate([
     sequelize_typescript_1.Table({
-        tableName: 'portal_auths'
+        tableName: 'pool1'
     })
-], PortalAuthModel);
-exports.PortalAuthModel = PortalAuthModel;
-//# sourceMappingURL=portal_auth.model.js.map
+], Pool1Model);
+exports.Pool1Model = Pool1Model;
+//# sourceMappingURL=pool1.model.js.map
