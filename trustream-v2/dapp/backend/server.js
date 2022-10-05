@@ -7,8 +7,8 @@ const https = require('https')
 const fs = require('fs')
 
 function ensureSecure(req, res, next) {
-  // return next() // for testing purpose
-  
+  return next() // for testing purpose
+
   if (req.secure) {
     // OK, continue
     return next()
@@ -20,15 +20,9 @@ function ensureSecure(req, res, next) {
 }
 
 app.all('*', ensureSecure)
-
 app.use(express.static('public'))
-
 app.use(cors())
-
-// parse requests of content-type - application/json
 app.use(express.json())
-
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }))
 
 const db = require('./app/models')
@@ -46,33 +40,13 @@ db.sequelize
 //   console.log("Drop and re-sync db.");
 // });
 
-// simple route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Elumicate dApp application.' })
-})
-
-
 // register routes
-require('./app/routes/device_data.routes')(app)
-require('./app/routes/portal_auth.routes')(app)
-require('./app/routes/device_uptime.routes')(app)
-require('./app/routes/claim_token.routes')(app)
-require('./app/routes/server_status.routes')(app)
-require('./app/routes/server_update.routes')(app)
-require('./app/routes/nft_auth.routes')(app)
-require('./app/routes/staking.routes')(app)
-
-// set port, listen for requests
-const PORT = process.env.PORT || 3333
-
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}.`);
-// });
+require('./app/routes')(app)
 
 https
   .createServer(
     {
-      ca : fs.readFileSync('cert/ca.crt'),
+      ca: fs.readFileSync('cert/ca.crt'),
       key: fs.readFileSync('cert/privatekey.pem'),
       cert: fs.readFileSync('cert/server.crt'),
     },
@@ -83,6 +57,5 @@ https
       'Example app listening on port 3333! Go to https://localhost:3333/',
     )
   })
-
 
 http.createServer(app).listen(3334)
