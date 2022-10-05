@@ -28,11 +28,24 @@ export class CameraStore {
         });
     }
 
+    add({ link, coordinates}) {
+        const { god, auth } = this.rootStore;
+        return auth.$().post(`${BACKEND_URL}/api/cameras/add`, { link, coordinates});
+    }
+
+    remove({ id }) {
+        const { god, auth } = this.rootStore;
+        return auth.$().post(`${BACKEND_URL}/api/cameras/remove`, { id });
+    }
+
     async refresh() {
         const { god, auth } = this.rootStore;
         try {
             this.loading = true;
-            let response1 : any = await auth.$().get(`${BACKEND_URL}/cameras/get`)
+            let response1 : any = await auth.$().get(`${BACKEND_URL}/api/cameras/get`)
+
+            console.log('response1', response1);
+
             if (response1.data.status == 'OK') {
                 this.cameraList = response1.data.message.data.map((item : any) => {
                     return {

@@ -9,6 +9,9 @@ const { BACKEND_URL } = publicConfig;
 const SESSION_NAME = 'elum_session';
 const { ethereum } = require('../global.js').getWindow();
 
+import Swal from 'sweetalert2';
+
+
 export class AuthStore {
     rootStore: RootStore;
 
@@ -25,7 +28,7 @@ export class AuthStore {
             address,
             signature: session
         }).then((data: any) => {
-            let info : any = data.data;
+            let info: any = data.data;
             if (info.status == 'OK') {
                 success_callback();
             } else {
@@ -88,7 +91,7 @@ export class AuthStore {
 
         if (signature !== null) {
             let sessionID = await getSessionID(signature);
-            
+
             if (sessionID == null) {
                 fail_callback();
             }
@@ -100,7 +103,7 @@ export class AuthStore {
         }
     }
 
-    saveSession(session : string) {
+    saveSession(session: string) {
         localStorage.setItem(SESSION_NAME, session);
     }
 
@@ -126,6 +129,42 @@ export class AuthStore {
                     fail_callback();
                 })
         }
+    }
+
+    actionWithAuth(callback) {
+        this.check_auth(
+            () => {
+                callback();
+            },
+            () => {
+                Swal.fire({
+                    title: 'Error',
+                    html: `<p>You need to login to use admin functions.</p>`,
+                    icon: 'error',
+                    showCancelButton: true
+                }).then((result) => {
+                    if (!result.isConfirmed)
+                        return;
+                    this.login(
+                        () => {
+                            callback();
+                        },
+                        () => {
+                            Swal.fire({
+                                title: 'Error',
+                                html: `<p>Errors Occured.</p>`,
+                                icon: 'error',
+                            });
+                        });
+                }).catch(() => {
+                    Swal.fire({
+                        title: 'Info',
+                        html: `<p>Action has been cancelled</p>`,
+                        icon: 'info',
+                    });
+                });
+            }
+        );
     }
 
     $() {

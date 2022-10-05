@@ -5,6 +5,7 @@ import { AuthStore } from './auth';
 import { NFTStore } from './nft';
 import { TokenStore } from './token';
 import { StakeStore } from './stake';
+import { CameraStore } from './camera';
 
 export default class RootStore {
   lang = new LangStore();
@@ -14,4 +15,5 @@ export default class RootStore {
   nft = new NFTStore(this);
   token = new TokenStore(this);
   stake = new StakeStore(this);
+  camera = new CameraStore(this);
 }
