@@ -86,7 +86,6 @@ export class AuthStore {
             fail_callback();
         }
 
-        const url = `${publicConfig.DEVICE_URL}/set_signature`;
         const signature = await signMessage(nounce);
 
         if (signature !== null) {
