@@ -131,6 +131,9 @@ export class AuthStore {
         }
     }
 
+    /**
+     * This function checks authentication first and if it is valid, asked users to authenticate for the first time.
+     */
     actionWithAuth(callback) {
         this.check_auth(
             () => {
