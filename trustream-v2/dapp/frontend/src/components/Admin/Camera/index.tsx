@@ -253,7 +253,7 @@ export default observer((props: Props) => {
             <th>Camera ID</th>
             <th>Link</th>
             <th>Coordinates</th>
-            <th>Action</th>
+            <th style={{ width : 180 }}>Action</th>
           </tr>
         </thead>
         <tbody>
