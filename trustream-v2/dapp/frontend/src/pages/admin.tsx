@@ -5,6 +5,7 @@ import MultipleWalletAdd from "../components/Admin/MultipleWalletAdd";
 import SingleWalletAdd from "../components/Admin/SingleWalletAdd";
 import UpdateComponent from "../components/Admin/Update";
 import Database from "@/components/Admin/Database";
+import Camera from "@/components/Admin/Camera";
 
 const useStyles = createStyles((theme) => ({
 }));
@@ -27,6 +28,9 @@ export default function TableReviews() {
                     {/* <Tabs.Tab label="Database" value="database">
                         <Database/>
                     </Tabs.Tab> */}
+                    <Tabs.Tab label="Camera" value="camera">
+                        <Camera/>
+                    </Tabs.Tab>
                 </Tabs>
             </ScrollArea>
         </Layout>

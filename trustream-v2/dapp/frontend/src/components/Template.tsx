@@ -1,10 +1,15 @@
 import React from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
-import { Box, Button } from '@mantine/core';
+import { Box, Button, createStyles } from '@mantine/core';
 
-interface Props {}
+
+const useStyles = createStyles((theme) => ({
+}));
+
 
 export default observer((props: Props) => {
+  const { classes } = useStyles();
+
   const store = useLocalObservable(() => ({
     count: 0,
     setCount(count) {
@@ -19,3 +24,5 @@ export default observer((props: Props) => {
     </Box>
   );
 });
+
+interface Props {}

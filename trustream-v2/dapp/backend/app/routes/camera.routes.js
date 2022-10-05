@@ -4,9 +4,9 @@ module.exports = (app) => {
 
   var router = require('express').Router()
   
-  router.post('/add', check_auth, camera.onAdd)
-  router.get('/get', check_auth, camera.onGet)
-  router.post('/update', check_auth, camera.onUpdate)
-  router.post('/remove', check_auth, camera.onRemove)
+  router.post('/add',     check_auth, camera.onAdd)
+  router.get('/get',                  camera.onGet)
+  router.post('/update',  check_auth, camera.onUpdate)
+  router.post('/remove',  check_auth, camera.onRemove)
   app.use('/api/cameras/', router)
 }
