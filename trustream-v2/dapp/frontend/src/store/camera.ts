@@ -33,6 +33,11 @@ export class CameraStore {
         return auth.$().post(`${BACKEND_URL}/api/cameras/add`, { link, coordinates});
     }
 
+    update({id, link, coordinates }) {
+        const { god, auth } = this.rootStore;
+        return auth.$().post(`${BACKEND_URL}/api/cameras/update`, { id, link, coordinates});
+    }
+
     remove({ id }) {
         const { god, auth } = this.rootStore;
         return auth.$().post(`${BACKEND_URL}/api/cameras/remove`, { id });

@@ -134,7 +134,30 @@ export default observer((props: Props) => {
             );
           });
       } else {
-
+        camera.update({ id : active_id, link: input_link, coordinates: input_coord })
+          .then((data) => {
+            if (data.data.status == 'OK') {
+              Swal.fire(
+                'Success',
+                `<p>Updated successfully!.</p>`,
+                'success'
+              );
+              camera.refresh();
+            } else {
+              Swal.fire(
+                'Error',
+                `<p>Errors occured while updating!.</p>`,
+                'error'
+              );
+            }
+          })
+          .catch((err) => {
+            Swal.fire(
+              'Error',
+              `<p>Errors occured while updating!.</p>`,
+              'error'
+            );
+          });
       }
     }
 
