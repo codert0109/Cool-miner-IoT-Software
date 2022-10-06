@@ -176,17 +176,17 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     return;
   }
 
-  isValid = await updateLocationTimestamp(location_id);
-  if (isValid === false) {
-    console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`)
-    return;    
-  }
-
   isValid = await verifyMessage(address, nftID, signature);
   
   if (isValid === false) {
     console.log(`WARNING: Dropping data message: Invalid session id ${address}`)
     return;
+  }
+
+  isValid = await updateLocationTimestamp(location_id);
+  if (isValid === false) {
+    console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`)
+    return;    
   }
 
   let NFTContract : any = context.getContract("NFT");
