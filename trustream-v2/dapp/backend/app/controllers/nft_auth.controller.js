@@ -290,6 +290,7 @@ exports.verify = (req, res) => {
       }
     })
     .catch((err) => {
+      console.log('error', err);
       res.send({
         status: 'ERR',
         message: 'Internal Server Error',
