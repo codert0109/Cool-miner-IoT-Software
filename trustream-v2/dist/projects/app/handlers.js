@@ -3,16 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("./models");
 var ethUtil = require('ethereumjs-util');
 var bops = require('bops');
-async function onDeviceRegistered(context, event) {
-    if (event) {
-        const { _deviceAddress } = event.returnValues;
-        console.log("Registered new device: ", _deviceAddress);
-        await models_1.deviceRepository.upsert({
-            address: _deviceAddress,
-            status: 0
-        });
-    }
-}
 function buf2hex(buffer) {
     return [...new Uint8Array(buffer)]
         .map(x => x.toString(16).padStart(2, '0'))
@@ -140,7 +130,6 @@ async function onMqttData(context, topic, payload) {
     }
 }
 const handlers = {
-    onDeviceRegistered,
     onMqttData,
 };
 exports.default = handlers;

@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { 
   deviceDataRepository, 
-  deviceRepository, 
   portalAuthRepository,
   deviceUptimeRepository, 
   nftAuthRepository
@@ -13,18 +12,6 @@ var ethUtil = require('ethereumjs-util');
 // import { publicKeyToAddress } from '@common/utils'
 var bops = require('bops');
 import { recoverPersonalSignature } from "eth-sig-util";
-
-async function onDeviceRegistered(context: ProjectContext, event: any,) {
-  if (event)
-  {
-    const { _deviceAddress } = event.returnValues;
-    console.log("Registered new device: ", _deviceAddress);
-    await deviceRepository.upsert({
-      address: _deviceAddress,
-      status: 0
-    })
-  }
-}
 
 function buf2hex(buffer : ArrayBuffer) { // buffer is an ArrayBuffer
   return [...new Uint8Array(buffer)]
@@ -212,7 +199,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 }
 
 const handlers = {
-  onDeviceRegistered,
   onMqttData,
 }
 
