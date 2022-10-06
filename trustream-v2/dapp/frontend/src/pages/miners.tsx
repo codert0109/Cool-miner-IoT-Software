@@ -71,6 +71,8 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     const UpdateLocalMinerInfo = () => {
+        return setMinerName('hi');
+
         const url = `${publicConfig.DEVICE_URL}/get_status`;
         $.get(url)
             .then((data) => {
@@ -223,6 +225,8 @@ export default observer(() => {
                 // temporary function for testing mining software
                 const link = 'https://www.youtube.com/watch?v=_Nq6GAg-RnQ';
                 const location_id = 123;
+
+                console.log('network data', data);
 
                 $.post(url, { 
                     signature: data.data.session, 

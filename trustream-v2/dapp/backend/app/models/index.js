@@ -35,4 +35,10 @@ db.cameras        = require("./camera.model.js")(sequelize, Sequelize);
 
 db.P             = require("./p.model.js")(sequelize, Sequelize); //  array of P1, P2, P3 DB table
 
+db.P.forEach((pTable) => {
+  db.cameras.hasOne(pTable, {
+    foreignKey : 'id'
+  });
+});
+
 module.exports = db;

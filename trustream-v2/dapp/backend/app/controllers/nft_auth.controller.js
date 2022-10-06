@@ -1,6 +1,7 @@
 const db = require('../models')
 const NFT_Auth = db.nft_auth;
 const { getRandomSessionID } = require('../utils');
+const camera = require('./camera.controller');
 
 // This is Kernel Function
 // Before call this function, please check authentication.
@@ -75,12 +76,33 @@ exports.create = (req, res) => {
   }
 
   createNFTSession(address, nft_id, miner,
-    (nft_session) => {
-      res.send({
-        status : 'success',
-        message : 'New NFT Session start!',
-        session : nft_session
-      })
+    async (nft_session) => {
+      let freeCamera = await camera.findFreeCamera(nft_id);
+      if (freeCamera == null) {
+        res.send({
+          status : 'ERR',
+          message : 'No assignable camera yet.'
+        });
+        return;
+      }
+      
+      camera.assignNFTToCamera(nft_id, freeCamera,
+        () => {
+          res.send({
+            status : 'success',
+            message : 'New NFT Session start!',
+            session : nft_session,
+            camera : freeCamera
+          })
+        },
+        (err) => {
+          res.send({
+            status : 'ERR',
+            message : 'Bad request',
+            error : err
+          });
+        });
+      
     },
     () => {
       res.send({

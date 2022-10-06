@@ -7,11 +7,16 @@ module.exports = (sequelize, Sequelize) => {
     const P = sequelize.define(
       name,
       {
-        camera_id: {
+        id: {
           type: Sequelize.INTEGER,
           primaryKey : true,
           allowNull : false
         },
+        // camera_id: {
+        //   type: Sequelize.INTEGER,
+        //   primaryKey : true,
+        //   allowNull : false
+        // },
         nft_id: {
           type: Sequelize.INTEGER,
         },
@@ -32,9 +37,11 @@ module.exports = (sequelize, Sequelize) => {
         // define the table's name
         tableName: name,
 
-        indexes: [{ fields: ['camera_id'] }, { fields: ['nft_id'] }],
+        indexes: [{ fields: ['id'] }, { fields: ['nft_id'] }],
       },
     )
+
+
     ret.push(P);
   }
   return ret;
