@@ -8,6 +8,7 @@ interface Camera {
     id : number;
     link : string;
     coordinates : string;
+    orientation : string;
 }
 
 export class CameraStore {
@@ -28,14 +29,22 @@ export class CameraStore {
         });
     }
 
-    add({ link, coordinates}) {
+    add({ link, coordinates, orientation}) {
         const { god, auth } = this.rootStore;
-        return auth.$().post(`${BACKEND_URL}/api/cameras/add`, { link, coordinates});
+        return auth.$().post(`${BACKEND_URL}/api/cameras/add`, 
+            { link, coordinates, orientation});
     }
 
-    update({id, link, coordinates }) {
+    addList({ linkList, coordinatesList, orientationList }) {
         const { god, auth } = this.rootStore;
-        return auth.$().post(`${BACKEND_URL}/api/cameras/update`, { id, link, coordinates});
+        return auth.$().post(`${BACKEND_URL}/api/cameras/addList`, 
+            { linkList, coordinatesList, orientationList});
+    }
+
+    update({id, link, coordinates, orientation }) {
+        const { god, auth } = this.rootStore;
+        return auth.$().post(`${BACKEND_URL}/api/cameras/update`, 
+            { id, link, coordinates, orientation});
     }
 
     remove({ id }) {
@@ -56,7 +65,8 @@ export class CameraStore {
                     return {
                         id : item.id,
                         link : item.link,
-                        coordinates : item.coordinates
+                        coordinates : item.coordinates,
+                        orientation : item.orientation
                     }
                 });
             } else {
