@@ -64,7 +64,7 @@ export class DeviceDataModel extends BaseModel<DeviceDataModel> {
   @Column({
     allowNull: false
   })
-  public link!: string;
+  public location_id!: string;
 
   @Column({
     allowNull: false

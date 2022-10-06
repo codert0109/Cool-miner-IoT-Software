@@ -22,4 +22,10 @@ export class CameraModel extends BaseModel<CameraModel> {
     type: DataType.STRING(256)
   })
   public link!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING(256)
+  })
+  public orientation!: string;
 }

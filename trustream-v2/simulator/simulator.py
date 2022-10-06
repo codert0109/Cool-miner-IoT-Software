@@ -42,6 +42,7 @@ class Message:
       self.miner = 'testminer'
       self.version = '2.1.5'
       self.nftID = '0'
+      self.location_id = 'P11'
 
 
 class Signature:

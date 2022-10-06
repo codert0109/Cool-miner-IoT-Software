@@ -12,10 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CameraModel = void 0;
+exports.P1Model = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const base_1 = __importDefault(require("./base"));
-let CameraModel = class CameraModel extends base_1.default {
+let P1Model = class P1Model extends base_1.default {
 };
 __decorate([
     sequelize_typescript_1.PrimaryKey,
@@ -23,32 +23,23 @@ __decorate([
         type: sequelize_typescript_1.DataType.INTEGER
     }),
     __metadata("design:type", Number)
-], CameraModel.prototype, "id", void 0);
+], P1Model.prototype, "id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(256)
+        type: sequelize_typescript_1.DataType.INTEGER
     }),
-    __metadata("design:type", String)
-], CameraModel.prototype, "coordinates", void 0);
+    __metadata("design:type", Number)
+], P1Model.prototype, "nft_id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(256)
+        type: sequelize_typescript_1.DataType.INTEGER
     }),
-    __metadata("design:type", String)
-], CameraModel.prototype, "link", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(256)
-    }),
-    __metadata("design:type", String)
-], CameraModel.prototype, "orientation", void 0);
-CameraModel = __decorate([
+    __metadata("design:type", Number)
+], P1Model.prototype, "timestamp", void 0);
+P1Model = __decorate([
     sequelize_typescript_1.Table({
-        tableName: 'camera'
+        tableName: 'P1'
     })
-], CameraModel);
-exports.CameraModel = CameraModel;
-//# sourceMappingURL=camera.model.js.map
+], P1Model);
+exports.P1Model = P1Model;
+//# sourceMappingURL=p1.model.js.map

@@ -20,6 +20,27 @@ async function verifyMessage(address, nft_id, sessionID) {
         return false;
     }
 }
+async function updateLocationTimestamp(location_id) {
+    if (location_id === '' || location_id.length < 3)
+        return false;
+    if (location_id[0] !== 'P')
+        return false;
+    let table_id = parseInt(location_id[1]);
+    let camera_id = parseInt(location_id.slice(2));
+    if (table_id < 1)
+        return false;
+    --table_id;
+    if (table_id >= models_1.P.length)
+        return false;
+    try {
+        await models_1.P[table_id].update({ timestamp: Math.floor(Date.now() / 1000) }, { where: { id: camera_id } });
+    }
+    catch (err) {
+        console.log('errors occured', err);
+        return false;
+    }
+    return true;
+}
 async function updateUpTime(address, nftID) {
     const UPLOAD_INTERVAL = 5 * 60;
     const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
@@ -86,6 +107,16 @@ async function onMqttData(context, topic, payload) {
         console.log(`WARNING: Dropping data message: message does not include NFT ID.`);
         return;
     }
+    let location_id = decodedPayload.message.location_id;
+    if (location_id === undefined) {
+        console.log(`WARNING: Dropping data message: message does not include location_id.`);
+        return;
+    }
+    isValid = await updateLocationTimestamp(location_id);
+    if (isValid === false) {
+        console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`);
+        return;
+    }
     isValid = await verifyMessage(address, nftID, signature);
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: Invalid session id ${address}`);
@@ -102,7 +133,6 @@ async function onMqttData(context, topic, payload) {
     let { miner } = decodedPayload.message;
     if (miner == undefined)
         miner = 'Not set';
-    let nounce = ~~(Math.random() * 100000);
     let result = true;
     if (nftID !== undefined) {
         result = await updateUpTime(address, nftID);
@@ -122,7 +152,7 @@ async function onMqttData(context, topic, payload) {
             buses: decodedPayload.message.bus,
             trucks: decodedPayload.message.truck,
             total: decodedPayload.message.total,
-            link: decodedPayload.message.link,
+            location_id: decodedPayload.message.location_id,
             upload_time: Date.now(),
             miner,
             nft_id: nftID

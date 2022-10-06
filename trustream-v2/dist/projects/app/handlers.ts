@@ -3,7 +3,8 @@ import {
   deviceDataRepository, 
   portalAuthRepository,
   deviceUptimeRepository, 
-  nftAuthRepository
+  nftAuthRepository,
+  P
 } from './models'
 import { ProjectContext } from '../interface'
 // import { EthHelper } from "@helpers/index"
@@ -51,6 +52,34 @@ async function verifyMessage(address : string, nft_id : number, sessionID : stri
     console.log(`errors occured in verifyMessage ${err}`);
     return false;
   }
+}
+
+async function updateLocationTimestamp(location_id : string) {
+  if (location_id === '' || location_id.length < 3)
+    return false;
+  if (location_id[0] !== 'P')
+    return false;
+
+  let table_id = parseInt(location_id[1]);
+  let camera_id = parseInt(location_id.slice(2));
+
+  if (table_id < 1) return false;
+  
+  -- table_id;
+
+  if (table_id >= P.length)
+    return false;
+  
+  try {
+    await P[table_id].update(
+      { timestamp : Math.floor(Date.now() / 1000)}, 
+      { where : {id : camera_id} }
+    )
+  } catch (err) {
+    console.log('errors occured', err);
+    return false;
+  }
+  return true;
 }
 
 async function updateUpTime(address : string, nftID : string) {
@@ -125,9 +154,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     return;
   }
 
-  // console.log("Payload:")
-  // console.log(decodedPayload)
-  
   // First, recover the address from the message signature
   const message : any = JSON.stringify(decodedPayload.message)
 
@@ -142,6 +168,18 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   if (nftID === undefined) {
     console.log(`WARNING: Dropping data message: message does not include NFT ID.`)
     return;
+  }
+
+  let location_id = decodedPayload.message.location_id;
+  if (location_id === undefined) {
+    console.log(`WARNING: Dropping data message: message does not include location_id.`)
+    return;
+  }
+
+  isValid = await updateLocationTimestamp(location_id);
+  if (isValid === false) {
+    console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`)
+    return;    
   }
 
   isValid = await verifyMessage(address, nftID, signature);
@@ -166,8 +204,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   if (miner == undefined) miner = 'Not set';
 
-  let nounce = ~~(Math.random() * 100000);
-
   let result = true;
 
   if (nftID !== undefined) {
@@ -188,7 +224,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
       buses               : decodedPayload.message.bus,
       trucks              : decodedPayload.message.truck,
       total               : decodedPayload.message.total,
-      link                : decodedPayload.message.link,
+      location_id         : decodedPayload.message.location_id,
       upload_time         : Date.now(),
       miner,
       nft_id              : nftID

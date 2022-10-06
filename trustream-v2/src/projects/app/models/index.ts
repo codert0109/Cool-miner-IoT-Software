@@ -6,7 +6,9 @@ import { DeviceUptimeModel } from './device_uptime.model'
 import { StatusModel } from './status.model'
 import { PROJECT } from '@config/env';
 import { CameraModel } from './camera.model'
-import { Pool1Model } from './pool1.model'
+import { P1Model } from './p1.model'
+import { P2Model } from './p2.model'
+import { P3Model } from './p3.model'
 
 export const db = getDB(PROJECT)
 export const deviceDataRepository = db.getRepository(DeviceDataModel)
@@ -15,4 +17,8 @@ export const deviceUptimeRepository = db.getRepository(DeviceUptimeModel)
 export const statusRepository = db.getRepository(StatusModel)
 export const nftAuthRepository = db.getRepository(NftAuthModel)
 export const cameraRepository = db.getRepository(CameraModel)
-export const pool1Repository = db.getRepository(Pool1Model)
+export const P = [
+    db.getRepository(P1Model),
+    db.getRepository(P2Model),
+    db.getRepository(P3Model),
+]

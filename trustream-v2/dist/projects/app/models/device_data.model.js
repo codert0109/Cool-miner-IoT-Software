@@ -85,7 +85,7 @@ __decorate([
         allowNull: false
     }),
     __metadata("design:type", String)
-], DeviceDataModel.prototype, "link", void 0);
+], DeviceDataModel.prototype, "location_id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false
