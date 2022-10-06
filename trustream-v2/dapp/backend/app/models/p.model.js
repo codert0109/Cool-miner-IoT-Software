@@ -7,13 +7,10 @@ module.exports = (sequelize, Sequelize) => {
     const P = sequelize.define(
       name,
       {
-        id: {
-          type: Sequelize.INTEGER,
-          autoIncrement: true,
-          primaryKey: true,
-        },
         camera_id: {
           type: Sequelize.INTEGER,
+          primaryKey : true,
+          allowNull : false
         },
         nft_id: {
           type: Sequelize.INTEGER,

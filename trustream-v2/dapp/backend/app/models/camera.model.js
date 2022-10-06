@@ -8,6 +8,9 @@ module.exports = (sequelize, Sequelize) => {
     coordinates: {
       type : Sequelize.STRING
     },
+    orientation : {
+      type : Sequelize.STRING
+    },
     link: {
       type : Sequelize.STRING
     },

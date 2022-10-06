@@ -5,6 +5,7 @@ module.exports = (app) => {
   var router = require('express').Router()
   
   router.post('/add',     check_auth, camera.onAdd)
+  router.post('/addList', check_auth, camera.onAddList)
   router.get('/get',                  camera.onGet)
   router.post('/update',  check_auth, camera.onUpdate)
   router.post('/remove',  check_auth, camera.onRemove)

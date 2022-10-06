@@ -22,9 +22,14 @@ exports.onGet = (req, res) => {
 }
 
 exports.onUpdate = (req, res) => {
-  const { link, coordinates, id } = req.body
+  const { link, coordinates, orientation, id } = req.body
 
-  if (link === undefined || coordinates === undefined || id === undefined) {
+  if (
+    link === undefined ||
+    coordinates === undefined ||
+    id === undefined ||
+    orientation === undefined
+  ) {
     res.send({
       status: 'ERR',
       message: 'Bad request',
@@ -32,7 +37,7 @@ exports.onUpdate = (req, res) => {
     return
   }
 
-  Camera.update({ link, coordinates }, { where: { id } })
+  Camera.update({ link, coordinates, orientation }, { where: { id } })
     .then((data) => {
       res.send({
         status: 'OK',
@@ -67,18 +72,18 @@ exports.onRemove = (req, res) => {
       for (let i = 0; i < P.length; i++) {
         promiseList.push(
           P[i].destroy({
-            where : { camera_id: id },
+            where: { camera_id: id },
           }),
         )
       }
-
+      
       Promise.all(promiseList)
         .then((values) => {
           res.send({
             status: 'OK',
             message: 'Removed Data Success!',
-            camera : data,
-            P : values
+            camera: data,
+            P: values,
           })
         })
         .catch((err) => {
@@ -87,7 +92,7 @@ exports.onRemove = (req, res) => {
             status: 'ERR',
             message: 'Remove Error!',
           })
-        })      
+        })
     })
     .catch((err) => {
       console.error('Camera.destroy failed', err)
@@ -99,9 +104,13 @@ exports.onRemove = (req, res) => {
 }
 
 exports.onAdd = (req, res) => {
-  const { link, coordinates } = req.body
+  const { link, coordinates, orientation } = req.body
 
-  if (link === undefined || coordinates === undefined) {
+  if (
+    link === undefined ||
+    coordinates === undefined ||
+    orientation === undefined
+  ) {
     res.send({
       status: 'ERR',
       message: 'Bad request',
@@ -112,40 +121,72 @@ exports.onAdd = (req, res) => {
   Camera.create({
     link,
     coordinates,
+    orientation,
   })
     .then((data) => {
-      let promiseList = []
-
-      for (let i = 0; i < P.length; i++) {
-        promiseList.push(
-          P[i].create({
-            camera_id: data.id,
-          }),
-        )
-      }
-
-      Promise.all(promiseList)
-        .then((values) => {
-          res.send({
-            status: 'OK',
-            message: 'Create Success!',
-            camera: data,
-            P: values,
-          })
-        })
-        .catch((err) => {
-          console.error('Camera.create failed', err)
-          res.send({
-            status: 'ERR',
-            message: 'onAdd Error!',
-          })
-        })
+      res.send({
+        status: 'OK',
+        message: 'Create Success!',
+        camera: data
+      })
     })
     .catch((err) => {
       console.error('Camera.create failed', err)
       res.send({
         status: 'ERR',
         message: 'Cannot create',
+      })
+    })
+}
+
+exports.onAddList = (req, res) => {
+  const { linkList, coordinatesList, orientationList } = req.body
+
+  if (
+    linkList === undefined ||
+    coordinatesList === undefined ||
+    orientationList === undefined
+  ) {
+    res.send({
+      status: 'ERR',
+      message: 'Bad request',
+      error: 'some fields are missing',
+    })
+    return
+  }
+
+  if (
+    linkList.length != coordinatesList.length ||
+    linkList.length != orientationList.length
+  ) {
+    res.send({
+      status: 'ERR',
+      message: 'Bad request',
+      error: '3 arrays does not match the length.',
+    })
+    return
+  }
+
+  Camera.bulkCreate(
+    linkList.map((item, index) => {
+      return {
+        link: linkList[index],
+        coordinates: coordinatesList[index],
+        orientation: orientationList[index],
+      }
+    }),
+  )
+    .then(() => {
+      res.send({
+        status: 'OK',
+        message: 'Create Success!',
+      })
+    })
+    .catch((err) => {
+      console.error('Camera.create failed', err)
+      res.send({
+        status: 'ERR',
+        message: 'onAdd Error!',
       })
     })
 }

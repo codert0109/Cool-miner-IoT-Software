@@ -220,17 +220,16 @@ export default observer(() => {
                 const wallet = god.currentNetwork.account;
                 const nftID = selectedNFT;
 
-                // temporary function for developing mining software
+                // temporary function for testing mining software
                 const link = 'https://www.youtube.com/watch?v=_Nq6GAg-RnQ';
-                const link_id = 123;
+                const location_id = 123;
 
                 $.post(url, { 
                     signature: data.data.session, 
                     nftID, 
                     wallet,
                     link,
-                    link_id }, {
-
+                    location_id }, {
                 });
             }).catch((err) => {
                 Swal.fire({
