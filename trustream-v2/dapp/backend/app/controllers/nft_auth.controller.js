@@ -265,7 +265,7 @@ exports.verify = (req, res) => {
       } else {
         camera.findFreeCamera(nft_id)
           .then((data) => {
-            camera.assignNFTToCamera(nft_id, data.id,
+            camera.assignNFTToCamera(nft_id, data,
               () => {
                 res.send({
                   status: 'OK',
