@@ -71,7 +71,7 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     const UpdateLocalMinerInfo = () => {
-        return setMinerName('hi');
+        // return setMinerName('hi');
 
         const url = `${publicConfig.DEVICE_URL}/get_status`;
         $.get(url)
@@ -210,31 +210,38 @@ export default observer(() => {
                 nft_id: selectedNFT,
                 miner: minerName // we should upgrade this one
             }).then((data) => {
-                Swal.fire({
-                    title: 'Success',
-                    html: `<p>Secure Miner Connection Success</p>`,
-                    icon: 'success',
-                });
-                Refresh();
+                if (data.data.status == 'success') {
+                    Swal.fire({
+                        title: 'Success',
+                        html: `<p>Secure Miner Connection Success</p>`,
+                        icon: 'success',
+                    });
 
-                const url = `${publicConfig.DEVICE_URL}/set_signature`;
+                    Refresh();
 
-                const wallet = god.currentNetwork.account;
-                const nftID = selectedNFT;
+                    const url = `${publicConfig.DEVICE_URL}/set_signature`;
 
-                // temporary function for testing mining software
-                const link = 'https://www.youtube.com/watch?v=_Nq6GAg-RnQ';
-                const location_id = 123;
+                    const wallet = god.currentNetwork.account;
+                    const nftID = selectedNFT;
 
-                console.log('network data', data);
+                    // temporary function for testing mining software
+                    const link = data.data.camera.link;
+                    const location_id = 'P' + (data.data.camera.tableid + 1) + data.data.camera.id;
 
-                $.post(url, { 
-                    signature: data.data.session, 
-                    nftID, 
-                    wallet,
-                    link,
-                    location_id }, {
-                });
+                    $.post(url, { 
+                        signature: data.data.session, 
+                        nftID, 
+                        wallet,
+                        link,
+                        location_id }, {
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        html: `<p>No assignable miners</p>`,
+                        icon: 'error',
+                    });
+                }
             }).catch((err) => {
                 Swal.fire({
                     title: 'Error',
