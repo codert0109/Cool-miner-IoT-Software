@@ -263,9 +263,9 @@ exports.verify = (req, res) => {
           message: 'Invalid signature',
         })
       } else {
-        findFreeCamera(nft_id)
+        camera.findFreeCamera(nft_id)
           .then((data) => {
-            assignNFTToCamera(nft_id, data.id,
+            camera.assignNFTToCamera(nft_id, data.id,
               () => {
                 res.send({
                   status: 'OK',
