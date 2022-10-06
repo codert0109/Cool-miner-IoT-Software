@@ -1,64 +1,75 @@
 const db = require('../models')
-const NFT_Auth = db.nft_auth;
-const { getRandomSessionID } = require('../utils');
-const camera = require('./camera.controller');
+const NFT_Auth = db.nft_auth
+const { getRandomSessionID } = require('../utils')
+const camera = require('./camera.controller')
 
 // This is Kernel Function
 // Before call this function, please check authentication.
 // This fuction create new Session ID for corresponding NFT_ID.
-function createNFTSession(address, nft_id, miner, success_callback, error_callback) {
-  NFT_Auth.findOne( { where : { nft_id, address } } ) // nft_id & address is pair.
+function createNFTSession(
+  address,
+  nft_id,
+  miner,
+  success_callback,
+  error_callback,
+) {
+  NFT_Auth.findOne({ where: { nft_id, address } }) // nft_id & address is pair.
     .then((data) => {
-      if (data === null) { // No data exist for that NFT_ID
-        let session_id = getRandomSessionID();
-        let session_start = Date.now();
-        NFT_Auth.create( { address, nft_id, miner, session_id, session_start })
+      if (data === null) {
+        // No data exist for that NFT_ID
+        let session_id = getRandomSessionID()
+        let session_start = Date.now()
+        NFT_Auth.create({ address, nft_id, miner, session_id, session_start })
           .then((data) => {
-            success_callback(session_id);
+            success_callback(session_id)
           })
           .catch((err) => {
-            console.log('errors', err);
-            error_callback();
-          });
+            console.log('errors', err)
+            error_callback()
+          })
       } else {
-        let session_id = getRandomSessionID();
-        let session_start = Date.now();
-        NFT_Auth.update( { address, nft_id, miner, session_id, session_start }, { where :  { id : data.id } })
+        let session_id = getRandomSessionID()
+        let session_start = Date.now()
+        NFT_Auth.update(
+          { address, nft_id, miner, session_id, session_start },
+          { where: { id: data.id } },
+        )
           .then((data) => {
-            success_callback(session_id);
+            success_callback(session_id)
           })
           .catch((err) => {
-            console.log('errors', err);
-            error_callback();
+            console.log('errors', err)
+            error_callback()
           })
       }
     })
     .catch((err) => {
-      console.log('errors', err);
-      error_callback();
-    });
+      console.log('errors', err)
+      error_callback()
+    })
 }
 
 // This is Kernel Function.
 // Before call this function, please check authentication.
 // This function remove NFT_Session that NFT_ID assigned.
 function removeNFTSession(address, nft_id, success_callback, error_callback) {
-  NFT_Auth.findOne({ where : { address, nft_id } }) // nft_id & address is pair
+  NFT_Auth.findOne({ where: { address, nft_id } }) // nft_id & address is pair
     .then((data) => {
       if (data !== null) {
-        data.destroy()
+        data
+          .destroy()
           .then(() => {
-            success_callback();
+            success_callback()
           })
           .catch(() => {
-            error_callback();
+            error_callback()
           })
       } else {
-        success_callback();
+        success_callback()
       }
     })
     .catch(() => {
-      error_callback();
+      error_callback()
     })
 }
 
@@ -66,196 +77,225 @@ function removeNFTSession(address, nft_id, success_callback, error_callback) {
 // Please add auth middleware before accessing this link.
 
 exports.create = (req, res) => {
-  const {address, nft_id, miner} = req.body;
+  const { address, nft_id, miner } = req.body
   if (address === undefined || nft_id === undefined) {
     res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    });
-    return;
+      status: 'ERR',
+      message: 'Bad request',
+    })
+    return
   }
 
-  createNFTSession(address, nft_id, miner,
+  createNFTSession(
+    address,
+    nft_id,
+    miner,
     async (nft_session) => {
-      let freeCamera = await camera.findFreeCamera(nft_id);
+      let freeCamera = await camera.findFreeCamera(nft_id)
       if (freeCamera == null) {
         res.send({
-          status : 'ERR',
-          message : 'No assignable camera yet.'
-        });
-        return;
+          status: 'ERR',
+          message: 'No assignable camera yet.',
+        })
+        return
       }
-      
-      camera.assignNFTToCamera(nft_id, freeCamera,
+
+      camera.assignNFTToCamera(
+        nft_id,
+        freeCamera,
         () => {
           res.send({
-            status : 'success',
-            message : 'New NFT Session start!',
-            session : nft_session,
-            camera : freeCamera
+            status: 'success',
+            message: 'New NFT Session start!',
+            session: nft_session,
+            camera: freeCamera,
           })
         },
         (err) => {
           res.send({
-            status : 'ERR',
-            message : 'Bad request',
-            error : err
-          });
-        });
-      
+            status: 'ERR',
+            message: 'Bad request',
+            error: err,
+          })
+        },
+      )
     },
     () => {
       res.send({
-        status : 'ERR',
-        message : 'Bad request'
-      });
-    });
+        status: 'ERR',
+        message: 'Bad request',
+      })
+    },
+  )
 }
 
 exports.remove = (req, res) => {
-  const {address, nft_id} = req.body;
+  const { address, nft_id } = req.body
   if (address === undefined || nft_id === undefined) {
     res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    });
-    return;
+      status: 'ERR',
+      message: 'Bad request',
+    })
+    return
   }
 
-  removeNFTSession(address, nft_id,
+  removeNFTSession(
+    address,
+    nft_id,
     () => {
       res.send({
-        status : 'success',
-        message : 'NFT Session removed!'
-      });
+        status: 'success',
+        message: 'NFT Session removed!',
+      })
     },
     () => {
       res.send({
-        status : 'ERR',
-        message : 'Bad request'
-      });
-    });
+        status: 'ERR',
+        message: 'Bad request',
+      })
+    },
+  )
 }
 
 exports.getStatus = (req, res) => {
-  let address = req.get('address');
-  let nft_id = req.body.nft_id;
+  let address = req.get('address')
+  let nft_id = req.body.nft_id
 
   if (address === undefined || nft_id === undefined) {
-    res.send('Bad request');
-    return;
+    res.send('Bad request')
+    return
   }
 
-  NFT_Auth.findOne( { where : { address, nft_id } })
+  NFT_Auth.findOne({ where: { address, nft_id } })
     .then((data) => {
       if (data === null) {
         res.send({
-          status : 'OK',
-          data : {
+          status: 'OK',
+          data: {
             nft_id,
-            miner : 'Not set',
-            session : null
-          }
-        });
+            miner: 'Not set',
+            session: null,
+          },
+        })
       } else {
         res.send({
-          status : 'OK',
-          data : {
+          status: 'OK',
+          data: {
             nft_id,
-            miner : data.miner,
-            session : getRandomSessionID()
-          }
-        });
+            miner: data.miner,
+            session: getRandomSessionID(),
+          },
+        })
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err)
       res.send({
-        status : 'ERR',
-        message : 'Internal Server Error'
+        status: 'ERR',
+        message: 'Internal Server Error',
       })
-    });
+    })
 }
 
 exports.verifySignature = (req, res) => {
   if (req.body.signature === undefined) {
     res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    });
-    return;
+      status: 'ERR',
+      message: 'Bad request',
+    })
+    return
   }
 
-  const { signature } = req.body;
+  const { signature } = req.body
 
-  NFT_Auth.findOne({ where : { session_id : signature }})
+  NFT_Auth.findOne({ where: { session_id: signature } })
     .then((data) => {
       if (data === null) {
         res.send({
-          status : 'ERR',
-          message : 'Signature is invalid.'
-        });
+          status: 'ERR',
+          message: 'Signature is invalid.',
+        })
       } else {
         res.send({
-          status : 'OK',
-          message : 'Signature is valid.'
+          status: 'OK',
+          message: 'Signature is valid.',
         })
       }
     })
     .catch((err) => {
       res.send({
-        status : 'ERR',
-        message : 'Internal Server Error'
-      });
-    });
+        status: 'ERR',
+        message: 'Internal Server Error',
+      })
+    })
 }
 
 exports.verify = (req, res) => {
   if (req.body.address === undefined) {
     res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    });
-    return;
+      status: 'ERR',
+      message: 'Bad request',
+    })
+    return
   }
 
   if (req.body.signature === undefined) {
     res.send({
-      status : 'ERR',
-      message : 'Bad request'
+      status: 'ERR',
+      message: 'Bad request',
     })
   }
 
   if (req.body.nft_id === undefined) {
     res.send({
-      status : 'ERR',
-      message : 'Bad request'
+      status: 'ERR',
+      message: 'Bad request',
     })
   }
 
-  const { address, signature, nft_id } = req.body;
+  const { address, signature, nft_id } = req.body
 
-  NFT_Auth.findOne({ where : { address,  session_id : signature, nft_id }})
+  NFT_Auth.findOne({ where: { address, session_id: signature, nft_id } })
     .then((data) => {
       if (data === null) {
         res.send({
-          status : 'ERR',
-          message : 'Invalid signature'
+          status: 'ERR',
+          message: 'Invalid signature',
         })
       } else {
-        res.send({
-          status : 'OK',
-          message : 'Signature is valid.'
-        })
+        findFreeCamera(nft_id)
+          .then((data) => {
+            assignNFTToCamera(nft_id, data.id,
+              () => {
+                res.send({
+                  status: 'OK',
+                  message: 'Signature is valid.',
+                  link : data.link,
+                  location_id : 'P' + (data.tableid + 1) + data.id
+                })
+              },
+              () => {
+                res.send({
+                  status: 'ERR',
+                  message: 'Invalid signature',
+                })
+              });
+          })
+          .catch((err) => {
+            res.send({
+              status: 'ERR',
+              message: 'Invalid signature',
+            })
+          }) 
       }
     })
     .catch((err) => {
       res.send({
-        status : 'ERR',
-        message : 'Internal Server Error'
+        status: 'ERR',
+        message: 'Internal Server Error',
       })
     })
 }
 
-exports.createNFTSession = createNFTSession;
-exports.removeNFTSession = removeNFTSession;
+exports.createNFTSession = createNFTSession
+exports.removeNFTSession = removeNFTSession

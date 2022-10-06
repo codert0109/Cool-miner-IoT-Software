@@ -224,7 +224,6 @@ export default observer(() => {
                     const wallet = god.currentNetwork.account;
                     const nftID = selectedNFT;
 
-                    // temporary function for testing mining software
                     const link = data.data.camera.link;
                     const location_id = 'P' + (data.data.camera.tableid + 1) + data.data.camera.id;
 

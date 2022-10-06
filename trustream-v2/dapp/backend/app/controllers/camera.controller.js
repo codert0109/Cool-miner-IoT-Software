@@ -74,7 +74,7 @@ exports.findFreeCamera = async (nft_id) => {
             {
               [timestamp] : {
                 // we assume that if the updated timestamp is older than 1 hour, we will assign new NFT.
-                [Op.lt] : Math.floor(Date.now() / 1000) - 3600 
+                [Op.lt] : Math.floor(Date.now() / 1000) - 15 * 60 
               }
             }
           ]
