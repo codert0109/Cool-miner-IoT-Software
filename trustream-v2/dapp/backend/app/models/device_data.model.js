@@ -30,7 +30,7 @@ module.exports = (sequelize, Sequelize) => {
     total: {
       type : Sequelize.INTEGER
     },
-    link: {
+    location_id: {
       type : Sequelize.STRING
     }
   }, { 
