@@ -373,7 +373,7 @@ export default observer(() => {
         <Layout>
             <div style={{display : 'flex'}}>
                 <Select
-                    placeholder={nft.infoList.length > 0 ? "Choose NFT to Mine" : "No NFTs to assign"}
+                    placeholder={nft.infoList.length > 0 ? "Choose NFT to " : "No NFTs to assign"}
                     data={renderNFTSelectOptions()}
                     style={{
                         marginRight : 10

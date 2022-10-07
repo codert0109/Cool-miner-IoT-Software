@@ -49,6 +49,10 @@ const useStyles = createStyles((theme) => ({
 export default observer((props: Props) => {
   const { classes } = useStyles();
 
+  const onClaimNow = (e) => {
+    
+  };
+
   return (
     <Box label="Token Rewards">
       <Grid className={join(classes.w100)}>
@@ -73,7 +77,9 @@ export default observer((props: Props) => {
           </Grid>
         </Grid.Col>
         <Grid.Col sm={12} md={4} className={classes.padding_right0}>
-          <Button className={classes.button} color="green">Claim Now</Button>
+          <Button onClick={onClaimNow} className={classes.button} color="green">
+            Claim Now
+          </Button>
         </Grid.Col>
       </Grid>
     </Box>

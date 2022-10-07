@@ -7,10 +7,27 @@ const ENDPOINT= "https://babel-api.testnet.iotex.io";
 // Instantiate the Web3 object
 const web3 = new Web3(ENDPOINT);
 
+const CENTRAL_ACCOUNT = web3.eth.accounts.privateKeyToAccount(
+  CENTRAL_WALLET.privateKey,
+);
+
+exports.claimReward = async (req, res) => {
+  const message = "hello";
+  const hashedMessage = web3.utils.sha3(message);
+  console.log({ hashedMessage });
+
+  const signature = web3.eth.accounts.sign(
+    hashedMessage, 
+    CENTRAL_WALLET.privateKey
+  );
+
+  res.send({
+    status : 'OK',
+    signature
+  })
+};
+
 exports.get = async (req, res) => {
-  const CENTRAL_ACCOUNT = web3.eth.accounts.privateKeyToAccount(
-    CENTRAL_WALLET.privateKey,
-  )
   if (CENTRAL_ACCOUNT.address != CENTRAL_WALLET.address) {
     res.send('INTERNAL SERVER ERROR')
   } else {
