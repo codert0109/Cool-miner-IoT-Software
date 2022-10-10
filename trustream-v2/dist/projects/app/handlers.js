@@ -41,6 +41,9 @@ async function updateLocationTimestamp(location_id) {
     }
     return true;
 }
+function getCurrentEpoch() {
+    return ~~(Date.now() / 3600 / 1000);
+}
 async function updateUpTime(address, nftID) {
     const UPLOAD_INTERVAL = 5 * 60;
     const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
@@ -53,17 +56,22 @@ async function updateUpTime(address, nftID) {
         if (result !== null) {
             let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
             console.log('elapsedTime', elapsedTime);
-            if (elapsedTime < UPLOAD_THRESMS) {
-                console.log('blocked: data is uploading too fast.');
-                return false;
-            }
         }
-        let upload_record = await models_1.deviceUptimeRepository.findOne({ where: { address } });
+        let current_epoch = getCurrentEpoch();
+        let upload_record = await models_1.deviceUptimeRepository.findOne({ where: { address, epoch: current_epoch } });
         if (upload_record === null) {
-            await models_1.deviceUptimeRepository.create({ address, uptime: UPLOAD_INTERVAL });
+            await models_1.deviceUptimeRepository.create({
+                address,
+                uptime: UPLOAD_INTERVAL,
+                epoch: current_epoch
+            });
         }
         else {
-            await models_1.deviceUptimeRepository.update({ address, uptime: upload_record.uptime + UPLOAD_INTERVAL }, { where: { address } });
+            await models_1.deviceUptimeRepository.update({
+                address,
+                uptime: upload_record.uptime + UPLOAD_INTERVAL,
+                epoch: current_epoch
+            }, { where: { address } });
         }
         return true;
     }
@@ -112,14 +120,14 @@ async function onMqttData(context, topic, payload) {
         console.log(`WARNING: Dropping data message: message does not include location_id.`);
         return;
     }
-    isValid = await updateLocationTimestamp(location_id);
-    if (isValid === false) {
-        console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`);
-        return;
-    }
     isValid = await verifyMessage(address, nftID, signature);
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: Invalid session id ${address}`);
+        return;
+    }
+    isValid = await updateLocationTimestamp(location_id);
+    if (isValid === false) {
+        console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`);
         return;
     }
     let NFTContract = context.getContract("NFT");

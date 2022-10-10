@@ -4,6 +4,7 @@ const Op = db.Sequelize.Op;
 const MINER_CONFIG = require('../config/miner.config');
 
 // Core API Functions for Device_Data
+
 const checkActive = (address, callback) => {
   Device_Data.findOne({ where : { address }, order: [['start_time', 'DESC']]})
     .then((data) => {

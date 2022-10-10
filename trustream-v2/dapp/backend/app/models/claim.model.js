@@ -1,13 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
-  const Device_Uptime = sequelize.define("device_uptime", {
+  const Claim = sequelize.define("claim", {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     address: {
       type : Sequelize.STRING
     },
-    uptime: {
-      type : Sequelize.INTEGER
-    },
-    epoch : {
-      type : Sequelize.INTEGER
+    token : {
+      type : Sequelize.STRING
     },
     created_at: {
       type: Sequelize.DATE
@@ -17,5 +19,5 @@ module.exports = (sequelize, Sequelize) => {
     }
   });
 
-  return Device_Uptime;
+  return Claim;
 };

@@ -15,4 +15,9 @@ export class DeviceUptimeModel extends BaseModel<DeviceUptimeModel> {
         allowNull: false
     })
     public uptime!: number;
+
+    @Column({
+        allowNull: false
+    })
+    public epoch!: number;
 }
