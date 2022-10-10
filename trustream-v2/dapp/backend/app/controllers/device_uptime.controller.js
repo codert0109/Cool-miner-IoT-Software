@@ -5,6 +5,11 @@ const { sequelize } = require("../models");
 // const Device_Data = db.device_datas;
 // const Op = db.Sequelize.Op;
 
+exports.getAll = (query) => {
+    // needs to be optimized
+    return Device_Uptime.findAll({ where : query});
+}
+
 exports.getUpTime = (req, res) => {
 
     const { address } = req.body;

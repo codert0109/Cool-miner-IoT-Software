@@ -7,7 +7,7 @@ const https = require('https')
 const fs = require('fs')
 
 function ensureSecure(req, res, next) {
-  return next() // for testing purpose
+  // return next() // for testing purpose
 
   if (req.secure) {
     // OK, continue
@@ -43,6 +43,7 @@ db.sequelize
 
 // register routes
 require('./app/routes')(app)
+require('./app/services/claim.service').init();
 
 https
   .createServer(

@@ -1,3 +1,6 @@
+const db = require('../models')
+const claim = db.claim
+
 const Web3 = require('web3');
 const { CENTRAL_WALLET } = require('../config/db.config');
 
@@ -11,6 +14,29 @@ const CENTRAL_ACCOUNT = web3.eth.accounts.privateKeyToAccount(
   CENTRAL_WALLET.privateKey,
 );
 
+exports.web3 = web3;
+
+// Core API
+exports.updateClaimToken = async (address, amount) => {
+  try {
+    let data = await claim.findOne({ where : { address }})
+    let prv_amount = 0;
+    if (data != null) {
+      console.log('find data', data.token);
+      prv_amount = ~~(data.token);
+      await claim.update( { address, token : prv_amount + amount}, { where : { address } });
+    } else {
+      await claim.create( { address, token : amount });
+    }
+    
+    return true;
+
+  } catch (err) {
+    return false;
+  }
+};
+
+// RESTful API Begin
 exports.claimReward = async (req, res) => {
   const message = "hello";
   const hashedMessage = web3.utils.sha3(message);

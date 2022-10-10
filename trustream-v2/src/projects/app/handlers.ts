@@ -127,7 +127,7 @@ async function updateUpTime(address : string, nftID : string) {
           uptime : upload_record.uptime + UPLOAD_INTERVAL,
           epoch : current_epoch
         },
-        { where : { address }});
+        { where : { address, epoch : current_epoch }});
     }
     return true;
   } catch (err) {

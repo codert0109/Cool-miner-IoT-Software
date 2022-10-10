@@ -6,5 +6,5 @@ exports.getValue = (key) => {
 };
 
 exports.updateValue = (key, value) => {
-    return key_status.upsert({ value }, { where : { key }});
+    return key_status.upsert({ key, value }, { where : { key }});
 };
