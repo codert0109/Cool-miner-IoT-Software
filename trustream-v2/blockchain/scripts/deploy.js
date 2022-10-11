@@ -26,7 +26,7 @@ async function main() {
   let balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance before deploy:', balanceIOTX, ' IOTX')
 
-  const elumToken = await deployContract('ElumToken', "10000000000000000") // set 0.01IoTx=1ElumToken
+  const elumToken = await deployContract('ElumToken', "1000000000000000") // set 0.001IoTx=1ElumToken
   const elumNFT = await deployContract('ElumNFT')
 
   await elumNFT.setTokenAddress(elumToken.address);
