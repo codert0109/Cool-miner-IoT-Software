@@ -478,8 +478,8 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumReward.sol": {
-      "lastModificationDate": 1665463997264,
-      "contentHash": "864848a08e9227c30ba9981e18207458",
+      "lastModificationDate": 1665464317639,
+      "contentHash": "271146c6b7ab30d6012234154dea9eda",
       "sourceName": "contracts/ElumReward.sol",
       "solcConfig": {
         "version": "0.8.4",

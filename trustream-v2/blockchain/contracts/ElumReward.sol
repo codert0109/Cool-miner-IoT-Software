@@ -9,6 +9,7 @@ import "./interfaces/IElumToken.sol";
 
 contract ElumReward is Ownable {
     address public tokenContract;
+    mapping (address => uint256) public claimedToken;
 
     constructor() {
     }
@@ -33,8 +34,10 @@ contract ElumReward is Ownable {
         require (this.verify(to, amount, _v, _r, _s) == owner(), "signature check failed");
         require (amount > 0, "amount should be positive.");
         require (to != address(0), "address cannot be zero.");
-
-        mint(to, amount);
+        require (claimedToken[to] < amount, "claimed token should be less than amount.");
+        mint(to, amount - claimedToken[to]);
+        claimedToken[to] = amount;
+        
         return true;
     }
 }
