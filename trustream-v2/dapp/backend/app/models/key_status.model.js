@@ -1,12 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
   const Key_Status = sequelize.define("key_status", {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
-    },
     key: {
-      type : Sequelize.STRING
+      type : Sequelize.STRING,
+      primaryKey: true
     },
     value : {
       type : Sequelize.STRING

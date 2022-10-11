@@ -56,6 +56,10 @@ async function updateUpTime(address, nftID) {
         if (result !== null) {
             let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
             console.log('elapsedTime', elapsedTime);
+            if (elapsedTime < UPLOAD_THRESMS) {
+                console.log('blocked: data is uploading too fast.');
+                return false;
+            }
         }
         let current_epoch = getCurrentEpoch();
         let upload_record = await models_1.deviceUptimeRepository.findOne({ where: { address, epoch: current_epoch } });
@@ -71,7 +75,7 @@ async function updateUpTime(address, nftID) {
                 address,
                 uptime: upload_record.uptime + UPLOAD_INTERVAL,
                 epoch: current_epoch
-            }, { where: { address } });
+            }, { where: { address, epoch: current_epoch } });
         }
         return true;
     }
