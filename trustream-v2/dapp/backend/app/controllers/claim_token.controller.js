@@ -17,6 +17,8 @@ const CENTRAL_ACCOUNT = web3.eth.accounts.privateKeyToAccount(
 exports.web3 = web3;
 
 // Core API
+
+// This function update available claimed tokens.
 exports.updateClaimToken = async (address, amount) => {
   try {
     let data = await claim.findOne({ where : { address }})
@@ -29,18 +31,83 @@ exports.updateClaimToken = async (address, amount) => {
       await claim.create( { address, token : amount });
     }
     
-    return true;
+    return {
+      status : 'OK',
+      address,
+      amount : prv_amount + amount
+    };
 
   } catch (err) {
-    return false;
+
+    return {
+      status : 'ERR',
+      address,
+      amount : 0
+    };
   }
 };
 
 // RESTful API Begin
+exports.getInfo = async (req, res) => {
+  const { address } = req.body;
+
+  if (address == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+    return;
+  }
+
+  claim.findOne({ where : { address }})
+    .then((data) => {
+      let amount = data != null ? data.token : 0;
+      res.send({
+        status : 'OK',
+        message : 'Success',
+        amount,
+        address
+      })
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      })
+    })
+};
+
 exports.claimReward = async (req, res) => {
-  const message = "hello";
-  const hashedMessage = web3.utils.sha3(message);
-  console.log({ hashedMessage });
+  const { address } = req.body;
+
+  if (address == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+    return;
+  }
+
+  let amount = 0;
+
+  try {
+    let data = await claim.findOne({ where : { address }})
+    amount = data != null ? data.token : 1000;
+    amount = parseInt(amount);
+  } catch (err) {
+    console.log(err);
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+    return;
+  }
+
+  const message = address.substr(2).padStart(32 * 2, 0) + amount.toString(16).padStart(32 * 2, 0);
+  const messageHex = Buffer.from(message, "hex");
+
+  const hashedMessage = web3.utils.sha3(messageHex);
 
   const signature = web3.eth.accounts.sign(
     hashedMessage, 
@@ -49,8 +116,11 @@ exports.claimReward = async (req, res) => {
 
   res.send({
     status : 'OK',
-    signature
-  })
+    signature,
+    message : 'Signature created!',
+    address,
+    amount
+  });
 };
 
 exports.get = async (req, res) => {

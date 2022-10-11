@@ -25,7 +25,7 @@ contract ElumToken is IElumToken, ERC20, Ownable {
         tokenPrice = newPrice;
     }
 
-    function setRewardContract(address _rewardContract) external override virtual onlyOwner {
+    function setRewardAddress(address _rewardContract) external override virtual onlyOwner {
         rewardContract = _rewardContract;
     }
 
@@ -41,8 +41,8 @@ contract ElumToken is IElumToken, ERC20, Ownable {
     }
 
     function mintRewardTokens(uint256 amount) external override virtual {
-        require (msg.sender == rewardContract);
-        require (rewardSupply + amount <= totalRewardSupply);
+        require (msg.sender == rewardContract, "Only reward contract can mint tokens.");
+        require (rewardSupply + amount <= totalRewardSupply, "Supply should be less than totalRewardSupply.");
 
         _mint(msg.sender, amount);
     }

@@ -32,7 +32,7 @@ const onResult = async () => {
             isPending = false;
             return;
         }
-        
+                
         await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
 
         let deviceUpTimeData = await device_uptime.getAll({
@@ -54,16 +54,19 @@ const onResult = async () => {
 
             let ret = await updateClaimToken(deviceUpTimeData[i].address, curReward);
 
-            if (ret == false) {
+            if (ret.status == 'ERR') {
                 console.log('errors in updatimg claim token', { 
                     address : deviceUpTimeData[i].address,
                     amount : curReward
                 });
+                continue;
             }
         }
+
         isPending = false;
     } catch (err) {
         console.log('errors occured in claim.service', err);
+
         isPending = false;
         return;
     }

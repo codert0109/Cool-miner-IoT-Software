@@ -22,6 +22,7 @@
     "cors": "^2.8.5",
     "eth-sig-util": "^3.0.1",
     "express": "^4.17.1",
+    "merkletreejs": "^0.2.32",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.21.1",

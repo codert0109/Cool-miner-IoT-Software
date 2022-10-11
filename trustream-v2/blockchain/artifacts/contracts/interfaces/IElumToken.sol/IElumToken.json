@@ -141,7 +141,7 @@
           "type": "address"
         }
       ],
-      "name": "setRewardContract",
+      "name": "setRewardAddress",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

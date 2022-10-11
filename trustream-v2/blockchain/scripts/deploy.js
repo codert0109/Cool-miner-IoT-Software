@@ -44,6 +44,10 @@ async function main() {
   // for deploy to test server (45 seconds, 90 seconds, 180 seconds, 360 seconds)
   await elumStaking.addStakeTypeList([45,  90,  180, 360], ['45', '90', '180', '360']);
 
+  const elumReward = await deployContract('ElumReward');
+  await elumReward.setTokenAddress(elumToken.address);
+  await elumToken.setRewardAddress(elumReward.address);
+
   balanceRau = await deployer.getBalance()
   balanceIOTX = balanceRau / Math.pow(10, 18)
   console.log('Account balance after deploy:', balanceIOTX, ' IOTX')
