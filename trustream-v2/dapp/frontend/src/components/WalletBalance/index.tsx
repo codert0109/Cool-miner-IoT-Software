@@ -42,12 +42,9 @@ export default observer((props: Props) => {
     const { god, token } = useStore();
     const { classes } = useStyles();
     const router = useRouter()
-    const [balance, setBalance] = useState('0');
 
     const refresh = async () => {
-        let value: string;
-        value = await token.getBalance();
-        setBalance(value);
+        token.refresh();
     };
 
     useEffect(() => {
@@ -94,7 +91,7 @@ export default observer((props: Props) => {
         <Box label="Wallet Balance">
             <Grid style={{ width: '100%' }}>
                 <Grid.Col sm={12} md={6} className={classes.padding0}>
-                    <WhiteLabel label={balance} />
+                    <WhiteLabel label={token.balance} />
                 </Grid.Col>
                 <Grid.Col sm={12} md={6} className={classes.padding0}>
                     <MantineProvider

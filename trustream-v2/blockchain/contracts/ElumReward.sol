@@ -37,7 +37,6 @@ contract ElumReward is Ownable {
         require (claimedToken[to] < amount, "claimed token should be less than amount.");
         mint(to, amount - claimedToken[to]);
         claimedToken[to] = amount;
-        
         return true;
     }
 }
