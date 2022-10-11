@@ -24,9 +24,8 @@ exports.updateClaimToken = async (address, amount) => {
     let data = await claim.findOne({ where : { address }})
     let prv_amount = 0;
     if (data != null) {
-      console.log('find data', data.token);
       prv_amount = ~~(data.token);
-      await claim.update( { address, token : prv_amount + amount}, { where : { address } });
+      await claim.update( { address, token : prv_amount + amount}, { where : { id : data.id } });
     } else {
       await claim.create( { address, token : amount });
     }
