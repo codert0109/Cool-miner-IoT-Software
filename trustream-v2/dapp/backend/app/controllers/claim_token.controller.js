@@ -14,11 +14,48 @@ const CENTRAL_ACCOUNT = web3.eth.accounts.privateKeyToAccount(
   CENTRAL_WALLET.privateKey,
 );
 
+const Contract_Address  = require('../contracts/contract-address.json');
+const ElumNFTABI        = require('../contracts/ElumNFT.json');
+const ElumTokenABI      = require('../contracts/ElumToken.json');
+const ElumRewardABI     = require('../contracts/ElumReward.json');
+const ElumStakingABI    = require('../contracts/ElumStaking.json');
+
 exports.web3 = web3;
+exports.Contract = {
+  ElumStaking : web3.eth.Contract(ElumStakingABI, Contract_Address.ElumStaking),
+  ElumNFT     : web3.eth.Contract(ElumNFTABI,     Contract_Address.ElumNFT),
+  ElumToken   : web3.eth.Contract(ElumTokenABI,   Contract_Address.ElumToken),
+  ElumReward  : web3.eth.Contract(ElumRewardABI,  Contract_Address.ElumReward),
+};
 
 // Core API
 
 // This function update available claimed tokens.
+exports.getStakingAmount = async (req, res) => {
+  const { address } = req.body;
+
+  if (address == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+    return;
+  }
+
+  try {
+    let tx = await ElumStaking.methods.ADDRESS_TO_INFO(req.body.address);
+    res.send({
+      status : 'OK',
+      tx
+    })
+  } catch (err) {
+    res.send({
+      status : 'ERR',
+      message : 'Errors occured in processing request'
+    })
+  }
+};
+
 exports.updateClaimToken = async (address, amount) => {
   try {
     let data = await claim.findOne({ where : { address }})

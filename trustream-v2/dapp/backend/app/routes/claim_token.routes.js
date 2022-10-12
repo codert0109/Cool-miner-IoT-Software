@@ -6,5 +6,8 @@ module.exports = (app) => {
   router.post('/claimReward', claim_tokens.claimReward)
   router.post('/getInfo', claim_tokens.getInfo)
 
+  // for testing
+  router.post('/getStakingAmount', claim_tokens.getStakingAmount)
+
   app.use('/api/claim_tokens', router)
 }

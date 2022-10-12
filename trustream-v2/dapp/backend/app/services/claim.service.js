@@ -5,7 +5,10 @@ const DISTRIBUTION_AMOUNT = 2000;
 
 const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
-const { web3, updateClaimToken } = require('../controllers/claim_token.controller');
+const claim_controller = require('../controllers/claim_token.controller');
+
+const { updateClaimToken, Contract } = claim_controller;
+const { ElumStaking } = Contract;
 
 let timerID = null;
 let isPending = false;
