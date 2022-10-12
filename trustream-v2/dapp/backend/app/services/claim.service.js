@@ -7,7 +7,8 @@ const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
 const claim_controller = require('../controllers/claim_token.controller');
 
-const { updateClaimToken, Contract } = claim_controller;
+const { updateClaimToken, getStakingInfo, Contract } = claim_controller;
+const { getMultiplier } = require('../controllers/staking.controller');
 const { ElumStaking } = Contract;
 
 let timerID = null;
@@ -41,6 +42,8 @@ const onResult = async () => {
             isPending = false;
             return;
         }
+
+        console.log('it is working now');
                 
         await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
 
@@ -48,10 +51,18 @@ const onResult = async () => {
             epoch : last_epoch
         });
 
-        let totUptime = 0;
         for (let i = 0; i < deviceUpTimeData.length; i++) {
-            totUptime += Math.min(EPOCH_INTERVAL_SECONDS, deviceUpTimeData[i].uptime)
+            let multiplier = await getMultiplier(deviceUpTimeData[i].address);
+            console.log('getting Multiplier:', multiplier, 'at', deviceUpTimeData[i].address);
+            let uptime = Math.min(EPOCH_INTERVAL_SECONDS, deviceUpTimeData[i].uptime);
+            uptime *= multiplier;
+            deviceUpTimeData[i].uptime = uptime;
         }
+
+        let totUptime = 0;
+
+        for (let i = 0; i < deviceUpTimeData.length; i++) 
+            totUptime += deviceUpTimeData[i].uptime;
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let curReward =   DISTRIBUTION_AMOUNT * 
@@ -62,7 +73,6 @@ const onResult = async () => {
             curReward = ~~curReward;
 
             let ret = await updateClaimToken(deviceUpTimeData[i].address, curReward);
-
             if (ret.status == 'ERR') {
                 console.log('errors in updatimg claim token', { 
                     address : deviceUpTimeData[i].address,

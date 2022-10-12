@@ -20,41 +20,82 @@ const ElumTokenABI      = require('../contracts/ElumToken.json');
 const ElumRewardABI     = require('../contracts/ElumReward.json');
 const ElumStakingABI    = require('../contracts/ElumStaking.json');
 
-exports.web3 = web3;
+const ElumStaking = new web3.eth.Contract(ElumStakingABI.abi, Contract_Address.ElumStaking);
+const ElumNFT     = new web3.eth.Contract(ElumNFTABI.abi,     Contract_Address.ElumNFT);
+const ElumToken   = new web3.eth.Contract(ElumTokenABI.abi,   Contract_Address.ElumToken);
+const ElumReward  = new web3.eth.Contract(ElumRewardABI.abi,  Contract_Address.ElumReward);
+
 exports.Contract = {
-  ElumStaking : web3.eth.Contract(ElumStakingABI, Contract_Address.ElumStaking),
-  ElumNFT     : web3.eth.Contract(ElumNFTABI,     Contract_Address.ElumNFT),
-  ElumToken   : web3.eth.Contract(ElumTokenABI,   Contract_Address.ElumToken),
-  ElumReward  : web3.eth.Contract(ElumRewardABI,  Contract_Address.ElumReward),
+  ElumStaking,
+  ElumNFT    ,
+  ElumToken  ,
+  ElumReward 
 };
 
 // Core API
-
-// This function update available claimed tokens.
-exports.getStakingAmount = async (req, res) => {
-  const { address } = req.body;
-
-  if (address == null) {
-    res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    })
-    return;
-  }
-
+exports.getStakingInfo = async (address) => {
+  if (address == null) 
+    return null;
   try {
-    let tx = await ElumStaking.methods.ADDRESS_TO_INFO(req.body.address);
-    res.send({
-      status : 'OK',
-      tx
-    })
+    let tx = await ElumStaking.methods.ADDRESS_TO_INFO(address).call();
+    return tx;
   } catch (err) {
-    res.send({
-      status : 'ERR',
-      message : 'Errors occured in processing request'
-    })
+    console.log('see error', err);
+    return null;
   }
 };
+
+// This function update available claimed tokens.
+// exports.getAvailableClaimAmount = async (req, res) => {
+//   const { address } = req.body;
+//   if (address == null) {
+//     res.send({
+//       status : 'ERR',
+//       message : 'Bad request'
+//     })
+//     return;
+//   }
+
+//   try {
+//     let tx = await ElumReward.methods.getMaxAvailableToken(req.body.address).call();
+//     res.send({
+//       status : 'OK',
+//       amount : tx
+//     })
+//   } catch (err) {
+//     console.log('see error', err);
+//     res.send({
+//       status : 'ERR',
+//       message : 'Errors occured in processing request'
+//     })
+//   }
+// };
+
+// exports.getStakingAmount = async (req, res) => {
+//   const { address } = req.body;
+
+//   if (address == null) {
+//     res.send({
+//       status : 'ERR',
+//       message : 'Bad request'
+//     })
+//     return;
+//   }
+
+//   try {
+//     let tx = await ElumStaking.methods.ADDRESS_TO_INFO(req.body.address).call();
+//     res.send({
+//       status : 'OK',
+//       tx
+//     })
+//   } catch (err) {
+//     console.log('see error', err);
+//     res.send({
+//       status : 'ERR',
+//       message : 'Errors occured in processing request'
+//     })
+//   }
+// };
 
 exports.updateClaimToken = async (address, amount) => {
   try {

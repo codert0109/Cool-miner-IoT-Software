@@ -23,6 +23,16 @@ const checkActive = (address, callback) => {
     });
 };
 
+// Code function to return number of active miner.
+exports.getActiveMinerCnt = async (address) => {
+  try {
+    let data = await db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM "testapp"."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`);
+    return parseInt(data[0][0].CNT);
+  } catch (err) {
+    return 0;
+  }
+};
+
 const getActiveMiner = (address, callback) => {
   db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM "testapp"."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`)
     .then((data) => {

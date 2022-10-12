@@ -51,13 +51,22 @@ contract ElumReward is Ownable {
     }
 
     // User API Function
-    function getMaxAvailableToken(address to) public virtual returns (uint256) {
+    function getMaxAvailableToken(address to) public virtual view returns (uint256) {
         uint256 totalNFTCnt = IElumNFT(nftContract).getTotalNFT();
+
+        if (totalNFTCnt == 0)
+            return 0;
+            
         require (totalNFTCnt > 0, "totalNFT should be positive number.");
+
         uint256 lastClaimedTime = deployedTime;
         if (claimedTime[to] != 0)
-            lastClaimedTime = claimedTime[to];            
+            lastClaimedTime = claimedTime[to];
         uint256 epochCnt = (block.timestamp - lastClaimedTime) / EPOCH_SECONDS;
+
+        if (epochCnt == 0) 
+            epochCnt = 1;
+
         return DISTRIBUTE_TOKEN * MAX_TOKEN_COEFF * epochCnt / totalNFTCnt;
     }
 

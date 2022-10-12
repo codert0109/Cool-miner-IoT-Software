@@ -16,18 +16,29 @@ describe("ElumReward contract", function () {
     const ElumReward = await ethers.getContractFactory("ElumReward");
     const hardhatElumReward = await ElumReward.deploy();
     await hardhatElumReward.setTokenAddress(hardhatElumToken.address)
+
+    await hardhatElumToken.setRewardAddress(hardhatElumReward.address)
+  });
+
+  it("getMaxAvailableToken should meaningful value.", async function () {
+    const [owner] = await ethers.getSigners();
+
+    const ElumNFT = await ethers.getContractFactory("ElumNFT");
+    const hardhatElumNFT = await ElumNFT.deploy();
+    await hardhatElumNFT.addNewType('https://testminer.elumicate.com/api/metadata/NFT/{id}.json', 3);
+    await hardhatElumNFT.addNewType('https://testminer.elumicate.com/api/metadata/NFT/{id}.json', 5);
+
+    const ElumToken = await ethers.getContractFactory("ElumToken");
+    const TokenPrice = BN('10000000000000000000');
+    hardhatElumToken = await ElumToken.deploy(TokenPrice);
+
+    const ElumReward = await ethers.getContractFactory("ElumReward");
+    const hardhatElumReward = await ElumReward.deploy();
+    await hardhatElumReward.setTokenAddress(hardhatElumToken.address)
+    await hardhatElumReward.setNFTAddress(hardhatElumNFT.address)
     
     await hardhatElumToken.setRewardAddress(hardhatElumReward.address)
 
-    // needs to configure local network
-    // let result = await hardhatElumReward.claimRequest(
-    //                                '0x78D0e460f234efbFc235152d32AB5e31b30B2171',
-    //                                '1000',
-    //                                '0x1c',
-    //                                '0xbeb30c31e5f5e801150dfee456141800960b158062934822806d9fbd41f20848',
-    //                                '0x06397c986fd46c943fa3d13e3d56d009922c3a7ba3362d00f175918ef1ce6ee2'
-    //                                );
-    
-    // console.log({ result });  
+    expect(await hardhatElumReward.getMaxAvailableToken(owner.address)).to.be.eql(BN(0));
   });
 });
