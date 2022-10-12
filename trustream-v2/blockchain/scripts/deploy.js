@@ -46,6 +46,7 @@ async function main() {
 
   const elumReward = await deployContract('ElumReward');
   await elumReward.setTokenAddress(elumToken.address);
+  await elumReward.setNFTAddress(elumNFT.address);
   await elumToken.setRewardAddress(elumReward.address);
 
   balanceRau = await deployer.getBalance()

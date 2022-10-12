@@ -80,6 +80,10 @@ contract ElumNFT is Ownable, IElumNFT {
     /* End OnlyOwner Module */
 
     /* Begin User Module */
+    function getTotalNFT() external override view returns (uint256) {
+        return NFT_ID_COUNTER;
+    }
+
     function isWhiteLists(address addr) public view virtual returns (bool) {
         return whiteLists[addr];
     }
@@ -157,6 +161,5 @@ contract ElumNFT is Ownable, IElumNFT {
             return 0;
         return NFT_TO_INFO[id_lists[0]].acquireTime;
     }
-
     /* End User Module */
 }

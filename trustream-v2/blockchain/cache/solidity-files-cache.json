@@ -329,8 +329,8 @@
       "artifacts": []
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumNFT.sol": {
-      "lastModificationDate": 1664358783131,
-      "contentHash": "8624355be8fdb576d3bac08aabc64ec5",
+      "lastModificationDate": 1665548643030,
+      "contentHash": "05f1c1aa197217bec4e0f4cceed1ec3c",
       "sourceName": "contracts/ElumNFT.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -403,8 +403,8 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\interfaces\\IElumNFT.sol": {
-      "lastModificationDate": 1664231654460,
-      "contentHash": "a7e5e204bdaff13ca9cc64a9f0bdece4",
+      "lastModificationDate": 1665548593408,
+      "contentHash": "8f28f56b45e7be97e1924f5f4eea87eb",
       "sourceName": "contracts/interfaces/IElumNFT.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -478,8 +478,8 @@
       ]
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumReward.sol": {
-      "lastModificationDate": 1665474202255,
-      "contentHash": "10c0cca52840293e1ae919c99d4b7090",
+      "lastModificationDate": 1665550747522,
+      "contentHash": "a643972be0c78fe544a7a14b4b23262c",
       "sourceName": "contracts/ElumReward.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -508,7 +508,8 @@
         "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "@openzeppelin/contracts/access/Ownable.sol",
-        "./interfaces/IElumToken.sol"
+        "./interfaces/IElumToken.sol",
+        "./interfaces/IElumNFT.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
