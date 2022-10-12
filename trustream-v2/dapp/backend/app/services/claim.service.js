@@ -13,6 +13,12 @@ let isPending = false;
 const onResult = async () => {
     if (isPending) return;
 
+    // hh:mm:ss the minute should be bigger than > 10.
+    // This is necessary because the miners is uploading data in 0~5min randomly.
+    // So we need to give them 10m to submit the data.
+    if (new Date().getUTCMinutes() < 10) 
+        return;
+
     try {
         isPending = true;
 

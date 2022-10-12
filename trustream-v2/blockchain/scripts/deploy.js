@@ -117,9 +117,9 @@ main()
     process.exit(1)
   })
 
-function saveFrontendFiles(ContractInfo) {
+  
+function saveFile(ContractInfo, contractsDir) {
   const fs = require('fs')
-  const contractsDir = __dirname + '/../../dapp/frontend/src/contracts'
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir)
@@ -141,6 +141,11 @@ function saveFrontendFiles(ContractInfo) {
       JSON.stringify(ContractArtifact, null, 2),
     )
   }
+}
 
+
+function saveFrontendFiles(ContractInfo) {
+  saveFile(ContractInfo, __dirname + '/../../dapp/frontend/src/contracts');
+  saveFile(ContractInfo, __dirname + '/../../dapp/backend/app/contracts');
   console.log('Saving to frontend success.')
 }
