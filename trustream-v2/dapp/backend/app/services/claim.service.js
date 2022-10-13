@@ -42,8 +42,6 @@ const onResult = async () => {
             isPending = false;
             return;
         }
-
-        console.log('it is working now');
                 
         await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
 
