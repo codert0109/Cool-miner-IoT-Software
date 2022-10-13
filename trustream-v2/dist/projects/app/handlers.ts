@@ -106,18 +106,19 @@ async function updateUpTime(address : string, nftID : string) {
 
       console.log('elapsedTime', elapsedTime);
 
-      if (elapsedTime < UPLOAD_THRESMS) {
+      if (false && elapsedTime < UPLOAD_THRESMS) {
         console.log('blocked: data is uploading too fast.');
         return false;
       }
     }
         
     let current_epoch = getCurrentEpoch();
-    let upload_record = await deviceUptimeRepository.findOne({ where : { address, epoch : current_epoch }});
+    let upload_record = await deviceUptimeRepository.findOne({ where : { address, epoch : current_epoch, nft_id : nftID }});
     if (upload_record === null) {
       await deviceUptimeRepository.create({ 
         address, 
         uptime : UPLOAD_INTERVAL,
+        nft_id : nftID,
         epoch : current_epoch
       });
     } else {
@@ -125,9 +126,10 @@ async function updateUpTime(address : string, nftID : string) {
         { 
           address, 
           uptime : upload_record.uptime + UPLOAD_INTERVAL,
-          epoch : current_epoch
+          epoch : current_epoch,
+          nft_id : nftID
         },
-        { where : { address, epoch : current_epoch }});
+        { where : { address, epoch : current_epoch, nft_id : nftID }});
     }
     return true;
   } catch (err) {
@@ -192,7 +194,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   isValid = await verifyMessage(address, nftID, signature);
   
   if (isValid === false) {
-    console.log(`WARNING: Dropping data message: Invalid session id ${address}`)
+    console.log('WARNING: Dropping data message: Invalid session id', {address, nftID});
     return;
   }
 

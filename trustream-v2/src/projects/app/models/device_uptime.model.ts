@@ -19,5 +19,10 @@ export class DeviceUptimeModel extends BaseModel<DeviceUptimeModel> {
     @Column({
         allowNull: false
     })
+    public nft_id!: number;
+
+    @Column({
+        allowNull: false
+    })
     public epoch!: number;
 }

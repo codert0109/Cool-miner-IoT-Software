@@ -32,6 +32,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     location_id: {
       type : Sequelize.STRING
+    },
+    nft_id : {
+      type : Sequelize.INTEGER
     }
   }, { 
     timestamps : false,

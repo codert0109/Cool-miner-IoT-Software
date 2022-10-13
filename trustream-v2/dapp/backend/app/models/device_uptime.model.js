@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
     epoch : {
       type : Sequelize.INTEGER
     },
+    nft_id : {
+      type : Sequelize.INTEGER
+    },
     created_at: {
       type: Sequelize.DATE
     },

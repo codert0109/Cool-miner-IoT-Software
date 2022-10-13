@@ -56,17 +56,18 @@ async function updateUpTime(address, nftID) {
         if (result !== null) {
             let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
             console.log('elapsedTime', elapsedTime);
-            if (elapsedTime < UPLOAD_THRESMS) {
+            if (false && elapsedTime < UPLOAD_THRESMS) {
                 console.log('blocked: data is uploading too fast.');
                 return false;
             }
         }
         let current_epoch = getCurrentEpoch();
-        let upload_record = await models_1.deviceUptimeRepository.findOne({ where: { address, epoch: current_epoch } });
+        let upload_record = await models_1.deviceUptimeRepository.findOne({ where: { address, epoch: current_epoch, nft_id: nftID } });
         if (upload_record === null) {
             await models_1.deviceUptimeRepository.create({
                 address,
                 uptime: UPLOAD_INTERVAL,
+                nft_id: nftID,
                 epoch: current_epoch
             });
         }
@@ -74,8 +75,9 @@ async function updateUpTime(address, nftID) {
             await models_1.deviceUptimeRepository.update({
                 address,
                 uptime: upload_record.uptime + UPLOAD_INTERVAL,
-                epoch: current_epoch
-            }, { where: { address, epoch: current_epoch } });
+                epoch: current_epoch,
+                nft_id: nftID
+            }, { where: { address, epoch: current_epoch, nft_id: nftID } });
         }
         return true;
     }
@@ -126,7 +128,7 @@ async function onMqttData(context, topic, payload) {
     }
     isValid = await verifyMessage(address, nftID, signature);
     if (isValid === false) {
-        console.log(`WARNING: Dropping data message: Invalid session id ${address}`);
+        console.log('WARNING: Dropping data message: Invalid session id', { address, nftID });
         return;
     }
     isValid = await updateLocationTimestamp(location_id);
