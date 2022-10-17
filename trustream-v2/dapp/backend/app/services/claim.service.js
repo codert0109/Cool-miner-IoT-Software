@@ -7,9 +7,8 @@ const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
 const claim_controller = require('../controllers/claim_token.controller');
 
-const { updateClaimToken, getStakingInfo, Contract } = claim_controller;
+const { updateClaimToken } = claim_controller;
 const { getMultiplier } = require('../controllers/staking.controller');
-const { ElumStaking } = Contract;
 
 let timerID = null;
 let isPending = false;
@@ -119,7 +118,7 @@ exports.init = function() {
         await onResult();
         setTimeout(() => {
             workLoop();
-        }, 5000);
+        }, TIMER_INTERVAL);
     };
 
     workLoop();

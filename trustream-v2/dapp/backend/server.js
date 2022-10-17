@@ -43,6 +43,8 @@ db.sequelize
 
 // register routes
 require('./app/routes')(app)
+
+// register micro service
 require('./app/services/claim.service').init();
 
 https
@@ -56,7 +58,7 @@ https
   )
   .listen(3333, function () {
     console.log(
-      'Example app listening on port 3333! Go to https://localhost:3333/',
+      'HTTPS Server is running on port 3333! Go to https://localhost:3333/',
     )
   })
 
