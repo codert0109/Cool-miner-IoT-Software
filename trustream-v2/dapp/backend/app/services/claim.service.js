@@ -110,5 +110,14 @@ exports.init = function() {
         console.log('claim.service is already running');
         return;
     }
-    timerID = setInterval(onResult, TIMER_INTERVAL);
+    
+    const workLoop = async () => {
+        await onResult();
+        setTimeout(() => {
+            workLoop();
+        }, 5000);
+    };
+
+    workLoop();
+    console.log('Claim Service started');
 };
