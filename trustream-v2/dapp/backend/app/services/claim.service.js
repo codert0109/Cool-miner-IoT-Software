@@ -27,8 +27,10 @@ const onResult = async () => {
         isPending = true;
 
         let result = await key_status.getValue('LAST_UPDATED_EPOCH');
+        
         let last_updated = 0;
-        if (result != null) last_updated = parseInt(result.value);
+        if (result != null) 
+            last_updated = parseInt(result.value);
 
         let cur_epoch = ~~ (Date.now() / EPOCH_INTERVAL);
         if (cur_epoch <= 0) {

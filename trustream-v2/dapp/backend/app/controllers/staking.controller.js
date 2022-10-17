@@ -30,17 +30,21 @@ exports.getStakingParameters = (req, res) => {
 
 exports.getMultiplier = async (address) => {
     let stakingInfo = await claim_controller.getStakingInfo(address);
+
     if (stakingInfo == null) 
         return 1;
+    
     let amount = stakingInfo.amount;
     let period = stakingInfo.expireTime - stakingInfo.startTime;
 
     let activeMiner = await devicedata_controller.getActiveMinerCnt(address);
-    if (activeMiner == 0) activeMiner = 1;
+    if (activeMiner == 0) 
+        activeMiner = 1;
 
     amount = amount / activeMiner;
-
+    
     let curMultiplier = 1;
+
     for (let i = 0; i < params.amount.length; i++) {
         for (let j = 0; j < params.period.length; j++) {
             if (params.period[j] <= period && params.amount[i] <= amount) {
@@ -50,7 +54,7 @@ exports.getMultiplier = async (address) => {
         }
     }
 
-    console.log('address', address, amount, period, activeMiner, curMultiplier)
-    
+    console.log('address', address, amount, period, activeMiner, curMultiplier);
+
     return curMultiplier;
 };
