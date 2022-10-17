@@ -54,7 +54,5 @@ exports.getMultiplier = async (address) => {
         }
     }
 
-    console.log('address', address, amount, period, activeMiner, curMultiplier);
-
     return curMultiplier / 10000.0;
 };
