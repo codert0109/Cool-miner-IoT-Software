@@ -75,7 +75,11 @@ const onResult = async () => {
         console.log('TotUpTime:', totUptime);
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
-            let curReward =   DISTRIBUTION_AMOUNT * 
+            let curReward;
+            if (totUptime == 0)
+                curReward = 0;
+            else
+                curReward =   DISTRIBUTION_AMOUNT * 
                                 Math.min(
                                     EPOCH_INTERVAL_SECONDS, 
                                     deviceUpTimeData[i].uptime
