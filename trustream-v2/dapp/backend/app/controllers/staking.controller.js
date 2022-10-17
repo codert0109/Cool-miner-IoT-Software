@@ -43,7 +43,7 @@ exports.getMultiplier = async (address) => {
 
     amount = amount / activeMiner;
     
-    let curMultiplier = 1;
+    let curMultiplier = 10000;
 
     for (let i = 0; i < params.amount.length; i++) {
         for (let j = 0; j < params.period.length; j++) {
@@ -56,5 +56,5 @@ exports.getMultiplier = async (address) => {
 
     console.log('address', address, amount, period, activeMiner, curMultiplier);
 
-    return curMultiplier;
+    return curMultiplier / 10000.0;
 };
