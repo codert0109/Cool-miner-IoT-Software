@@ -7,8 +7,6 @@ import "./interfaces/IElumNFT.sol";
 import "./AppStorage.sol";
 
 contract ElumNFT is Ownable, IElumNFT {
-    event AffectWhiteList(address[], bool);
-
     uint256 public NFT_TYPE_COUNTER = 0;
     uint256 public NFT_ID_COUNTER = 0;
 
@@ -20,9 +18,6 @@ contract ElumNFT is Ownable, IElumNFT {
 
     // Mapping NFT id to NFT_Info
     mapping (uint256 => NFT_INFO)       public NFT_TO_INFO;
-
-    // Mapping of Approved users that can mine data
-    mapping (address => bool)           public whiteLists;
 
     // Token address
     address public token_address;
@@ -71,25 +66,12 @@ contract ElumNFT is Ownable, IElumNFT {
         return true;
     }
 
-    function affectWhiteList(address[] calldata _addressList, bool isApprove) public virtual onlyOwner {
-        for (uint i = 0; i < _addressList.length; i++)
-            whiteLists[_addressList[i]] = isApprove;
-
-        emit AffectWhiteList(_addressList, isApprove);
-    }
-    /* End OnlyOwner Module */
-
     /* Begin User Module */
     function getTotalNFT() external override view returns (uint256) {
         return NFT_ID_COUNTER;
     }
 
-    function isWhiteLists(address addr) public view virtual returns (bool) {
-        return whiteLists[addr];
-    }
-
     function buyNFT(uint256 nftType, uint256 amount) external payable virtual returns(bool) {
-        require (isWhiteLists(msg.sender), "The wallet address should be in the approved list.");
         require (nftType < NFT_TYPE_COUNTER, "NFT Type should be less than NFT_TYPE_COUNTER");
         require (NFT_TYPE_INFO[nftType].remainSupply >= amount, "Not enough supply.");
         
@@ -111,8 +93,6 @@ contract ElumNFT is Ownable, IElumNFT {
 
     function transferNFT(uint256[] calldata ids, address to) external virtual {
         require (to != address(0), "Target address cannot be null");
-        require (isWhiteLists(msg.sender), "src address should be in the approved list.");
-        require (isWhiteLists(to), "dst address should be in the approved list.");
 
         for (uint i = 0; i < ids.length; i++) {
             uint256 id = ids[i];

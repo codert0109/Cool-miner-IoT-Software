@@ -60,28 +60,6 @@ async function main() {
   saveFrontendFiles(ContractInfo)
 }
 
-async function testCapacity() {
-  const testCapacity = await deployContract(
-    'TestCapacity'
-  );
-  const testContract = ContractObj['TestCapacity'];
-
-  const n = 600;
-
-  let addressList = [];
-  let balanceList = [];
-
-  for (let i = 0; i < n; i++) {
-    addressList.push('0xC332AE62518fB7B88F8C05470265f71a4fD7dC2f');
-    balanceList.push(~~(Math.random() * 1000));
-
-    addressList.push('0xC332AE62518fB7B88F8C05470265f71a4fD7dC2f');
-    n = 700;    
-  }
-
-  await testContract.addRewardTransactions(addressList, balanceList)
-}
-
 async function loadFromFile(path) {
   const fs = require('fs')
   const readline = require('readline')
