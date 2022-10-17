@@ -93,65 +93,6 @@ export default observer(() => {
         });
     }, []);
 
-    // const onTransferNFT = async () => {
-    //     let _normalCnt = parseInt(normalTransferCnt.toString());
-    //     let _specialCnt = parseInt(specialTransferCnt.toString());
-    //     if (_normalCnt < 0 || _specialCnt < 0 || (_normalCnt + _specialCnt == 0)) {
-    //         Swal.fire(
-    //             'Error!',
-    //             'Transfer Number Should Be Positive.',
-    //             'error'
-    //         )
-    //         return;
-    //     }
-
-    //     if (walletTransferArddress == 0) {
-    //         Swal.fire(
-    //             'Error!',
-    //             'Wallet cannot be empty.',
-    //             'error'
-    //         )
-    //         return;
-    //     }
-
-    //     const tx = window._NFT.transferNFT(_normalCnt, _specialCnt, walletTransferArddress);
-
-    //     try {
-    //         const receipt = await tx;
-    //         if (receipt.status == 0) {
-    //             Swal.fire(
-    //                 'Error!',
-    //                 'Action failed',
-    //                 'error'
-    //             )
-    //         } else {
-    //             await receipt.wait();
-    //             Swal.fire(
-    //                 'Awesome!',
-    //                 'You transfered NFTs!',
-    //                 'success'
-    //             )
-    //         }
-    //     } catch (error) {
-    //         const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
-    //         if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
-    //             Swal.fire(
-    //                 'Error!',
-    //                 'You rejected transaction.',
-    //                 'error'
-    //             )
-    //             return;
-    //         } else {
-
-    //             Swal.fire(
-    //                 'Error!',
-    //                 'Something went wrong.',
-    //                 'error'
-    //             )
-    //         }
-    //     }
-    // };
-
     const onBuyNFT = async (type_id: number) => {
         if (nft.loading) {
             Swal.fire(

@@ -1,8 +1,9 @@
-import { createStyles, Modal, Button } from "@mantine/core";
+import { createStyles, Modal, Button, TextInput } from "@mantine/core";
 import { useState } from "react";
 import ContractAddress from '../../../contracts/contract-address.json';
 import { useStore } from '../../../store/index';
 import { getContractAddressFormat } from "../../../utils";
+import Swal from 'sweetalert2'
 
 const BREAKPOINT = '@media (max-width: 900px)';
 
@@ -74,19 +75,70 @@ const useStyles = createStyles((theme) => ({
     },
     text_right_align: {
         textAlign: 'right'
+    },
+    transfer_div: {
+        textAlign: 'center',
+        width: '100%',
+        display: 'flex'
+    },
+    textinput: {
+        width: 0,
+        flexGrow: 1
     }
 }));
 
 export default function NFTStatus({ title, imgurl, price, acquiredTime, id }) {
-    const { god } = useStore();
+    const { god, nft } = useStore();
     const { classes, theme } = useStyles();
     const [modalOpen, setModalOpen] = useState(false);
+    const [transferAddress, setTransferAddress] = useState('');
 
     const getAcquiredTime = () => {
         let timeStamp = parseInt(acquiredTime.toString());
         if (timeStamp == 0) return;
         let info = new Date(timeStamp * 1000);
         return info.getFullYear() + " " + (info.getMonth() + 1) + " " + info.getDate();
+    };
+
+    const onTransferNFT = async () => {
+        const tx = nft.transferNFT(id, transferAddress);
+        console.log({id, transferAddress});
+
+        try {
+            const receipt : any = await tx;
+            if (receipt.status == 0) {
+                Swal.fire(
+                    'Error!',
+                    'Action failed',
+                    'error'
+                )
+            } else {
+                await receipt.wait();
+                Swal.fire(
+                    'Awesome!',
+                    'You transfered NFTs!',
+                    'success'
+                )
+                setModalOpen(false);
+                nft.refresh();
+            }
+        } catch (error) {
+            console.error(error);
+            const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+            if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
+                Swal.fire(
+                    'Error!',
+                    'You rejected transaction.',
+                    'error'
+                )
+            } else {
+                Swal.fire(
+                    'Error!',
+                    error.reason,
+                    'error'
+                )
+            }
+        }
     };
 
     const renderMinerNode = (isDetailShow = false) => {
@@ -119,6 +171,29 @@ export default function NFTStatus({ title, imgurl, price, acquiredTime, id }) {
                                         <td>Blockchain</td>
                                         <td className={classes.text_right_align}>IoTeX_Testnet</td>
                                     </tr>
+                                    <tr>
+                                        <td colSpan={2}>
+                                            <div className={classes.transfer_div}>
+                                                <div style={{ marginRight: 10 }} >
+                                                    <Button onClick={() => onTransferNFT()} size="xs">
+                                                        Transfer your NFT
+                                                    </Button>
+                                                </div>
+                                                <div className={classes.textinput}>
+                                                    <TextInput
+                                                        placeholder="0x..."
+                                                        size="xs"
+                                                        value={transferAddress}
+                                                        onChange={
+                                                            (event) => {
+                                                                setTransferAddress(event.currentTarget.value)
+                                                            }
+                                                        }>
+                                                    </TextInput>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -142,7 +217,7 @@ export default function NFTStatus({ title, imgurl, price, acquiredTime, id }) {
                 {renderMinerNode(true)}
             </Modal>
 
-            
+
             <div className={classes.infodiv + ' ' + classes.success} onClick={() => setModalOpen(true)}>
                 <img style={{ height: "100%" }} src="/images/nft/TestNet.png"></img>
                 <span className={classes.textinfo}>

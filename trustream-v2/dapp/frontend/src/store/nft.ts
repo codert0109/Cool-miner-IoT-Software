@@ -105,4 +105,8 @@ export class NFTStore {
     async buyNFT(type_id, amount, value) {
         return this.callContract('buyNFT', [type_id, amount], { value });
     }
+
+    async transferNFT(id, address) {
+        return this.callContract('transferNFT', [[id], address]);
+    }
 }
