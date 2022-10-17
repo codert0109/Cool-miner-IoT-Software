@@ -8,4 +8,5 @@ module.exports = (app) => {
   require('./nft_auth.routes')(app)
   require('./staking.routes')(app)
   require('./camera.routes')(app)
+  require('./email.routes')(app)
 }
