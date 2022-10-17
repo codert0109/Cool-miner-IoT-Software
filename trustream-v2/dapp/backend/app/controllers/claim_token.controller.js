@@ -40,7 +40,7 @@ exports.getStakingInfo = async (address) => {
     let tx = await ElumStaking.methods.ADDRESS_TO_INFO(address).call();
     return tx;
   } catch (err) {
-    console.log('see error', err);
+    console.error('errors occured', err);
     return null;
   }
 };
@@ -115,7 +115,7 @@ exports.updateClaimToken = async (address, amount) => {
     };
 
   } catch (err) {
-
+    console.error('errors occured', err);
     return {
       status : 'ERR',
       address,
@@ -147,7 +147,7 @@ exports.getInfo = async (req, res) => {
       })
     })
     .catch((err) => {
-      console.log(err);
+      console.error('errors occured', err);
       res.send({
         status : 'ERR',
         message : 'Internal Server Error'

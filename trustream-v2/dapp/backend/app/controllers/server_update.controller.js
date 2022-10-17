@@ -27,7 +27,8 @@ exports.createUpdate = (req, res) => {
             status : 'OK',
             message : 'Create Success'
         })
-    }).catch(() => {
+    }).catch((err) => {
+        console.error(err);
         res.send({
             status : 'ERR',
             message : 'Internal Server Error'
@@ -44,6 +45,7 @@ exports.findAll = (req, res) => {
             });
         })
         .catch((err) => {
+            console.error(err);
             res.send({
                 status : 'ERR',
                 message : 'Internal Server Error'
@@ -59,7 +61,8 @@ exports.getUpdate = (req, res) => {
                     .then(() => {
                         this.getUpdate(req, res);
                     })
-                    .catch(() => {
+                    .catch((err) => {
+                        console.error(err);
                         res.send({
                             status : 'ERR',
                             message : 'Internal Server Error'
@@ -77,6 +80,7 @@ exports.getUpdate = (req, res) => {
                         });
                     })
                     .catch((err) => {
+                        console.error(err);
                         res.send({
                             status : 'ERR',
                             message : "Internal Server Error"
@@ -85,6 +89,7 @@ exports.getUpdate = (req, res) => {
             }
         })
         .catch((err) => {
+            console.error(err);
             res.send({
                 status : 'ERR',
                 message : 'Internal Server Error'

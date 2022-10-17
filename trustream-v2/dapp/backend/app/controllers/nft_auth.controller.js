@@ -24,7 +24,7 @@ function createNFTSession(
             success_callback(session_id)
           })
           .catch((err) => {
-            console.log('errors', err)
+            console.error('errors', err)
             error_callback()
           })
       } else {
@@ -38,13 +38,13 @@ function createNFTSession(
             success_callback(session_id)
           })
           .catch((err) => {
-            console.log('errors', err)
+            console.error('errors', err)
             error_callback()
           })
       }
     })
     .catch((err) => {
-      console.log('errors', err)
+      console.error('errors', err)
       error_callback()
     })
 }
@@ -61,14 +61,16 @@ function removeNFTSession(address, nft_id, success_callback, error_callback) {
           .then(() => {
             success_callback()
           })
-          .catch(() => {
+          .catch((err) => {
+            console.error(err);
             error_callback()
           })
       } else {
         success_callback()
       }
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error(err);
       error_callback()
     })
 }
@@ -189,7 +191,7 @@ exports.getStatus = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err)
+      console.error(err)
       res.send({
         status: 'ERR',
         message: 'Internal Server Error',
@@ -223,6 +225,7 @@ exports.verifySignature = (req, res) => {
       }
     })
     .catch((err) => {
+      console.error(err);
       res.send({
         status: 'ERR',
         message: 'Internal Server Error',
@@ -282,6 +285,7 @@ exports.verify = (req, res) => {
               });
           })
           .catch((err) => {
+            console.error('error', err);
             res.send({
               status: 'ERR',
               message: 'Invalid signature',
@@ -290,7 +294,7 @@ exports.verify = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log('error', err);
+      console.error('error', err);
       res.send({
         status: 'ERR',
         message: 'Internal Server Error',

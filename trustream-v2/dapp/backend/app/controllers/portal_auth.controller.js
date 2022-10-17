@@ -16,13 +16,13 @@ function verifySignature(address, nounce, signature) {
       data: msg,
       sig: signature,
     })
-    console.log(`recoveredAddr:${recoveredAddr},  expectAddr:${address}`)
     if (recoveredAddr.toLowerCase() === address.toLowerCase()) {
       return true
     } else {
       return false
     }
   } catch (err) {
+    console.error(err);
     return false
   }
   return false
@@ -40,6 +40,7 @@ function updateNounce(address, nounce, success_callback, error_callback) {
             success_callback()
           })
           .catch((err) => {
+            console.error(err);
             error_callback()
           })
       } else {
@@ -48,11 +49,13 @@ function updateNounce(address, nounce, success_callback, error_callback) {
             success_callback()
           })
           .catch((err) => {
+            console.error(err);
             error_callback()
           })
       }
     })
     .catch((err) => {
+      console.error(err);
       error_callback()
     })
 }
@@ -99,6 +102,7 @@ exports.verifyFunction = (address, signature, success_callback, fail_callback) =
       }
     })
     .catch((err) => {
+      console.error(err);
       fail_callback();
     })
 };
@@ -153,6 +157,7 @@ exports.verify = (req, res) => {
       }
     })
     .catch((err) => {
+      console.error(err);
       res.send({
         status : 'ERR',
         message : 'Internal Server Error'
@@ -217,6 +222,7 @@ exports.login = (req, res) => {
                   })
                 })
                 .catch((err) => {
+                  console.error(err);
                   res.send({
                     status: 'ERR',
                     message: 'Internal Server Error',
@@ -234,7 +240,8 @@ exports.login = (req, res) => {
                     session: sessionID,
                   })
                 })
-                .catch(() => {
+                .catch((err) => {
+                  console.error(err);
                   res.send({
                     status: 'ERR',
                     message: 'Internal Server Error',
@@ -258,7 +265,7 @@ exports.login = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       res.send({
         status: 'ERR',
         message: 'INTERNAL SERVER ERROR',

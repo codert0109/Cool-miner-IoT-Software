@@ -19,7 +19,7 @@ exports.assignNFTToCamera = async (nft_id, camera, success_callback, error_callb
         ).then((data) => {
           success_callback(data);
         }).catch((err) => {
-          console.log('errors occured', err);
+          console.error('errors occured', err);
           error_callback(err);
         });
       } else {
@@ -28,13 +28,13 @@ exports.assignNFTToCamera = async (nft_id, camera, success_callback, error_callb
         ).then((data) => {
           success_callback(data);
         }).catch((err) => {
-          console.log('error occured', err);
+          console.error('errors occured', err);
           error_callback(err);
         })
       }
     })
     .catch((err) => {
-      console.log('errors occured', err);
+      console.error('errors occured', err);
       error_callback(err);
     });
 }
@@ -148,7 +148,7 @@ exports.onUpdate = (req, res) => {
       })
     })
     .catch((err) => {
-      console.log('Camera.onUpdate failed', err)
+      console.error('Camera.onUpdate failed', err)
       res.send({
         status: 'ERR',
         message: 'Update Failed',

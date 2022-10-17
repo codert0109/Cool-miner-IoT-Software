@@ -44,6 +44,12 @@ const onResult = async () => {
             isPending = false;
             return;
         }
+
+        console.log('<=============== CLAIM SERVICE START ===============>');
+        console.log({
+            'Epoch' : last_epoch, 
+            'Time:' : new Date().toString()
+        });
                 
         await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
 
@@ -53,7 +59,9 @@ const onResult = async () => {
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let multiplier = await getMultiplier(deviceUpTimeData[i].address);
-            console.log('getting Multiplier:', multiplier, 'at', deviceUpTimeData[i].address);
+            console.log('Address:',     deviceUpTimeData[i].address, 
+                        'Multiplier:',   multiplier,
+                        'UpTime:', deviceUpTimeData[i].uptime);
             let uptime = Math.min(EPOCH_INTERVAL_SECONDS, deviceUpTimeData[i].uptime);
             uptime *= multiplier;
             deviceUpTimeData[i].uptime = uptime;
@@ -64,6 +72,8 @@ const onResult = async () => {
         for (let i = 0; i < deviceUpTimeData.length; i++) 
             totUptime += deviceUpTimeData[i].uptime;
 
+        console.log('TotUpTime:', totUptime);
+
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let curReward =   DISTRIBUTION_AMOUNT * 
                                 Math.min(
@@ -72,9 +82,12 @@ const onResult = async () => {
                                 ) / totUptime;
             curReward = ~~curReward;
 
+            console.log('Address:', deviceUpTimeData[i].address,
+                        'Reward:', curReward);
+
             let ret = await updateClaimToken(deviceUpTimeData[i].address, curReward);
             if (ret.status == 'ERR') {
-                console.log('errors in updatimg claim token', { 
+                console.error('errors in updatimg claim token', { 
                     address : deviceUpTimeData[i].address,
                     amount : curReward
                 });
@@ -82,10 +95,11 @@ const onResult = async () => {
             }
         }
 
+        console.log('<=============== CLAIM SERVICE END ===============>');
+
         isPending = false;
     } catch (err) {
-        console.log('errors occured in claim.service', err);
-
+        console.error('errors occured in claim.service', err);
         isPending = false;
         return;
     }

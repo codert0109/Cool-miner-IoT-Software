@@ -30,7 +30,7 @@ exports.getUpTime = (req, res) => {
             })
         })
         .catch((err) => {
-            console.log('errors in device_uptime.getUpTime', err);
+            console.error('errors in device_uptime.getUpTime', err);
             res.send({
                 status : 'ERR',
                 message : 'Internal Server Error' 

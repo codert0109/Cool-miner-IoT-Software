@@ -19,6 +19,7 @@ const checkActive = (address, callback) => {
       }
     })
     .catch((err) => {
+      console.error(err);
       callback(false);
     });
 };
@@ -29,6 +30,7 @@ exports.getActiveMinerCnt = async (address) => {
     let data = await db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM "testapp"."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`);
     return parseInt(data[0][0].CNT);
   } catch (err) {
+    console.error(err);
     return 0;
   }
 };
@@ -39,6 +41,7 @@ const getActiveMiner = (address, callback) => {
       callback(data[0][0], true);
     })
     .catch((err) => {
+      console.error(err);
       callback(err, false)
     });
 };
@@ -114,6 +117,7 @@ exports.getMinerName = (req, res) => {
       }
     })
     .catch((err) => {
+      console.error(err);
       res.send({
         status : 'ERR',
         message : 'Internal Server Error'
@@ -185,6 +189,7 @@ exports.findAll = (req, res) => {
           });
         })
         .catch(err => {
+          console.error(err);
           res.status(500).send({
             message:
               err.message || "Some error occurred while retrieving device_datas."
@@ -192,6 +197,7 @@ exports.findAll = (req, res) => {
         });
     })
     .catch(err => {
+      console.error(err);
       res.status(500).send({
         message:
           err.message || "Some error occurred while counting device_datas."
@@ -236,6 +242,7 @@ exports.clean = (req, res) => {
     });
 
   }).catch((err) => {
+    console.error(err);
     res.send({
       status : 'ERR',
       message : 'Internal Server Error'

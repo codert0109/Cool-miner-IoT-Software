@@ -28,6 +28,7 @@ async function getList(callback) {
             let ret = await tcpPortUsed.check(server.port, server.host);
             working = ret;
         } catch (err) {
+            console.error(err);
             working = true;
         }
 
