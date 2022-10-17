@@ -73,13 +73,13 @@ const useStyles = createStyles((theme) => ({
         borderLeft: '5px solid #1864ab',
         backgroundColor: '#4784e4',
         paddingLeft: 10,
-        color : '#FFFFFF'
+        color: '#FFFFFF'
     }
 }));
 
 export default observer(() => {
     const { classes, theme } = useStyles();
-    const { god, nft } = useStore();
+    const { god, nft, auth } = useStore();
     const [pending, isPending] = useState(false);
 
     useEffect(() => {
@@ -101,6 +101,31 @@ export default observer(() => {
                 'error'
             )
             return;
+        }
+
+        let person_email = prompt("Please enter your email address", "");
+        if (person_email == null || person_email == "") {
+            Swal.fire(
+                'Warning!',
+                'You need to input your email address.',
+                'warning'
+            )
+            return;
+        } else {
+            let ret = await auth.$().post(`${BACKEND_URL}/api/email/verify`, {
+                email : person_email
+            });
+            console.log('nft verify email', ret);
+            if (ret.data.status === 'ERR') {
+                Swal.fire(
+                    'Error!',
+                    `<p>Only Waitlist participants can obtain a mining NFT at this time.</p>
+                     <p>Please ensure you are using the same email address you used to sign up to the Waitlist.</p>
+                     <p>If you are not on the Waitlist, stay tuned as mining will be opening to the public in the near future!</p>`,
+                    'error'
+                )
+                return;
+            }
         }
 
         let totalPrice = nft.typeList[type_id].price;
@@ -221,10 +246,10 @@ export default observer(() => {
                             <NFTStatus
                                 title="Testnet Miner"
                                 imgurl="/images/nft/TestNet.png"
-                                price={nft.typeList[item.nftType].price + " IOTX"} 
+                                price={nft.typeList[item.nftType].price + " IOTX"}
                                 acquiredTime={item.acquireTime}
                                 id={nft.idList[index]}
-                                />
+                            />
                         )
                     })
                 }
