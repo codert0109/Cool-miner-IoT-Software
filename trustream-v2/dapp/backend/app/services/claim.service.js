@@ -59,8 +59,9 @@ const onResult = async () => {
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let multiplier = await getMultiplier(deviceUpTimeData[i].address);
             console.log('Address:',     deviceUpTimeData[i].address, 
-                        'Multiplier:',   multiplier,
-                        'UpTime:', deviceUpTimeData[i].uptime);
+                        'NFT:',         deviceUpTimeData[i].nft_id,
+                        'Multiplier:',  multiplier,
+                        'UpTime:',      deviceUpTimeData[i].uptime);
             let uptime = Math.min(EPOCH_INTERVAL_SECONDS, deviceUpTimeData[i].uptime);
             uptime *= multiplier;
             deviceUpTimeData[i].uptime = uptime;
@@ -84,7 +85,8 @@ const onResult = async () => {
             curReward = ~~curReward;
 
             console.log('Address:', deviceUpTimeData[i].address,
-                        'Reward:', curReward);
+                        'NFT:',     deviceUpTimeData[i].nft_id,
+                        'Reward:',  curReward);
 
             let ret = await updateClaimToken(deviceUpTimeData[i].address, curReward);
             if (ret.status == 'ERR') {
