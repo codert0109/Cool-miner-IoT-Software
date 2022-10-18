@@ -102,9 +102,8 @@ export default observer(() => {
         nft.getNFTLists()
             .then(async (data) => {
                 let info: any = data;
-                
                 let curNFTStatus = [];
-
+                
                 for (let i = 0; i < info.length; i++) {
                     let item = info[i].toString();
                     try {

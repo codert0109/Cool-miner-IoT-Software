@@ -10,6 +10,10 @@ contract ElumNFT is Ownable, IElumNFT {
     uint256 public NFT_TYPE_COUNTER = 0;
     uint256 public NFT_ID_COUNTER = 0;
 
+    // Indicates Max NFT Per Wallet Address
+    // Should be set manually
+    uint256 public MAX_NFT_PER_WALLET = 0;
+
     // Stores available NFT type lists.
     NFT_TYPE[] public NFT_TYPE_INFO;
 
@@ -66,6 +70,11 @@ contract ElumNFT is Ownable, IElumNFT {
         return true;
     }
 
+    function setMaxNFTPerWallet(uint256 count) public virtual onlyOwner returns (bool) {
+        MAX_NFT_PER_WALLET = count;
+        return true;
+    }
+
     /* Begin User Module */
     function getTotalNFT() external override view returns (uint256) {
         return NFT_ID_COUNTER;
@@ -76,6 +85,7 @@ contract ElumNFT is Ownable, IElumNFT {
         require (NFT_TYPE_INFO[nftType].remainSupply >= amount, "Not enough supply.");
         
         require (msg.value >= amount * NFT_TYPE_INFO[nftType].price, "Not enough payment.");
+        require (USER_TO_NFT[msg.sender].idList.length + amount <= MAX_NFT_PER_WALLET, "The total number cannot exceed.");
 
         for (uint i = 0; i < amount; i++) {
             NFT_TO_INFO[NFT_ID_COUNTER].owner = msg.sender;
@@ -93,6 +103,7 @@ contract ElumNFT is Ownable, IElumNFT {
 
     function transferNFT(uint256[] calldata ids, address to) external virtual {
         require (to != address(0), "Target address cannot be null");
+        require (USER_TO_NFT[to].idList.length + ids.length <= MAX_NFT_PER_WALLET, "The total number cannot exceed.");
 
         for (uint i = 0; i < ids.length; i++) {
             uint256 id = ids[i];

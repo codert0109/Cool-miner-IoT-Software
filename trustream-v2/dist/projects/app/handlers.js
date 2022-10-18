@@ -56,7 +56,9 @@ async function updateUpTime(address, nftID) {
         if (result !== null) {
             let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
             console.log('elapsedTime', elapsedTime);
-            if (elapsedTime < UPLOAD_THRESMS) {
+            if (elapsedTime < 0)
+                elapsedTime = 0;
+            if (false && elapsedTime < UPLOAD_THRESMS) {
                 console.log('blocked: data is uploading too fast.');
                 return false;
             }

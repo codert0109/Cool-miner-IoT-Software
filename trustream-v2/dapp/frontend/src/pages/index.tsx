@@ -22,21 +22,10 @@ export default observer((props) => {
     }
   }, [god.currentNetwork.account]);
 
-
   return (
     <Layout>
       <Grid>
-        <Grid.Col sm={12} md={5}>
-          <Grid>
-            <Grid.Col sm={12}>
-              <UPTIME label="Public Pool Mining" />
-            </Grid.Col>
-            <Grid.Col sm={12}>
-              <ServerStatus />
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-        <Grid.Col sm={12} md={7}>
+        <Grid.Col sm={12} md={9}>
           <Grid>
             <Grid.Col sm={12}>
               <WalletBalance/>

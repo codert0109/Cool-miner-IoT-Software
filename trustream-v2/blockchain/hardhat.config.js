@@ -26,6 +26,26 @@ task("setTokenPrice", "Set Token Price")
     }
   });
 
+/**
+ * Tasks to set max nft count per wallet address.
+ * Command: npx hardhat setMaxNFT --count {value} --network testnet
+ * For example: npx hardhat setMaxNFT --count 1 --network testnet
+ */
+ task("setMaxNFT", "Set MAX NFT Per Wallet")
+ .addParam("count", "The token price by IoTex coin")
+ .setAction(async (taskArgs) => {
+   let count = taskArgs.count;
+   try {
+     console.log(`Setting MAX NFT Per Wallet to ${count}`);
+     const ElumNFTContract = await ethers.getContractFactory("ElumNFT");
+     const ElumNFT = await ElumNFTContract.attach(contractAddressList.ElumNFT);
+     await ElumNFT.setMaxNFTPerWallet(count);
+     console.log(`Setting Success!`);
+   } catch (err) {
+     console.log('Errors occured in setMaxNFT', err);
+   }
+ });
+
 module.exports = {
   solidity: "0.8.4",
   networks: {

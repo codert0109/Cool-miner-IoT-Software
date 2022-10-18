@@ -7,6 +7,8 @@ import Router, { useRouter } from 'next/router';
 import { Loader } from '@mantine/core';
 import { Refresh } from 'tabler-icons-react';
 import { publicConfig } from "../../config/public";
+import { observer } from "mobx-react-lite";
+import { useStore } from "@/store/index";
 const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
@@ -56,39 +58,56 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function() {
+export default observer(() => {
     const INTERVAL_TIME = 1000 * 60 * 5; // every 5 minute, it will update
 
-    const { classes, theme } = useStyles();
+    const { god, auth, nft } = useStore();
 
-    const [serverStatus, setServerStatus] = useState([
-        { name : 'MQTT',        working : true },
-        { name : 'W3bstream',   working : true },
-        { name : 'Database',    working : true }
-    ]);
+    const { classes } = useStyles();
+
+    const [minerStatus, setMinerStatus] = useState([]);
 
     const [isloading, setLoading] = useState(true);
     const [timerID, setTimerID] = useState(null);
 
+    useEffect(() => {
+        nft.refresh();
+        updateStatus();
+    }, [god.currentNetwork.account]);
+
     const updateStatus = () => {
         setLoading(true);
-        $.get(`${BACKEND_URL}/api/status/servers`)
-            .then(function (data : any) {
-                setLoading(false);
-                let info : any = data.data;
-                setServerStatus(info);
-            })
-            .catch(function (err) {
-                setLoading(false);
-                setServerStatus(
-                    [
-                        { name : 'MQTT',        working : false },
-                        { name : 'W3bstream',   working : false },
-                        { name : 'Database',    working : false }
-                    ]
-                );
-            });
+        nft.getNFTLists()
+            .then(async (data) => {
+                let info: any = data;
+                let curNFTStatus = [];
+                
+                for (let i = 0; i < info.length; i++) {
+                    let item = info[i].toString();
+                    try {
+                        let data = await auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
+                            nft_id: item
+                        });
+                        let info = data.data.data;
+                        curNFTStatus.push({
+                            name: (info.miner ? info.miner : 'Not set') + '(' + info.nft_id + ')',
+                            working : info.session ? true : false
+                        });
+                    } catch (err) {
+                        curNFTStatus.push({
+                            name : 'Not set' + '(' + parseInt(item) + ')',
+                            working : false
+                        })
+                    }
+                }
 
+                setMinerStatus(curNFTStatus);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setMinerStatus([]);
+                setLoading(false);
+            });
     };
 
     useEffect(() => {
@@ -111,7 +130,7 @@ export default function() {
 
     const renderLabel = () => {
         let status = true;
-        for (let item of serverStatus) {
+        for (let item of minerStatus) {
             status = status && item.working;
         }
 
@@ -126,7 +145,7 @@ export default function() {
                 }
                 {status === false && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
                 {status === true && <img src="/images/status/working.png" className={classes.imgStyle}></img>}
-                <span>Server Status</span>
+                <span>Miner Status</span>
             </div>
         )
     };
@@ -141,7 +160,6 @@ export default function() {
                 {renderLabel()}
                 <div className={classes.refresh} onClick={onRefresh}>
                     <img src="/images/status/refresh.svg" height="17"/>
-                    {/* <span>Refresh</span> */}
                 </div>
             </>
         );
@@ -170,8 +188,8 @@ export default function() {
     return (
         <Box label={renderHeader()} headerClass={classes.headerClass} bodyClass={classes.bodyClass}>
             {
-                serverStatus.map(item => renderElement(item))
+                minerStatus.map(item => renderElement(item))
             }
         </Box>
     );
-}
+});

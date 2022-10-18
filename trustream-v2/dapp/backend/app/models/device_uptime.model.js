@@ -18,6 +18,12 @@ module.exports = (sequelize, Sequelize) => {
     updated_at : {
       type: Sequelize.DATE
     }
+  }, {
+    uniqueKeys: {
+      actions_unique: {
+          fields: ['address', 'epoch', 'nft_id']
+      }
+    }
   });
 
   return Device_Uptime;

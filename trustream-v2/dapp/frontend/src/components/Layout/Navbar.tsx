@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import NFTContractABI from '../../contracts/ElumNFT.json';
 import ContractAddress from '../../contracts/contract-address.json';
 import ServerStatus from '../ServerStatus';
+import MinerStatus from '../MinerStatus';
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef('icon');
@@ -95,6 +96,10 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
     navbar_title : {
       color : theme.colorScheme === 'dark' ? 'white' : 'black'
+    },
+
+    spliter : {
+      height : 10
     }
   };
 });
@@ -212,6 +217,15 @@ export const NavbarSimple = observer(() => {
 
         <Navbar.Section>
           <ServerStatus />
+        </Navbar.Section>
+        
+        <Navbar.Section>
+          <div className={classes.spliter}>
+          </div>
+        </Navbar.Section>
+
+        <Navbar.Section>
+          <MinerStatus />
         </Navbar.Section>
 
         <Navbar.Section className={classes.footer}>
