@@ -17,6 +17,14 @@ const useStyles = createStyles((theme) => ({
         height : '36px'
     },
 
+    headerClass : {
+        backgroundColor : theme.colorScheme == 'dark' ? 'rgb(32, 45, 66) !important' : 'rgb(32, 45, 66)'
+    },
+
+    bodyClass : {
+        backgroundColor : theme.colorScheme == 'dark' ? 'rgb(72, 72, 72) !important' : 'rgb(32, 45, 66)'
+    },
+
     imgStyle : {
         height : '60%'
     },
@@ -133,9 +141,8 @@ export default function() {
                 {renderLabel()}
                 <div className={classes.refresh} onClick={onRefresh}>
                     <Refresh size="19"/>
-                    <span>Refresh</span>
+                    {/* <span>Refresh</span> */}
                 </div>
-
             </>
         );
     };
@@ -159,8 +166,9 @@ export default function() {
             <WhiteLabel label={renderBody()} className={classes.split} />
         )
     };
+
     return (
-        <Box label={renderHeader()}>
+        <Box label={renderHeader()} headerClass={classes.headerClass} bodyClass={classes.bodyClass}>
             {
                 serverStatus.map(item => renderElement(item))
             }

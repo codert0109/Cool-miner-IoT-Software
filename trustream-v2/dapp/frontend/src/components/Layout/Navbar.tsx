@@ -7,7 +7,8 @@ import {
   TextInput, 
   Code, 
   Text, 
-  Modal 
+  Modal, 
+  ScrollArea
 } from '@mantine/core';
 
 import {
@@ -31,6 +32,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import NFTContractABI from '../../contracts/ElumNFT.json';
 import ContractAddress from '../../contracts/contract-address.json';
+import ServerStatus from '../ServerStatus';
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef('icon');
@@ -163,7 +165,6 @@ export const NavbarSimple = observer(() => {
   return (
 
     <Navbar 
-      // key="Navbar"
       style={{ 
         // backgroundColor: '#000000C0',
         // backgroundColor: '#C7C7C7C0',
@@ -172,48 +173,52 @@ export const NavbarSimple = observer(() => {
         zIndex : 101
       }}
       p="md" 
+      pr={0}
       hiddenBreakpoint="sm" 
       hidden={!user.layout.sidebarOpen.value} 
       onClick={() => user.layout.sidebarOpen.setValue(false)}
-      width={{ sm: 200, lg: 300 }}>
+      width={{ sm: 300, lg: 300 }}>
       
-      <Navbar.Section grow>
-        <Group className={classes.header} position="apart" align={'center'}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-            {/* <ThemeIcon size="lg" radius="xl" variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>
-              <CodeIcon />
-            </ThemeIcon> */}
-            <Text className={classes.navbar_title} weight="bold" size="lg">
-              Elumicate Mining Portal
-            </Text>
-          </Box>
-        </Group>
+      <ScrollArea offsetScrollbars={true} scrollHideDelay={0}>
+        <Navbar.Section grow>
+          <Group className={classes.header} position="apart" align={'center'}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+              <Text className={classes.navbar_title} weight="bold" size="lg">
+                Elumicate Mining Portal
+              </Text>
+            </Box>
+          </Group>
 
-        <TextInput
-          placeholder={t('search')}
-          size="xs"
-          mt="lg"
-          icon={<Search size={12} />}
-          rightSectionWidth={70}
-          rightSection={<Code className={classes.searchCode}>⌘ + K</Code>}
-          styles={{ rightSection: { pointerEvents: 'none' } }}
-          mb="sm"
-          onClick={() => openSpotlight()}
-        />
-        {links}
-        <Modal
-          opened={isview}
-          onClose={() => setView(false)}
-          title="Introduce yourself!"
-        >
-          {/* Modal content */}
-        </Modal>
-      </Navbar.Section>
+          <TextInput
+            placeholder={t('search')}
+            size="xs"
+            mt="lg"
+            icon={<Search size={12} />}
+            rightSectionWidth={70}
+            rightSection={<Code className={classes.searchCode}>⌘ + K</Code>}
+            styles={{ rightSection: { pointerEvents: 'none' } }}
+            mb="sm"
+            onClick={() => openSpotlight()}
+          />
+          {links}
+          <Modal
+            opened={isview}
+            onClose={() => setView(false)}
+            title="Introduce yourself!"
+          >
+            {/* Modal content */}
+          </Modal>
+        </Navbar.Section>
 
-      <Navbar.Section className={classes.footer}>
-        <User />
-      </Navbar.Section>
-      <WalletInfo />
+        <Navbar.Section>
+          <ServerStatus />
+        </Navbar.Section>
+
+        <Navbar.Section className={classes.footer}>
+          <User />
+        </Navbar.Section>
+        <WalletInfo />
+      </ScrollArea>
     </Navbar>
   );
 });

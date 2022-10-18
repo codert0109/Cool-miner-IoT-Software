@@ -75,14 +75,12 @@ const onResult = async () => {
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let curReward;
-            if (totUptime == 0)
+            if (totUptime == 0) {
                 curReward = 0;
-            else
-                curReward =   DISTRIBUTION_AMOUNT * 
-                                Math.min(
-                                    EPOCH_INTERVAL_SECONDS, 
-                                    deviceUpTimeData[i].uptime
-                                ) / totUptime;
+            } else {
+                curReward =   DISTRIBUTION_AMOUNT * deviceUpTimeData[i].uptime / totUptime;
+            }
+
             curReward = ~~curReward;
 
             console.log('Address:', deviceUpTimeData[i].address,

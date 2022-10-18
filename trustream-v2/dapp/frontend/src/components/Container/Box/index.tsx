@@ -39,14 +39,14 @@ const useStyles = createStyles((theme) => ({
     }
 }));
 
-export default function({label, children, bodyClass = ''}) {
+export default function({label, children, bodyClass = '', rootClass = '', headerClass = ''}) {
     const { classes } = useStyles();
     return (
-        <div className={classes.root}>
-            <div className={classes.header}>
+        <div className={`${rootClass} ${classes.root}`}>
+            <div className={`${headerClass} ${classes.header}`}>
                 <div>{label}</div>
             </div>
-            <div className={`${classes.body} ${bodyClass}`}>
+            <div className={`${bodyClass} ${classes.body}`}>
                 {children}
             </div>
         </div>
