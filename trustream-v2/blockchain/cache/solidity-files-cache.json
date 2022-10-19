@@ -329,8 +329,8 @@
       "artifacts": []
     },
     "D:\\Elumicate\\main\\trustream-v2\\blockchain\\contracts\\ElumNFT.sol": {
-      "lastModificationDate": 1666082302349,
-      "contentHash": "f320ba844f3dcfa75a6d6b750808acbc",
+      "lastModificationDate": 1666193616398,
+      "contentHash": "aa1cf556c9fd94e22c5df10c60a41efe",
       "sourceName": "contracts/ElumNFT.sol",
       "solcConfig": {
         "version": "0.8.4",

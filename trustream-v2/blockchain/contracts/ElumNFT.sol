@@ -80,6 +80,10 @@ contract ElumNFT is Ownable, IElumNFT {
         return NFT_ID_COUNTER;
     }
 
+    function getMaxNFTPerWallet() external view returns (uint256) {
+        return MAX_NFT_PER_WALLET;
+    }
+
     function buyNFT(uint256 nftType, uint256 amount) external payable virtual returns(bool) {
         require (nftType < NFT_TYPE_COUNTER, "NFT Type should be less than NFT_TYPE_COUNTER");
         require (NFT_TYPE_INFO[nftType].remainSupply >= amount, "Not enough supply.");
