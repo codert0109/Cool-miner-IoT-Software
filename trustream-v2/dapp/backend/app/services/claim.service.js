@@ -2,7 +2,7 @@ const EPOCH_INTERVAL_SECONDS = 1 * 60 * 60;             // 3600s = 1h
 const EPOCH_INTERVAL = EPOCH_INTERVAL_SECONDS * 1000;   // 3600s = 1h
 const TIMER_INTERVAL = 5000;
 const unit = BigInt(Math.pow(10, 18));
-const DISTRIBUTION_AMOUNT = BigInt(2000) * unit;
+const DISTRIBUTION_AMOUNT = BigInt(10) * unit;
 
 const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
