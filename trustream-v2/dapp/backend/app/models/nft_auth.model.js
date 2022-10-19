@@ -1,12 +1,14 @@
 module.exports = (sequelize, Sequelize) => {
   const NFT_Auth = sequelize.define("nft_auth", {
-    id: {
-      type: Sequelize.INTEGER,
+    // id: {
+    //   type: Sequelize.INTEGER,
+    //   autoIncrement: true,
+    //   primaryKey: true
+    // },
+    nft_id: {
+      type : Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
-    },
-    nft_id: {
-      type : Sequelize.INTEGER
     },
     miner: {
       type : Sequelize.STRING

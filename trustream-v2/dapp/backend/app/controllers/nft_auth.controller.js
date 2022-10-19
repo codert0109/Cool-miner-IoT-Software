@@ -13,40 +13,23 @@ function createNFTSession(
   success_callback,
   error_callback,
 ) {
-  NFT_Auth.findOne({ where: { nft_id, address } }) // nft_id & address is pair.
-    .then((data) => {
-      if (data === null) {
-        // No data exist for that NFT_ID
-        let session_id = getRandomSessionID()
-        let session_start = Date.now()
-        NFT_Auth.create({ address, nft_id, miner, session_id, session_start })
-          .then((data) => {
-            success_callback(session_id)
-          })
-          .catch((err) => {
-            console.error('errors', err)
-            error_callback()
-          })
-      } else {
-        let session_id = getRandomSessionID()
-        let session_start = Date.now()
-        NFT_Auth.update(
-          { address, nft_id, miner, session_id, session_start },
-          { where: { id: data.id } },
-        )
-          .then((data) => {
-            success_callback(session_id)
-          })
-          .catch((err) => {
-            console.error('errors', err)
-            error_callback()
-          })
-      }
+  NFT_Auth.destroy({where : { nft_id }})
+    .then(() => {
+      let session_id = getRandomSessionID();
+      let session_start = Date.now();
+      NFT_Auth.create({ address, nft_id, miner, session_id, session_start })
+        .then(() => {
+          success_callback(session_id)
+        })
+        .catch((err) => {
+          console.error('errors', err)
+          error_callback()
+        })
     })
     .catch((err) => {
       console.error('errors', err)
       error_callback()
-    })
+    });
 }
 
 // This is Kernel Function.
