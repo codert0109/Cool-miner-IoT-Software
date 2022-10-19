@@ -205,16 +205,15 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     return;    
   }
 
-  let NFTContract : any = context.getContract("NFT");
-  
-  let NFTBalance = await NFTContract.methods.balanceOf(address).call();
-  let hasNFT = parseInt(NFTBalance.normalNFT) > 0;
+  // let NFTContract : any = context.getContract("NFT");
+  // let NFTBalance = await NFTContract.methods.balanceOf(address).call();
+  // let hasNFT = parseInt(NFTBalance.normalNFT) > 0;
 
-  if (!hasNFT) {
-    console.log('NFTBalance', NFTBalance);
-    console.log(`WARNING: Dropping data message: Device ${address} has no NFT.`)
-    return null
-  }
+  // if (!hasNFT) {
+  //   console.log('NFTBalance', NFTBalance);
+  //   console.log(`WARNING: Dropping data message: Device ${address} has no NFT.`)
+  //   return null
+  // }
 
   let { miner } = decodedPayload.message;
 
