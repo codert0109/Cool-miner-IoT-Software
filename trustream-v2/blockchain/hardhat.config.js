@@ -32,7 +32,7 @@ task("setTokenPrice", "Set Token Price")
  * For example: npx hardhat setMaxNFT --count 1 --network testnet
  */
  task("setMaxNFT", "Set MAX NFT Per Wallet")
- .addParam("count", "The token price by IoTex coin")
+ .addParam("count", "Set MAX NFT Per Wallet")
  .setAction(async (taskArgs) => {
    let count = taskArgs.count;
    try {
