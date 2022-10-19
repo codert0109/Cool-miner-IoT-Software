@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import ContractAddress from '../../../contracts/contract-address.json';
 
 import { publicConfig } from 'config/public';
+import { formatDecimalWeb3 } from '@/utils/index';
 const { TOKEN_UNIT } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
@@ -169,8 +170,8 @@ export default observer((props: Props) => {
     const getConfirmMessage = () => {
       if (props.type == 'edit') {
         if (amount == 0)
-          return `<p>You are restaking ${prevamount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
-        return `<p>You are restaking ${prevamount} tokens and adding ${amount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
+          return `<p>You are restaking ${formatDecimalWeb3(prevamount)} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
+        return `<p>You are restaking ${formatDecimalWeb3(prevamount)} tokens and adding ${amount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
       }
       return `<p>You are staking ${amount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
     };
@@ -194,7 +195,7 @@ export default observer((props: Props) => {
 
             Swal.fire(
               'Success',
-              `<p>You staked ${(prevamount / TOKEN_UNIT).toString() + amount} tokens successfully!</p>`,
+              `<p>You staked ${parseInt((prevamount / TOKEN_UNIT).toString()) + amount} tokens successfully!</p>`,
               'success'
             );
 
@@ -309,7 +310,7 @@ export default observer((props: Props) => {
             <WhiteLabel className={classes.nowrap} label="Current Staked ELUM" />
           </Grid.Col>
           <Grid.Col md={12} sm={12}>
-            <WhiteLabel className="" label={prevamount} />
+            <WhiteLabel className="" label={formatDecimalWeb3(prevamount)} />
           </Grid.Col>
         </Grid>
       </Grid.Col>

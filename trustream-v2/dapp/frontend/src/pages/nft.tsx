@@ -164,8 +164,8 @@ export default observer(() => {
                 return;
             } else {
                 let reason = error.reason;
-                if (reason.indexOf('The wallet address should be in the approved list.') !== -1) {
-                    reason = "Your wallet account is not approved to buy this NFT.";
+                if (reason.indexOf('The total number cannot exceed.') !== -1) {
+                    reason = "You already have the maximum number of allowed NFTs in your wallet.";
                 }
                 Swal.fire(
                     'Error!',
