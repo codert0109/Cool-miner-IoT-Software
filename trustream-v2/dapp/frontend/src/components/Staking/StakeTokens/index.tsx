@@ -10,6 +10,9 @@ import join from 'classnames';
 import Swal from 'sweetalert2';
 import ContractAddress from '../../../contracts/contract-address.json';
 
+import { publicConfig } from 'config/public';
+const { TOKEN_UNIT } = publicConfig;
+
 const useStyles = createStyles((theme) => ({
   button: {
     position: 'relative',
@@ -103,7 +106,7 @@ const useStyles = createStyles((theme) => ({
 export default observer((props: Props) => {
   const { classes } = useStyles();
   const [amount, setAmount] = useState(0);
-  const [prevamount, setPrevAmount] = useState(0);
+  const [prevamount, setPrevAmount] = useState(BigInt(0));
   const { god, stake, token } = useStore();
 
   const [activePeriod, setActivePeriod] = useState(-1);
@@ -184,14 +187,14 @@ export default observer((props: Props) => {
         props.onConfirmStart();
 
       const stakeTokens = () => {
-        stake.stake(curIndex, amount)
+        stake.stake(curIndex, BigInt(amount) * TOKEN_UNIT)
           .then(async (tx) => {
             const receipt = await tx;
             await receipt.wait();
 
             Swal.fire(
               'Success',
-              `<p>You staked ${prevamount + amount} tokens successfully!</p>`,
+              `<p>You staked ${(prevamount / TOKEN_UNIT).toString() + amount} tokens successfully!</p>`,
               'success'
             );
 
@@ -219,7 +222,7 @@ export default observer((props: Props) => {
           showCancelButton: true
         }).then((result) => {
           if (!result.isConfirmed) return;
-          token.allowToken(ContractAddress.ElumStaking, amount)
+          token.allowToken(ContractAddress.ElumStaking, BigInt(amount) * TOKEN_UNIT)
             .then(async (tx) => {
               const receipt = await tx;
               await receipt.wait();
@@ -279,8 +282,7 @@ export default observer((props: Props) => {
         return join(classes.textCenter)
       }
     }
-
-    return stake.stakeTypeList.map((item, index) =>
+    return stake.stakeTypeList.map((item) =>
       <Grid.Col md={3} sm={3}>
         <WhiteLabel
           className={getClassName(item)}
@@ -389,7 +391,7 @@ export default observer((props: Props) => {
 interface Props {
   type: string,
   period?: number,
-  amount?: number
+  amount?: bigint,
   onClose?: () => void,
   onConfirmStart?: () => void
 }

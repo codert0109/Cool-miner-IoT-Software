@@ -1,7 +1,8 @@
 const EPOCH_INTERVAL_SECONDS = 1 * 60 * 60;             // 3600s = 1h
 const EPOCH_INTERVAL = EPOCH_INTERVAL_SECONDS * 1000;   // 3600s = 1h
 const TIMER_INTERVAL = 5000;
-const DISTRIBUTION_AMOUNT = 2000;
+const unit = BigInt(Math.pow(10, 18));
+const DISTRIBUTION_AMOUNT = BigInt(2000) * unit;
 
 const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
@@ -77,12 +78,10 @@ const onResult = async () => {
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let curReward;
             if (totUptime == 0) {
-                curReward = 0;
+                curReward = BigInt(0);
             } else {
-                curReward =   DISTRIBUTION_AMOUNT * deviceUpTimeData[i].uptime / totUptime;
+                curReward = DISTRIBUTION_AMOUNT * BigInt(deviceUpTimeData[i].uptime) / BigInt(totUptime);
             }
-
-            curReward = ~~curReward;
 
             console.log('Address:', deviceUpTimeData[i].address,
                         'NFT:',     deviceUpTimeData[i].nft_id,

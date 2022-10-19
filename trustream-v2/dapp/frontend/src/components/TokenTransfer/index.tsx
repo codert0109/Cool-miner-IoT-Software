@@ -5,7 +5,9 @@ import { createStyles, Grid, Button, NumberInput, Loader } from '@mantine/core';
 import WhiteLabel from "@/components/WhiteLabel";
 import { useStore } from '../../store/index';
 import Swal from 'sweetalert2';
-import join from 'classnames';
+import { publicConfig } from "../../config/public";
+
+const { TOKEN_UNIT } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
   gridPadding: {
@@ -72,7 +74,8 @@ export default observer((props: Props) => {
         'info'
       );
     } else {
-      token.transfer(address, amount)
+      const ramount = BigInt(amount) * TOKEN_UNIT;
+      token.transfer(address, ramount.toString())
         .then(async (tx) => {
           const receipt = await tx;
           await receipt.wait();
@@ -83,6 +86,7 @@ export default observer((props: Props) => {
           )
         })
         .catch((err) => {
+          console.error(err);
           Swal.fire(
             'Error',
             `<p>Errors occured while transfering</p>`,

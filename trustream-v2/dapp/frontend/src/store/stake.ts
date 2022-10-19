@@ -6,6 +6,8 @@ import $ from "axios";
 import ContractAddress from '../contracts/contract-address.json';
 import StakeContractABI from '../contracts/ElumStaking.json';
 
+const { TOKEN_UNIT } = publicConfig;
+
 
 export class StakeStore {
     rootStore: RootStore;
@@ -15,7 +17,7 @@ export class StakeStore {
         type_id: 0,
         startTime: 0,
         expireTime: 0,
-        amount: 0
+        amount: BigInt(0)
     };
 
     STAKING_STATUS = {
@@ -82,7 +84,7 @@ export class StakeStore {
                 type_id: parseInt(tx.type_id.toString()),
                 startTime: parseInt(tx.startTime.toString()),
                 expireTime: parseInt(tx.expireTime.toString()),
-                amount: parseInt(tx.amount.toString())
+                amount: BigInt(tx.amount.toString())
             };
 
             let ret1: any = await $.get(`${publicConfig.BACKEND_URL}/api/staking/getparam`);
@@ -102,7 +104,7 @@ export class StakeStore {
                 type_id: 0,
                 startTime: 0,
                 expireTime: 0,
-                amount: 0
+                amount: BigInt(0)
             };
             console.error('stake.refresh error', err);
         } finally {
@@ -181,7 +183,7 @@ export class StakeStore {
     }
 
     stakingStatus() {
-        if (this.stakedInfo.amount == 0)
+        if (this.stakedInfo.amount == BigInt(0))
             return this.STAKING_STATUS.NO_STAKING
         else {
             if (this.stakedInfo.expireTime <= this.timestamp()) {
@@ -191,4 +193,4 @@ export class StakeStore {
             }
         }
     }
-} 
+}

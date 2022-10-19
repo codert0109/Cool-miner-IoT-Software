@@ -9,10 +9,11 @@ import "./interfaces/IElumToken.sol";
 import "./interfaces/IElumNFT.sol";
 
 contract ElumReward is Ownable {
-    uint256 public EPOCH_SECONDS = 60 * 60;  // 3600s = 1hr
-    uint256 public DISTRIBUTE_TOKEN = 2000;
-    uint256 public MAX_TOKEN_COEFF = 50;     // We restrict that a miner can get 
-                                             // DISTRIBUTE_TOKEN / TOT_NFT * 50 tokens at maxium in each epoch.
+    uint256 public constant unit = 10 ** 18;
+    uint256 public constant EPOCH_SECONDS = 60 * 60;    // 3600s = 1hr
+    uint256 public constant DISTRIBUTE_TOKEN = 2000 * unit;
+    uint256 public constant MAX_TOKEN_COEFF = 50;       // We restrict that a miner can get 
+                                                        // DISTRIBUTE_TOKEN / TOT_NFT * 50 tokens at maxium in each epoch.
 
     address public tokenContract;
     address public nftContract;
@@ -62,6 +63,7 @@ contract ElumReward is Ownable {
         uint256 lastClaimedTime = deployedTime;
         if (claimedTime[to] != 0)
             lastClaimedTime = claimedTime[to];
+            
         uint256 epochCnt = (block.timestamp - lastClaimedTime) / EPOCH_SECONDS;
 
         if (epochCnt == 0) 

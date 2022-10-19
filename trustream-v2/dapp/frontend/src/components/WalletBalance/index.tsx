@@ -6,6 +6,7 @@ import { createStyles, Grid, Button, MantineProvider } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { useStore } from '../../store/index';
 import Swal from 'sweetalert2';
+import { formatDecimalWeb3 } from '@/utils/index';
 
 const BREAKPOINT = '@media (max-width: 992px)';
 
@@ -91,7 +92,7 @@ export default observer((props: Props) => {
         <Box label="Wallet Balance">
             <Grid style={{ width: '100%' }}>
                 <Grid.Col sm={12} md={6} className={classes.padding0}>
-                    <WhiteLabel label={token.balance} />
+                    <WhiteLabel label={formatDecimalWeb3(BigInt(token.balance))} />
                 </Grid.Col>
                 <Grid.Col sm={12} md={6} className={classes.padding0}>
                     <MantineProvider

@@ -4,6 +4,7 @@ import Box from "@/components/Container/Box";
 import WhiteLabel from "@/components/WhiteLabel";
 import { createStyles, Loader } from '@mantine/core';
 import { useStore } from '../../../store/index';
+import { formatDecimalWeb3 } from '@/utils/index';
 
 interface Props { }
 
@@ -44,7 +45,7 @@ export default observer((props: Props) => {
     <Box label="ELUM Staked">
       <WhiteLabel label={
         renderElementWithLoader(
-          <>{stake.stakedInfo.amount}</>
+          <>{formatDecimalWeb3(stake.stakedInfo.amount)}</>
         )
       } className={classes.textAlign}  />
     </Box>

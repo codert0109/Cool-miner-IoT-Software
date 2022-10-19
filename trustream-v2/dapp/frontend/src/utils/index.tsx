@@ -1,8 +1,14 @@
 import ContractAddress from '../contracts/contract-address.json';
 import axios from 'axios';
+import { publicConfig } from "../config/public";
+const { TOKEN_UNIT } = publicConfig;
 
 export function getAddressFormat(address) {
     return address.substring(0, 6) + '...' + address.substring(address.length - 4);
+}
+
+export function formatDecimalWeb3(x : bigint) {
+    return parseInt((x / (TOKEN_UNIT / BigInt(10000))).toString()) / 10000;
 }
 
 export function getContractAddressFormat() {

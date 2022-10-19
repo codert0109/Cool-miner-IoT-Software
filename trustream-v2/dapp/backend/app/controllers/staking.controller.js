@@ -34,7 +34,9 @@ exports.getMultiplier = async (address) => {
     if (stakingInfo == null) 
         return 1;
     
-    let amount = stakingInfo.amount;
+    let amount = BigInt(stakingInfo.amount) / BigInt(Math.pow(10, 18));
+    amount = parseInt(amount.toString());
+    
     let period = stakingInfo.expireTime - stakingInfo.startTime;
 
     let activeMiner = await devicedata_controller.getActiveMinerCnt(address);

@@ -21,7 +21,7 @@ export default observer((props) => {
       token.refresh();
     }
   }, [god.currentNetwork.account]);
-
+  
   return (
     <Layout>
       <Grid>

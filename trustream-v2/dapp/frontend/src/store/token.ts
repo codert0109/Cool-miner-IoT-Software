@@ -76,7 +76,7 @@ export class TokenStore {
         return this.callContract('approve', [to, amount]);
     }
 
-    buy(amount : Number, value : string) {
+    buy(amount : string, value : string) {
         return this.callContract('buyTokens', [amount], { value });
     }
 } 

@@ -7,9 +7,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IElumToken.sol";
 
 contract ElumToken is IElumToken, ERC20, Ownable {
-    uint256 public constant maxSupply = 20000000000;
+    uint256 public constant unit = 10 ** 18;
+    uint256 public constant maxSupply = 20000000000 * unit;
     uint256 public constant totalRewardSupply = maxSupply * 7 / 10;
     uint256 public constant totalSaleSupply   = maxSupply * 1 / 10;
+
 
     address public rewardContract = address(0);
     uint256 public rewardSupply = 0;
@@ -35,7 +37,8 @@ contract ElumToken is IElumToken, ERC20, Ownable {
     /* End of Owner Module */
 
     function buyTokens(uint256 amount) external payable {
-        require (msg.value >= amount * tokenPrice, "Not enough payment.");
+        require (amount * tokenPrice % unit == 0, "Incorrect amount");
+        require (msg.value >= amount * tokenPrice / unit, "Not enough payment.");
         require (saleSupply + amount <= totalSaleSupply, "Not enough balance.");
         _mint(msg.sender, amount);
     }
@@ -43,7 +46,6 @@ contract ElumToken is IElumToken, ERC20, Ownable {
     function mintRewardTokens(uint256 amount) external override virtual {
         require (msg.sender == rewardContract, "Only reward contract can mint tokens.");
         require (rewardSupply + amount <= totalRewardSupply, "Supply should be less than totalRewardSupply.");
-
         _mint(msg.sender, amount);
     }
 }

@@ -48,7 +48,7 @@ export default observer((props: Props) => {
           {stake.stakedInfo.amount > 0 && <StakingLog />}
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
-          {stake.stakedInfo.amount == 0 && <StakeTokens type="normal" />}
+          {stake.stakedInfo.amount == BigInt(0) && <StakeTokens type="normal" />}
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
           <StakeTable />

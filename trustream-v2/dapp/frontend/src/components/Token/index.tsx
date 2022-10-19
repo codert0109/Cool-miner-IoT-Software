@@ -6,6 +6,10 @@ import WhiteLabel from "@/components/WhiteLabel";
 import { useStore } from '../../store/index';
 import Swal from 'sweetalert2';
 
+import { publicConfig } from "../../config/public";
+
+const { TOKEN_UNIT } = publicConfig;
+
 const useStyles = createStyles((theme) => ({
   gridPadding: {
     paddingLeft: '0px !important',
@@ -71,8 +75,10 @@ export default observer((props: Props) => {
         'info'
       );
     } else {
-      const value = BigInt(amount) * BigInt(token.price * Math.pow(10, 18));
-      token.buy(amount, value.toString())
+      const ramount = BigInt(amount) * TOKEN_UNIT;
+      const value = BigInt(amount) 
+                  * BigInt(token.price * Math.pow(10, 18));
+      token.buy(ramount.toString(), value.toString())
         .then(async (tx) => {
           const receipt = await tx;
           await receipt.wait();

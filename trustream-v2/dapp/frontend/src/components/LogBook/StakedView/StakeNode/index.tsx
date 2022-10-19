@@ -3,8 +3,11 @@ import { observer } from 'mobx-react-lite';
 import { createStyles, Button, Progress, Text, Group, Loader, Modal } from '@mantine/core';
 import { useStore } from '@/store/index';
 import StakeTokens from '@/components/Staking/StakeTokens';
+import { publicConfig } from 'config/public';
 import { formatTime, getLocalTimeStringFromSeconds } from '@/utils/index';
 import Swal from 'sweetalert2';
+
+const { TOKEN_UNIT } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
     progressBar: {
@@ -169,7 +172,8 @@ export default observer((props: Props) => {
 
         let cnt = Math.max(1, stake.activeMinerCnt);
 
-        let amount = stake.stakedInfo.amount / cnt;
+        let amount = parseInt((BigInt(stake.stakedInfo.amount) / TOKEN_UNIT / BigInt(cnt)).toString());
+
         let multiplier = -1;
         let level = "";
 

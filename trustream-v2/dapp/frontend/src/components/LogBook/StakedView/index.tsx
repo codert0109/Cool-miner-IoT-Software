@@ -26,7 +26,7 @@ export default observer((props: Props) => {
   const { stake } = useStore();
 
   const renderBody = () => {
-    if (stake.stakedInfo.amount == 0) {
+    if (stake.stakedInfo.amount == BigInt(0)) {
       return (
         <tr>
           <td colSpan={7}>

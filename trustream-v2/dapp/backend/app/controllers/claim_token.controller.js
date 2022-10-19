@@ -100,12 +100,12 @@ exports.getStakingInfo = async (address) => {
 exports.updateClaimToken = async (address, amount) => {
   try {
     let data = await claim.findOne({ where : { address }})
-    let prv_amount = 0;
+    let prv_amount = BigInt(0);
     if (data != null) {
-      prv_amount = ~~(data.token);
-      await claim.update( { address, token : prv_amount + amount}, { where : { id : data.id } });
+      prv_amount = BigInt(data.token);
+      await claim.update( { address, token : (prv_amount + amount).toString()}, { where : { id : data.id } });
     } else {
-      await claim.create( { address, token : amount });
+      await claim.create( { address, token : amount.toString() });
     }
     
     return {
