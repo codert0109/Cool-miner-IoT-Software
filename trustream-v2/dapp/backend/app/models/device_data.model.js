@@ -10,10 +10,10 @@ module.exports = (sequelize, Sequelize) => {
       type : Sequelize.STRING
     },
     start_time: {
-      type : Sequelize.DATE
+      type : Sequelize.INTEGER
     },
     end_time: {
-      type : Sequelize.DATE
+      type : Sequelize.INTEGER
     },
     upload_time: {
       type : Sequelize.DATE
