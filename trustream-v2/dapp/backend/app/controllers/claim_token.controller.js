@@ -195,7 +195,7 @@ exports.claimReward = async (req, res) => {
     signature,
     message : 'Signature created!',
     address,
-    amount
+    amount : amount.toString()
   });
 };
 
