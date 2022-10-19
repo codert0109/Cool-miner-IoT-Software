@@ -26,7 +26,7 @@ const useStyles = createStyles((theme) => ({
     },
 
     imgStyle : {
-        height : '60%'
+        height : '60%',
     },
 
     w100 : {
@@ -70,8 +70,21 @@ export default function() {
     const [isloading, setLoading] = useState(true);
     const [timerID, setTimerID] = useState(null);
 
+    const [totMinerCnt, setTotMinerCnt] = useState(0);
+
     const updateStatus = () => {
         setLoading(true);
+        
+
+        $.post(`${BACKEND_URL}/api/device_status/getActiveMinerCnt`)
+            .then((data) => {
+                setTotMinerCnt(data.data.count);
+            })
+            .catch((err) => {
+                console.error(err);
+                setTotMinerCnt(0);
+            });
+
         $.get(`${BACKEND_URL}/api/status/servers`)
             .then(function (data : any) {
                 setLoading(false);
@@ -167,10 +180,32 @@ export default function() {
         )
     };
 
+    const renderMinerCntElement = () => {
+        const renderBody = () => {
+            return (
+                <div className={classes.w100}>
+                    <div className={classes.expand} style={{ flexGrow : '1' }}>
+                        Active Miners
+                    </div>
+                    <div style={{width : 32, textAlign : 'center'}}>
+                        <span>{totMinerCnt}</span>
+                    </div>
+                </div>
+            );
+        };
+
+        return (
+            <WhiteLabel label={renderBody()} className={classes.split} />
+        )
+    };
+
     return (
         <Box label={renderHeader()} headerClass={classes.headerClass} bodyClass={classes.bodyClass}>
             {
                 serverStatus.map(item => renderElement(item))
+            }
+            {
+                renderMinerCntElement()
             }
         </Box>
     );

@@ -7,11 +7,6 @@ import BaseModel from './base';
 export class NftAuthModel extends BaseModel<NftAuthModel> {
   @PrimaryKey
   @Column({
-    type: DataType.STRING(64)
-  })
-  public id!: string;
-
-  @Column({
     allowNull: false
   })
   public nft_id!: number;

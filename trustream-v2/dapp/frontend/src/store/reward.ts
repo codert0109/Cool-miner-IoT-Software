@@ -10,8 +10,8 @@ export class RewardStore {
     rootStore: RootStore;
     loading: boolean = true;
 
-    claimedToken:number = 0;
-    availableToken:number = 0;
+    claimedToken        : string = '0';
+    availableToken      : string = '0';
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -43,10 +43,10 @@ export class RewardStore {
             let ret1: any = await $.post(`${publicConfig.BACKEND_URL}/api/claim_tokens/getInfo`, {
                 address : god.currentNetwork.account
             });
-            this.availableToken = parseInt(ret1.data.amount);
+            this.availableToken = ret1.data.amount;
 
             let ret2: any = await this.callContract('claimedToken', [god.currentNetwork.account]);
-            this.claimedToken = parseInt(ret2.toString());
+            this.claimedToken = ret2.toString();
         } catch (err) {
             console.error('reward.refresh error', err);
         } finally {

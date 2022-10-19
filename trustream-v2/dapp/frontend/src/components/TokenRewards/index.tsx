@@ -8,6 +8,7 @@ import { useStore } from '@/store/index';
 import { publicConfig } from 'config/public';
 import $ from "axios";
 import Swal from 'sweetalert2';
+import { formatDecimalWeb3 } from '@/utils/index';
 
 const BREAKPOINT = '@media (max-width: 992px)';
 
@@ -95,7 +96,7 @@ export default observer((props: Props) => {
               <WhiteLabel label="Claimed" className={classes.textcenter} />
             </Grid.Col>
             <Grid.Col sm={12} style={{ paddingTop: 0 }}>
-              <WhiteLabel label={reward.claimedToken} className={classes.textcenter} />
+              <WhiteLabel label={formatDecimalWeb3(BigInt(reward.claimedToken))} className={classes.textcenter} />
             </Grid.Col>
           </Grid>
         </Grid.Col>
@@ -105,7 +106,7 @@ export default observer((props: Props) => {
               <WhiteLabel label="Available" className={classes.textcenter} />
             </Grid.Col>
             <Grid.Col sm={12} style={{ paddingTop: 0 }}>
-              <WhiteLabel label={reward.availableToken - reward.claimedToken} className={classes.textcenter} />
+              <WhiteLabel label={formatDecimalWeb3(BigInt(reward.availableToken) - BigInt(reward.claimedToken))} className={classes.textcenter} />
             </Grid.Col>
           </Grid>
         </Grid.Col>
