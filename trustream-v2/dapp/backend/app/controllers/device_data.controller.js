@@ -2,6 +2,7 @@ const db = require("../models");
 const Device_Data = db.device_datas;
 const Op = db.Sequelize.Op;
 const MINER_CONFIG = require('../config/miner.config');
+const env = require('../config/env');
 
 // Core API Functions for Device_Data
 
@@ -29,9 +30,9 @@ exports.getActiveMinerCnt = async (address) => {
   try {
     let data;
     if (address != null) {
-      data = await db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM "testapp"."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`);
+      data = await db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM ${env.project}."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`);
     } else {
-      data = await db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM "testapp"."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour'`);
+      data = await db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM ${env.project}."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour'`);
     }
     return parseInt(data[0][0].CNT);
   } catch (err) {
@@ -41,7 +42,7 @@ exports.getActiveMinerCnt = async (address) => {
 };
 
 const getActiveMiner = (address, callback) => {
-  db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM "testapp"."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`)
+  db.sequelize.query(`SELECT COUNT(DISTINCT(NFT_ID)) AS "CNT" FROM ${env.project}."device_data" AS "device_data" WHERE "device_data"."upload_time" > NOW() - INTERVAL '1 hour' AND "device_data"."address" = '${address}'`)
     .then((data) => {
       callback(data[0][0], true);
     })
