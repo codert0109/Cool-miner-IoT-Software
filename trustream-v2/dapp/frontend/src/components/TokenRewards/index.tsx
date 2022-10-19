@@ -69,6 +69,9 @@ export default observer((props: Props) => {
       const { v, r, s } = ret1.data.signature;
       const { amount, address } = ret1.data;
       let tx = reward.callContract('claimRequest', [address, amount, v, r, s]);
+      console.log({
+        address, amount, v, r, s
+      });
       const receipt = await tx;
       await receipt.wait();
       Swal.fire(
@@ -79,6 +82,7 @@ export default observer((props: Props) => {
       reward.refresh();
       token.refresh();
     } catch (err) {
+      console.error(err);
       Swal.fire(
         'Error',
         `<p>Errors occured</p>`,

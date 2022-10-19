@@ -166,12 +166,11 @@ exports.claimReward = async (req, res) => {
     return;
   }
 
-  let amount = 0;
+  let amount = BigInt(0);
 
   try {
     let data = await claim.findOne({ where : { address }})
-    amount = data != null ? data.token : 1000;
-    amount = parseInt(amount);
+    amount = data != null ? BigInt(data.token) : BigInt(0);
   } catch (err) {
     console.log(err);
     res.send({
