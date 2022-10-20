@@ -25,6 +25,5 @@ module.exports = (sequelize, Sequelize) => {
       }
     }
   });
-
   return Device_Uptime;
 };

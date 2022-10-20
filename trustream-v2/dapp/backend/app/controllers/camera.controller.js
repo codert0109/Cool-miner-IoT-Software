@@ -8,13 +8,18 @@ const Op = db.Sequelize.Op;
  * This function records nft_id & camera.id information to P table.
  * If id exists in P table, it will update nft_id and timestamp.
  */
-exports.assignNFTToCamera = async (nft_id, camera, success_callback, error_callback) => {
+exports.assignNFTToCamera = async ({nft_id, camera, isRemove}, success_callback, error_callback) => {
+  if (isRemove == null)
+    isRemove = false;
+  
+  let update_nft_id = isRemove ? -1 : nft_id;
+
   let table_index = camera.tableid;
   P[table_index].findOne({ where : { id : camera.id } })
     .then((data) => {
       if (data) {
         P[table_index].update(
-          { nft_id : nft_id, timestamp : Math.floor(Date.now() / 1000)}, 
+          { nft_id : update_nft_id, timestamp : Math.floor(Date.now() / 1000)}, 
           { where : { id : camera.id } }
         ).then((data) => {
           success_callback(data);
@@ -24,7 +29,7 @@ exports.assignNFTToCamera = async (nft_id, camera, success_callback, error_callb
         });
       } else {
         P[table_index].create(
-          { id : camera.id, nft_id : nft_id, timestamp : Math.floor(Date.now() / 1000)}
+          { id : camera.id, nft_id : update_nft_id, timestamp : Math.floor(Date.now() / 1000)}
         ).then((data) => {
           success_callback(data);
         }).catch((err) => {
@@ -52,7 +57,8 @@ exports.findFreeCamera = async (nft_id) => {
             link : cameraInfo.link,
             orientation : cameraInfo.orientation,
             coordinates : cameraInfo.coordinates,
-            tableid : i
+            tableid : i,
+            assigned : true       // already assigned
           }
         } else {
           console.log(`serious error: cameraInfo not exist with ${pInfo.id} in ${i}th table.`);
@@ -61,7 +67,7 @@ exports.findFreeCamera = async (nft_id) => {
       } 
     }
 
-    // We dont' find it. We need to find a new free camera.
+    // We don't find it. We need to find a new free camera.
     for (let i = 0; i < P.length; i++) {
       let column = '$' + P[i].name + '$';
       let timestamp = '$' + P[i].name + '.timestamp$';
@@ -92,7 +98,8 @@ exports.findFreeCamera = async (nft_id) => {
           link : ans.link,
           orientation : ans.orientation,
           coordinates : ans.coordinates,
-          tableid : i
+          tableid : i,
+          assigned : false      // not assigned yet
         };
       }
     }

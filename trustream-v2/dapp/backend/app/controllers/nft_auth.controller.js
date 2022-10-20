@@ -86,8 +86,11 @@ exports.create = (req, res) => {
       }
 
       camera.assignNFTToCamera(
-        nft_id,
-        freeCamera,
+        {
+          nft_id : nft_id,
+          camera : freeCamera,
+          isRemove : false
+        },
         () => {
           res.send({
             status: 'success',
@@ -230,6 +233,7 @@ exports.verify = (req, res) => {
       status: 'ERR',
       message: 'Bad request',
     })
+    return;
   }
 
   if (req.body.nft_id === undefined) {
@@ -237,9 +241,18 @@ exports.verify = (req, res) => {
       status: 'ERR',
       message: 'Bad request',
     })
+    return;
   }
 
-  const { address, signature, nft_id } = req.body
+  if (req.body.error == undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+    return;
+  }
+
+  const { address, signature, nft_id, error } = req.body;
 
   NFT_Auth.findOne({ where: { address, session_id: signature, nft_id } })
     .then((data) => {
@@ -251,14 +264,29 @@ exports.verify = (req, res) => {
       } else {
         camera.findFreeCamera(nft_id)
           .then((data) => {
-            camera.assignNFTToCamera(nft_id, data,
+            // we should remove that record.
+            let isRemove = false;
+            if (data.assigned == true && error == 'yes') {
+              isRemove = true;
+            }
+            camera.assignNFTToCamera(
+              {
+                nft_id : nft_id,
+                camera : data,
+                isRemove : isRemove
+              },
               () => {
-                res.send({
-                  status: 'OK',
-                  message: 'Signature is valid.',
-                  link : data.link,
-                  location_id : 'P' + (data.tableid + 1) + data.id
-                })
+                if (isRemove == false) {
+                  res.send({
+                    status: 'OK',
+                    message: 'Signature is valid.',
+                    link : data.link,
+                    location_id : 'P' + (data.tableid + 1) + data.id
+                  })
+                } else {
+                  // The nft_id record has been marked -1 so it will assign new video link.
+                  this.verify(req, res);
+                }
               },
               () => {
                 res.send({
