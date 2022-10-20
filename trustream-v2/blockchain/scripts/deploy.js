@@ -38,7 +38,7 @@ async function main() {
   await elumStaking.setTokenAddress(elumToken.address);
 
   // for deploy to main server (45 days, 90 days, 180 seconds, 360 seconds)
-  // const days = 24 * 60 * 60;
+  const days = 24 * 60 * 60;
   // await elumStaking.addStakeTypeList([45*days,  90*days,  180*days, 360*days], ['45', '90', '180', '360']);
 
   // for deploy to test server (45 seconds, 90 seconds, 180 seconds, 360 seconds)
@@ -47,7 +47,7 @@ async function main() {
     // for deploy to test server (45 minutes, 90 minutes, 180 minutes, 360 minutes)
   
   await elumStaking.addStakeTypeList(
-    [45 * 60,   90 * 60,  180 * 60, 360 * 60], 
+    [45 * days,   90 * days,  180 * days, 360 * days], 
     ['45',      '90',    '180',    '360']
   );
 

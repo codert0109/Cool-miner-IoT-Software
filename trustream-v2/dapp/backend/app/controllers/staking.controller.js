@@ -12,8 +12,8 @@ const params = {
     // period  : [45 * days, 90 * days, 180 * days, 360 * days],        // to deploy to main server
     // period_label : ['45 days', '90 days', '180 days', '360 days'],
     // period  : [45 * secs, 90 * secs, 180 * secs, 360 * secs],           // to deploy to test server
-    period  : [45 * minutes, 90 * minutes, 180 * minutes, 360 * minutes],  // to deploy to test server
-    period_label : ['45m', '90m', '180m', '360m'],
+    period  : [45 * days, 90 * days, 180 * days, 360 * days],  // to deploy to test server
+    period_label : ['45d', '90d', '180d', '360d'],
     multiplier:    [[11000, 11500, 12500, 14000],
                     [12000, 13000, 14000, 15500],
                     [13500, 14500, 15500, 17000],

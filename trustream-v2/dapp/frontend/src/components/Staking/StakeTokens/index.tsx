@@ -352,7 +352,7 @@ export default observer((props: Props) => {
         <Grid.Col md={mdCols} sm={12}>
           <Grid>
             <Grid.Col md={12} sm={12}>
-              <WhiteLabel className={classes.nowrap} label="Quantity to stake" />
+              <WhiteLabel className={classes.nowrap} label="Quantity to add to contract" />
             </Grid.Col>
             <Grid.Col md={12} sm={12}>
               <WhiteLabel className="" label={

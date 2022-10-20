@@ -47,14 +47,68 @@ task('setMaxNFT', 'Set MAX NFT Per Wallet')
 
       let tx = ElumNFT.setMaxNFTPerWallet(parseInt(count))
 
-      const receipt = await tx;
-      await receipt.wait();
+      const receipt = await tx
+      await receipt.wait()
 
       console.log(`Setting Success!`)
     } catch (err) {
       console.log('Errors occured in setMaxNFT', err)
     }
   })
+
+/**
+ * Tasks to buy nft
+ * Command: npx hardhat buyNFT --type {value} --amount {amount} --network testnet
+ * For example: npx hardhat buyNFT --type 0 --amount 1 --network testnet
+ */
+task('buyNFT', 'Buy NFT')
+  .addParam('type', 'NFT Type')
+  .addParam('amount', 'NFT amount')
+  .setAction(async (taskArgs) => {
+    let type = taskArgs.type;
+    let amount = taskArgs.amount;
+    try {
+      console.log(`Buy NFT type:${type} amount:${amount}`)
+      const ElumNFTContract = await ethers.getContractFactory('ElumNFT')
+      const ElumNFT = await ElumNFTContract.attach(contractAddressList.ElumNFT)
+
+      let tx = ElumNFT.buyNFT(type, amount, { value : (BigInt(3) * BigInt(Math.pow(10, 18))).toString()})
+
+      const receipt = await tx
+      await receipt.wait()
+
+      console.log(`Buy NFT Success!`)
+    } catch (err) {
+      console.log('Errors occured in buy NFT', err)
+    }
+  })
+
+/**
+ * Tasks to transfer nft
+ * Command: npx hardhat transferNFT --to {address} --id {id} --network testnet
+ * For example: npx hardhat buyNFT --to 0x78...192 --id 1 --network testnet
+ */
+ task('transferNFT', 'Transfer NFT')
+ .addParam('to', 'Receiver Address')
+ .addParam('id', 'NFT id')
+ .setAction(async (taskArgs) => {
+   let to = taskArgs.to;
+   let id = taskArgs.id;
+   try {
+     console.log(`transferNFT to:${to} id:${id}`)
+     const ElumNFTContract = await ethers.getContractFactory('ElumNFT')
+     const ElumNFT = await ElumNFTContract.attach(contractAddressList.ElumNFT)
+
+     let tx = ElumNFT.transferNFT([id], to)
+
+     const receipt = await tx
+     await receipt.wait()
+
+     console.log(`Transfer NFT Success!`)
+   } catch (err) {
+     console.log('Errors occured in transfer NFT', err)
+   }
+ })
 
 module.exports = {
   solidity: '0.8.4',
