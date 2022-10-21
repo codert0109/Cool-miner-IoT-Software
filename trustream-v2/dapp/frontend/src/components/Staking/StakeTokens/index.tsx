@@ -307,7 +307,7 @@ export default observer((props: Props) => {
       <Grid.Col md={mdCols} sm={12}>
         <Grid>
           <Grid.Col md={12} sm={12}>
-            <WhiteLabel className={classes.nowrap} label="Current Staked ELUM" />
+            <WhiteLabel className={classes.nowrap} label="Re-Staking Amount" />
           </Grid.Col>
           <Grid.Col md={12} sm={12}>
             <WhiteLabel className="" label={formatDecimalWeb3(prevamount)} />

@@ -145,7 +145,7 @@ export default observer(() => {
                 }
                 {status === false && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
                 {status === true && <img src="/images/status/working.png" className={classes.imgStyle}></img>}
-                <span>Active Miners</span>
+                <span>My Miners</span>
             </div>
         )
     };

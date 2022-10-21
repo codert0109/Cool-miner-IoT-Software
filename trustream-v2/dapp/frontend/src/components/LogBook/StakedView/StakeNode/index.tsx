@@ -4,7 +4,7 @@ import { createStyles, Button, Progress, Text, Group, Loader, Modal } from '@man
 import { useStore } from '@/store/index';
 import StakeTokens from '@/components/Staking/StakeTokens';
 import { publicConfig } from 'config/public';
-import { formatTime, getLocalTimeStringFromSeconds } from '@/utils/index';
+import { formatDecimalWeb3, formatTime, getLocalTimeStringFromSeconds } from '@/utils/index';
 import Swal from 'sweetalert2';
 
 const { TOKEN_UNIT } = publicConfig;
@@ -308,7 +308,7 @@ export default observer((props: Props) => {
                     {renderDate()}
                 </td>
                 <td style={{ textAlign: 'center' }} >
-                    {stake.loading ? <Loader size="sm" /> : stake.stakedInfo.amount}
+                    {stake.loading ? <Loader size="sm" /> : formatDecimalWeb3(stake.stakedInfo.amount)}
                 </td>
                 <td>
                     {renderPeriod()}

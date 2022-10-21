@@ -101,7 +101,6 @@ export default function() {
                     ]
                 );
             });
-
     };
 
     useEffect(() => {
@@ -185,7 +184,7 @@ export default function() {
             return (
                 <div className={classes.w100}>
                     <div className={classes.expand} style={{ flexGrow : '1' }}>
-                        Active Miners
+                        Total Miners
                     </div>
                     <div style={{width : 32, textAlign : 'center'}}>
                         <span>{totMinerCnt}</span>
