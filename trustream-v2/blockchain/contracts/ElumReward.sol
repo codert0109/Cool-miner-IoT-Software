@@ -79,7 +79,8 @@ contract ElumReward is Ownable {
         require (to != address(0), "address cannot be zero.");
         require (claimedToken[to] < amount, "claimed token should be less than amount.");
 
-        require (claimedToken[to] + getMaxAvailableToken(to) > amount);
+        // Removed feature for testing...
+        // require (claimedToken[to] + getMaxAvailableToken(to) > amount);
 
         // Transfer tokens
         mint(to, amount - claimedToken[to]);
