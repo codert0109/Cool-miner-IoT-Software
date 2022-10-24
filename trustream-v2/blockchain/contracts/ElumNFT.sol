@@ -44,7 +44,6 @@ contract ElumNFT is Ownable, IElumNFT {
         NFT_TYPE_INFO.push(info);
 
         ++ NFT_TYPE_COUNTER;
-
         return NFT_TYPE_COUNTER - 1;
     }
 

@@ -4,15 +4,21 @@ import { useStore } from '@/store/index';
 import MultipleWalletAdd from "../components/Admin/MultipleWalletAdd";
 import SingleWalletAdd from "../components/Admin/SingleWalletAdd";
 import UpdateComponent from "../components/Admin/Update";
-import Database from "@/components/Admin/Database";
+// import Database from "@/components/Admin/Database";
 import Camera from "@/components/Admin/Camera";
+import NFTConfig from "@/components/Admin/NFTConfig";
+import { useEffect } from "react";
 
 const useStyles = createStyles((theme) => ({
 }));
 
 export default function TableReviews() {
     const { classes, theme } = useStyles();
-    const { god, lang } = useStore();
+    const { god, lang, nft } = useStore();
+
+    useEffect(() => {
+        nft.refresh();
+    }, []);
 
     return (
         <Layout>
@@ -30,6 +36,9 @@ export default function TableReviews() {
                     </Tabs.Tab> */}
                     <Tabs.Tab label="Camera" value="camera">
                         <Camera/>
+                    </Tabs.Tab>
+                    <Tabs.Tab label="NFT" value="nft">
+                        <NFTConfig/>
                     </Tabs.Tab>
                 </Tabs>
             </ScrollArea>

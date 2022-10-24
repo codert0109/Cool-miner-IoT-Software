@@ -24,6 +24,7 @@ export class NFTStore {
     idList : Array<number> = [];
     typeList : Array<NFT_TYPE> = [];
     infoList : Array<NFT_INFO> = [];
+    maxNFTPerWallet : number = 0;
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -82,6 +83,9 @@ export class NFTStore {
                     acquireTime : parseInt(tx.acquireTime.toString())
                 };
             }
+
+            tx = await this.getMaxNFTPerWallet();
+            this.maxNFTPerWallet = parseInt(tx);
         } catch (err) {
             console.error('nft.refresh error', err);
         } finally {
@@ -98,6 +102,10 @@ export class NFTStore {
         return this.callContract('NFT_TO_INFO', [id]);
     }
 
+    async getMaxNFTPerWallet() {
+        return this.callContract('getMaxNFTPerWallet', []);
+    }
+
     async getNFTTypeLists() {
         return this.callContract('getNFTTypeInfo', []);
     }
@@ -108,5 +116,9 @@ export class NFTStore {
 
     async transferNFT(id, address) {
         return this.callContract('transferNFT', [[id], address]);
+    }
+
+    async setMaxNFTPerWallet(count) {
+        return this.callContract('setMaxNFTPerWallet', [count]);
     }
 }

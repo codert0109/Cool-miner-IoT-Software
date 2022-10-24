@@ -6,5 +6,5 @@ export const publicConfig = {
   // BACKEND_URL : 'http://localhost:3334'
   // BACKEND_URL : 'https://testminer.elumicate.com',
   BACKEND_URL : 'https://miner.elumicate.com',
-  TOKEN_UNIT : BigInt(Math.pow(10, 18))
+  TOKEN_UNIT : BigInt(Math.pow(10, 18)),
 };
