@@ -1,6 +1,8 @@
 const tcpPortUsed = require('tcp-port-used');
 const DB_CONFIG = require('../config/db.config');
 
+const { getValue, updateValue } = require('./key_status.controller');
+
 async function getList(callback) {
     const serverList = [
         { 
@@ -45,4 +47,51 @@ exports.getServers = async (req, res) => {
     getList(function(response) {
         res.send(response);  
     })
+};
+
+exports.getRequiredVersion = async (req, res) => {
+    const DEFAULT_VERSION = '1.0.0';
+
+    try {
+        let result = await getValue('REQUIRED_VERSION');
+        if (result == null)
+            result = DEFAULT_VERSION;
+        res.send({
+            status : 'OK',
+            message : {
+                version : result
+            }
+        })
+    } catch (err) {
+        console.error(err);
+        res.send({
+            status : 'ERR',
+            message : 'Internal Server Error'
+        })
+    }
+};
+
+exports.setRequiredVersion = async (req, res) => {
+    const { version } = req.body;
+    if (version == null) {
+        res.send({
+            status : 'ERR',
+            message : 'Bad request'
+        })
+        return;
+    }
+
+    try {
+        await updateValue('REQUIRED_VERSION', version);
+        res.send({
+            status : 'OK',
+            message : 'Update Success'
+        })
+    } catch (err) {
+        console.error(err);
+        res.send({
+            status : 'ERR',
+            message : 'Internal Server Error'
+        })
+    }
 };
