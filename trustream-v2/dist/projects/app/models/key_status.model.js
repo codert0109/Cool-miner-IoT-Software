@@ -12,43 +12,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NftAuthModel = void 0;
+exports.KeyStatusModel = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const base_1 = __importDefault(require("./base"));
-let NftAuthModel = class NftAuthModel extends base_1.default {
+let KeyStatusModel = class KeyStatusModel extends base_1.default {
 };
 __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.Column({
-        allowNull: false
-    }),
-    __metadata("design:type", Number)
-], NftAuthModel.prototype, "nft_id", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
         allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.STRING(256)
     }),
     __metadata("design:type", String)
-], NftAuthModel.prototype, "address", void 0);
+], KeyStatusModel.prototype, "key", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(64)
+        type: sequelize_typescript_1.DataType.STRING(256)
     }),
     __metadata("design:type", String)
-], NftAuthModel.prototype, "miner", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false,
-        type: sequelize_typescript_1.DataType.STRING(64)
-    }),
-    __metadata("design:type", String)
-], NftAuthModel.prototype, "session_id", void 0);
-NftAuthModel = __decorate([
+], KeyStatusModel.prototype, "value", void 0);
+KeyStatusModel = __decorate([
     sequelize_typescript_1.Table({
-        tableName: 'nft_auths'
+        tableName: 'key_statuses'
     })
-], NftAuthModel);
-exports.NftAuthModel = NftAuthModel;
-//# sourceMappingURL=nft_auth.model.js.map
+], KeyStatusModel);
+exports.KeyStatusModel = KeyStatusModel;
+//# sourceMappingURL=key_status.model.js.map

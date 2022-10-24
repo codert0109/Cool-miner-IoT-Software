@@ -55,10 +55,9 @@ async function updateUpTime(address, nftID) {
         });
         if (result !== null) {
             let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
-            console.log('elapsedTime', elapsedTime);
             if (elapsedTime < 0)
                 elapsedTime = 0;
-            if (false && elapsedTime < UPLOAD_THRESMS) {
+            if (elapsedTime < UPLOAD_THRESMS) {
                 console.log('blocked: data is uploading too fast.');
                 return false;
             }
@@ -88,9 +87,24 @@ async function updateUpTime(address, nftID) {
         return false;
     }
 }
-function checkVersion(min_version = '2.1.3', msg_version) {
+async function checkVersion(msg_version) {
     if (msg_version == null || msg_version == undefined)
         return false;
+    let min_version = '2.1.3';
+    try {
+        let data = await models_1.keystatusRepository.findOne({ where: { key: 'REQUIRED_VERSION' } });
+        if (data !== null) {
+            min_version = data.value;
+        }
+        else {
+            min_version = '1.0.0';
+        }
+        console.log('min_version', min_version);
+    }
+    catch (err) {
+        console.error(err);
+        return false;
+    }
     let a = min_version.split('.');
     let b = msg_version.split('.');
     for (let i = 0; i < 3; i++) {
@@ -110,7 +124,7 @@ async function onMqttData(context, topic, payload) {
     }
     const address = values[1];
     let decodedPayload = eval('(' + payload.toString() + ')');
-    if (!checkVersion('2.1.3', decodedPayload.message.version)) {
+    if (!checkVersion(decodedPayload.message.version)) {
         console.log("Discard message with version error, ", decodedPayload.message.version);
         return;
     }
@@ -137,14 +151,6 @@ async function onMqttData(context, topic, payload) {
     if (isValid === false) {
         console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`);
         return;
-    }
-    let NFTContract = context.getContract("NFT");
-    let NFTBalance = await NFTContract.methods.balanceOf(address).call();
-    let hasNFT = parseInt(NFTBalance.normalNFT) > 0;
-    if (!hasNFT) {
-        console.log('NFTBalance', NFTBalance);
-        console.log(`WARNING: Dropping data message: Device ${address} has no NFT.`);
-        return null;
     }
     let { miner } = decodedPayload.message;
     if (miner == undefined)

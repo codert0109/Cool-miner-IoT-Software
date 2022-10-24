@@ -9,6 +9,7 @@ import { CameraModel } from './camera.model'
 import { P1Model } from './p1.model'
 import { P2Model } from './p2.model'
 import { P3Model } from './p3.model'
+import { KeyStatusModel } from './key_status.model'
 
 export const db = getDB(PROJECT)
 export const deviceDataRepository = db.getRepository(DeviceDataModel)
@@ -17,6 +18,7 @@ export const deviceUptimeRepository = db.getRepository(DeviceUptimeModel)
 export const statusRepository = db.getRepository(StatusModel)
 export const nftAuthRepository = db.getRepository(NftAuthModel)
 export const cameraRepository = db.getRepository(CameraModel)
+export const keystatusRepository = db.getRepository(KeyStatusModel)
 export const P = [
     db.getRepository(P1Model),
     db.getRepository(P2Model),

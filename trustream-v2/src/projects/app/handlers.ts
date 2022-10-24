@@ -4,6 +4,7 @@ import {
   portalAuthRepository,
   deviceUptimeRepository, 
   nftAuthRepository,
+  keystatusRepository,
   P
 } from './models'
 import { ProjectContext } from '../interface'
@@ -139,9 +140,23 @@ async function updateUpTime(address : string, nftID : string) {
   }
 }
 
-function checkVersion(min_version : string = '2.1.3', msg_version : string) {
+async function checkVersion(msg_version : string) {
   if (msg_version == null || msg_version == undefined) 
     return false;
+
+  let min_version : string = '2.1.3';
+  try {
+    let data = await keystatusRepository.findOne({ where : { key : 'REQUIRED_VERSION'}});
+    if (data !== null) {
+      min_version = data.value;
+    } else {
+      min_version = '1.0.0';
+    }
+    console.log('min_version', min_version);
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
   let a = min_version.split('.');
   let b = msg_version.split('.');
   for (let i = 0; i < 3; i++) {
@@ -165,7 +180,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   // Decode the JSON message
   let decodedPayload = eval('('+payload.toString()+')');
 
-  if (!checkVersion('2.1.3', decodedPayload.message.version)) {
+  if (!checkVersion(decodedPayload.message.version)) {
     console.log("Discard message with version error, ", decodedPayload.message.version);
     return;
   }
