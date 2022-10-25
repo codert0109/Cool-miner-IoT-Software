@@ -159,9 +159,13 @@ async function checkVersion(msg_version : string) {
   }
   let a = min_version.split('.');
   let b = msg_version.split('.');
+
   for (let i = 0; i < 3; i++) {
-    if (~~a > ~~b) return false;
-    if (~~a < ~~b) return true;
+    let av = ~~a[i];
+    let bv = ~~b[i];
+    console.log({i, av, bv});
+    if (av > bv) return false;
+    if (av < bv) return true;
   }
   return true;
 }
@@ -180,7 +184,7 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   // Decode the JSON message
   let decodedPayload = eval('('+payload.toString()+')');
 
-  if (!checkVersion(decodedPayload.message.version)) {
+  if (!await checkVersion(decodedPayload.message.version)) {
     console.log("Discard message with version error, ", decodedPayload.message.version);
     return;
   }
