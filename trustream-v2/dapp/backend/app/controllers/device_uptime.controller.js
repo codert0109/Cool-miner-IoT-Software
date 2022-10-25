@@ -78,6 +78,7 @@ exports.getUpTimeInfo = (req, res) => {
               epoch: {
                 // we assume that if the updated timestamp is older than 1 hour, we will assign new NFT.
                 [Op.gt]: data.value - 24,
+                [Op.lte]: data.value,
               },
             },
           ],
