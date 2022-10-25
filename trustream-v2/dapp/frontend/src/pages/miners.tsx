@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import Box from "@/components/Container/Box";
 import { observer } from 'mobx-react-lite';
 import { Select } from '@mantine/core';
+import NetworkStatus from "@/components/NetworkStatus";
+import HistoricalReward from "@/components/HistoricalReward";
 
 const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
@@ -441,6 +443,11 @@ export default observer(() => {
                     </tbody>
                 </table>
             </Box>
+
+            <NetworkStatus/>
+
+            <HistoricalReward/>
+            <HistoricalReward/>
         </Layout>
     );
 });
