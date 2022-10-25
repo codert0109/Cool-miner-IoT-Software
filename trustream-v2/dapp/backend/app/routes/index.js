@@ -9,4 +9,5 @@ module.exports = (app) => {
   require('./staking.routes')(app)
   require('./camera.routes')(app)
   require('./email.routes')(app)
+  require('./epoch.routes')(app)
 }
