@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from "@/components/Container/Box";
 import { Button, createStyles } from '@mantine/core';
 import classnames from 'classnames';
+import { useStore } from '@/store/index';
+import { publicConfig } from "../../config/public";
+import { formatDecimalWeb3 } from '@/utils/index';
+
+const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
   NFTTable: {
@@ -10,13 +15,13 @@ const useStyles = createStyles((theme) => ({
     color: 'black',
     width: '100%'
   },
-  
+
   thead: {
     borderBottom: '1px solid black',
   },
 
-  orange : {
-    backgroundColor : 'rgb(255, 102, 0)'
+  orange: {
+    backgroundColor: 'rgb(255, 102, 0)'
   },
 
   th: {
@@ -27,14 +32,50 @@ const useStyles = createStyles((theme) => ({
     textAlign: 'center'
   },
 
-  green : {
-    color : 'green'
+  green: {
+    color: 'green'
   }
 }));
 
 
 export default observer((props: Props) => {
   const { classes } = useStyles();
+  const { auth, god } = useStore();
+
+  const [duration, setDuration] = useState(0);
+  const [miner, setMiner] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [reward, setReward] = useState('0');
+
+  const [rewardInfo, setRewardInfo] = useState([]);
+
+  useEffect(() => {
+    auth.$().get(`${BACKEND_URL}/api/epoch/status`)
+      .then((response: any) => {
+        let data: any = response.data;
+        setDuration(data.data.duration);
+        setMiner(data.data.miner);
+        setWeight(data.data.weight);
+        console.log('getInformation', data);
+        setReward(formatDecimalWeb3(BigInt(data.data.reward)).toString());
+      }).catch((err) => {
+        setDuration(0);
+        setMiner(0);
+        setWeight(0);
+        setReward('0');
+        console.log('getInformation error', err);
+      });
+  }, []);
+
+  useEffect(() => {
+    auth.$().post(`${BACKEND_URL}/api/device_uptime/getUpTimeInfo`, {
+      address: god.currentNetwork.account
+    }).then((response: any) => {
+      console.log('miner response', response);
+    }).catch((err) => {
+
+    });
+  }, [god.currentNetwork.account]);
 
   return (
     <Box label="Overall Network Stats" headerClass={classes.orange}>
@@ -49,10 +90,10 @@ export default observer((props: Props) => {
         </thead>
         <tbody>
           <tr>
-            <td className={classnames(classes.center, classes.green)} key="1">60 Minutes</td>
-            <td className={classes.center} key="2">10,255</td>
-            <td className={classes.center} key="3">2449.25</td>
-            <td className={classes.center} key="4">2000 ELUM</td>
+            <td className={classnames(classes.center, classes.green)} key="1">{duration} Seconds</td>
+            <td className={classes.center} key="2">{miner}</td>
+            <td className={classes.center} key="3">{weight}</td>
+            <td className={classes.center} key="4">{reward} ELUM</td>
           </tr>
         </tbody>
       </table>
