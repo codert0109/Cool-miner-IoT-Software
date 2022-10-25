@@ -1,17 +1,87 @@
 const db = require("../models");
 const Device_Uptime = db.device_uptimes;
+const { getValue } = require('./key_status.controller');
 const MINER_CONFIG = require('../config/miner.config');
 const { sequelize } = require("../models");
 // const Device_Data = db.device_datas;
 // const Op = db.Sequelize.Op;
 
+// Core APIs
 exports.getAll = (query) => {
     // needs to be optimized
     return Device_Uptime.findAll({ where : query});
 }
 
-exports.getUpTime = (req, res) => {
+// address     : deviceUpTimeData[i].address, 
+// amount      : curReward,
+// uptime      : deviceUpTimeData[i].uptime,
+// nft_id      : deviceUpTimeData[i].nft_id,
+// multiplier  : parseInt(deviceUpTimeData[i].multiplier * 10000),
+// epoch       : last_epoch
 
+exports.updateUptimeInfo = async ({address, amount, uptime, nft_id, multiplier, epoch}) => {
+    try {
+        let data = await Device_Uptime.findOne({ where : { address, epoch, nft_id } });
+        if (data == null) {
+            console.error('Device_Uptime.data cannot be null.');
+            return;
+        }        
+        await Device_Uptime.update({ address, reward : amount, uptime, nft_id, multiplier, epoch}, { where : { address, epoch, nft_id}});
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// Restful API
+exports.getUpTimeInfo = (req, res) => {
+    const { address } = req.body;
+
+    if (address == null) {
+        res.send({
+            status : 'ERR',
+            message : 'Bad request'
+        })
+        return;
+    }
+
+    getValue('LAST_UPDATED_EPOCH')
+        .then((data) => {
+            if (data == null) {
+                res.send({
+                    status : 'OK',
+                    address,
+                    data : []
+                })
+                return;
+            }
+            Device_Uptime.findAll({ 
+                where : { address, epoch : data.value }
+            })
+                .then((data) => {
+                    res.send({
+                        status : 'OK',
+                        address,
+                        data
+                    })
+                })
+                .catch((err) => {
+                    console.error('errors in device_uptime.getUpTimeInfo', err);
+                    res.send({
+                        status : 'ERR',
+                        message : 'Internal Server Error' 
+                    });
+                });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.send({
+                status : 'ERR',
+                message : 'Internal Server Error'
+            })
+        });
+}
+
+exports.getUpTime = (req, res) => {
     const { address } = req.body;
     Device_Uptime.findOne({ 
         attributes : [

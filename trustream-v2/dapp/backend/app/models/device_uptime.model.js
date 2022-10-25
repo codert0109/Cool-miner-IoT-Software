@@ -12,6 +12,12 @@ module.exports = (sequelize, Sequelize) => {
     nft_id : {
       type : Sequelize.INTEGER
     },
+    multiplier : {
+      type : Sequelize.INTEGER
+    },
+    reward : {
+      type : Sequelize.STRING
+    },
     created_at: {
       type: Sequelize.DATE
     },

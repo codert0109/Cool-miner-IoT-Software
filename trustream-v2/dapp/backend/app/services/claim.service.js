@@ -63,9 +63,9 @@ const onResult = async () => {
                         'NFT:',         deviceUpTimeData[i].nft_id,
                         'Multiplier:',  multiplier,
                         'UpTime:',      deviceUpTimeData[i].uptime);
-            let uptime = Math.min(EPOCH_INTERVAL_SECONDS, deviceUpTimeData[i].uptime);
-            uptime *= multiplier;
-            deviceUpTimeData[i].uptime = uptime;
+            deviceUpTimeData[i].realuptime = Math.min(EPOCH_INTERVAL_SECONDS, deviceUpTimeData[i].uptime);
+            deviceUpTimeData[i].multiplier = multiplier;
+            deviceUpTimeData[i].uptime = deviceUpTimeData[i].realuptime * multiplier;
         }
 
         let totUptime = 0;
@@ -87,7 +87,15 @@ const onResult = async () => {
                         'NFT:',     deviceUpTimeData[i].nft_id,
                         'Reward:',  curReward);
 
-            let ret = await updateClaimToken(deviceUpTimeData[i].address, curReward);
+            let ret = await updateClaimToken({
+                address     : deviceUpTimeData[i].address, 
+                amount      : curReward,
+                uptime      : deviceUpTimeData[i].realuptime,
+                nft_id      : deviceUpTimeData[i].nft_id,
+                multiplier  : parseInt(deviceUpTimeData[i].multiplier * 10000),
+                epoch       : last_epoch
+            });
+
             if (ret.status == 'ERR') {
                 console.error('errors in updatimg claim token', { 
                     address : deviceUpTimeData[i].address,

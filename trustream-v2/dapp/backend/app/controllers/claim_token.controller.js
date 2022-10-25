@@ -1,5 +1,6 @@
 const db = require('../models')
 const claim = db.claim
+const { updateUptimeInfo } = require('./device_uptime.controller');
 
 const Web3 = require('web3');
 const { CENTRAL_WALLET } = require('../config/db.config');
@@ -97,7 +98,7 @@ exports.getStakingInfo = async (address) => {
 //   }
 // };
 
-exports.updateClaimToken = async (address, amount) => {
+exports.updateClaimToken = async ({address, amount, uptime, nft_id, multiplier, epoch}) => {
   try {
     let data = await claim.findOne({ where : { address }})
     let prv_amount = BigInt(0);
@@ -108,6 +109,8 @@ exports.updateClaimToken = async (address, amount) => {
       await claim.create( { address, token : amount.toString() });
     }
     
+    await updateUptimeInfo({address, amount, uptime, nft_id, multiplier, epoch});
+
     return {
       status : 'OK',
       address,
