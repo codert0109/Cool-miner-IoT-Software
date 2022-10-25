@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
       type : Sequelize.INTEGER
     },
     reward: {
-      type: Sequelize.DATE
+      type: Sequelize.STRING
     }
   }, {
     uniqueKeys: {

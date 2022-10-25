@@ -7,6 +7,7 @@ const DISTRIBUTION_AMOUNT = BigInt(10) * unit;
 const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
 const claim_controller = require('../controllers/claim_token.controller');
+const { epochs }  = require('../models')
 
 const { updateClaimToken } = claim_controller;
 const { getMultiplier } = require('../controllers/staking.controller');
@@ -74,6 +75,14 @@ const onResult = async () => {
             totUptime += deviceUpTimeData[i].uptime;
 
         console.log('TotUpTime:', totUptime);
+
+        await epochs.create({
+            epoch       : last_epoch,
+            duration    : EPOCH_INTERVAL_SECONDS,
+            miner       : deviceUpTimeData.length,
+            weight      : totUptime,
+            reward      : DISTRIBUTION_AMOUNT.toString()
+        });
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let curReward;
