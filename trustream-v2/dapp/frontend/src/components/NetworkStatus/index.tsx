@@ -47,8 +47,6 @@ export default observer((props: Props) => {
   const [weight, setWeight] = useState(0);
   const [reward, setReward] = useState('0');
 
-  const [rewardInfo, setRewardInfo] = useState([]);
-
   useEffect(() => {
     auth.$().get(`${BACKEND_URL}/api/epoch/status`)
       .then((response: any) => {
@@ -66,16 +64,6 @@ export default observer((props: Props) => {
         console.log('getInformation error', err);
       });
   }, []);
-
-  useEffect(() => {
-    auth.$().post(`${BACKEND_URL}/api/device_uptime/getUpTimeInfo`, {
-      address: god.currentNetwork.account
-    }).then((response: any) => {
-      console.log('miner response', response);
-    }).catch((err) => {
-
-    });
-  }, [god.currentNetwork.account]);
 
   return (
     <Box label="Overall Network Stats" headerClass={classes.orange}>

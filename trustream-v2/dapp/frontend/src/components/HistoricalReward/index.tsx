@@ -3,6 +3,7 @@ import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from "@/components/Container/Box";
 import { Button, createStyles } from '@mantine/core';
 import classnames from 'classnames';
+import { formatDecimalWeb3, formatUpTime } from '@/utils/index';
 
 const useStyles = createStyles((theme) => ({
     NFTTable: {
@@ -31,27 +32,27 @@ const useStyles = createStyles((theme) => ({
         color: 'green'
     },
 
-    centerAlign : {
-        display : 'flex',
-        alignItems : 'center',
-        justifyContent : 'center',
-        height : '36px'
+    centerAlign: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '36px'
     },
 
-    imgStyle : {
-        height : 30,
-        transform : 'translate(0px, 2px)'
+    imgStyle: {
+        height: 30,
+        transform: 'translate(0px, 2px)'
     },
 
-    minerName : {
-        position : 'absolute',
-        top : 3,
-        paddingRight : 5,
-        backgroundColor : 'black',
-        left : 8,
-        display : 'flex',
-        alignItems : 'center',
-        justifyContent : 'center'
+    minerName: {
+        position: 'absolute',
+        top: 3,
+        paddingRight: 5,
+        backgroundColor: 'black',
+        left: 8,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 }));
 
@@ -75,7 +76,7 @@ export default observer((props: Props) => {
                     {/* {status === false && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
                     {status === true && <img src="/images/status/working.png" className={classes.imgStyle}></img>} */}
                     <img src="/images/status/working.png" className={classes.imgStyle}></img>
-                    CobraKai
+                    {props.nft_id}
                 </div>
             </>
         );
@@ -90,21 +91,30 @@ export default observer((props: Props) => {
                         <th className={classes.th} key="2">Mining Time</th>
                         <th className={classes.th} key="3">Multiplier</th>
                         <th className={classes.th} key="4">Epoch Reward</th>
-                        <th className={classes.th} key="4">Total Uptime</th>
+                        {/* <th className={classes.th} key="4">Total Uptime</th> */}
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td className={classnames(classes.center, classes.green)} key="1">10:00 am - 11:00 am</td>
-                        <td className={classes.center} key="2">20 minutes</td>
-                        <td className={classes.center} key="3">X 1.55</td>
-                        <td className={classes.center} key="4">333 ELUM</td>
-                        <td className={classes.center} key="4">10800 minutes</td>
-                    </tr>
+                    {
+                        props.info.map((item, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td className={classnames(classes.center, classes.green)} key="1">{formatUpTime(item.epoch)}</td>
+                                    <td className={classes.center} key="2">{item.uptime} seconds</td>
+                                    <td className={classes.center} key="3">X {item.multiplier / 10000}</td>
+                                    <td className={classes.center} key="4">{item.reward == null ? 0 : formatDecimalWeb3(BigInt(item.reward))} ELUM</td>
+                                    {/* <td className={classes.center} key="5">10800 minutes</td> */}
+                                </tr>
+                            );
+                        })
+                    }
                 </tbody>
             </table>
         </Box>
     );
 });
 
-interface Props { }
+interface Props {
+    nft_id: number;
+    info: any;
+}

@@ -11,6 +11,18 @@ export function formatDecimalWeb3(x : bigint) {
     return parseInt((x / (TOKEN_UNIT / BigInt(10000))).toString()) / 10000;
 }
 
+export function formatUpTime(x : number) {
+    let a = new Date(x * 3600 * 1000);
+    let b = new Date((x + 1) * 3600 * 1000);
+    let cur = new Date();
+
+    let aStr, bStr;
+    aStr = a.toLocaleTimeString();
+    bStr = b.toLocaleTimeString();
+    
+    return aStr + ' - ' + bStr;
+}
+
 export function getContractAddressFormat() {
     return getAddressFormat(ContractAddress.ElumNFT);
 }
