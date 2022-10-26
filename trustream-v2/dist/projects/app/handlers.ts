@@ -152,7 +152,6 @@ async function checkVersion(msg_version : string) {
     } else {
       min_version = '1.0.0';
     }
-    console.log('min_version', min_version);
   } catch (err) {
     console.error(err);
     return false;

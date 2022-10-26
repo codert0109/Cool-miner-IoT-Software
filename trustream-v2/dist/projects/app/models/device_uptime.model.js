@@ -35,13 +35,25 @@ __decorate([
         allowNull: false
     }),
     __metadata("design:type", Number)
+], DeviceUptimeModel.prototype, "epoch", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", Number)
 ], DeviceUptimeModel.prototype, "nft_id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         allowNull: false
     }),
     __metadata("design:type", Number)
-], DeviceUptimeModel.prototype, "epoch", void 0);
+], DeviceUptimeModel.prototype, "multiplier", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        allowNull: false
+    }),
+    __metadata("design:type", String)
+], DeviceUptimeModel.prototype, "reward", void 0);
 DeviceUptimeModel = __decorate([
     sequelize_typescript_1.Table({
         tableName: 'device_uptimes'

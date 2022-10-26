@@ -71,7 +71,7 @@ export default observer((props: Props) => {
         <thead className={classes.thead}>
           <tr>
             <th className={classes.th} key="1">Epoch Duration</th>
-            <th className={classes.th} key="2">Active Miners</th>
+            <th className={classes.th} key="2">NFTs </th>
             <th className={classes.th} key="3">Accumulated Weight Rating</th>
             <th className={classes.th} key="4">Epoch Rewards</th>
           </tr>

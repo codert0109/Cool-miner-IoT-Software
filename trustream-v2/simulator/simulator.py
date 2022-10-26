@@ -40,7 +40,7 @@ class Message:
       self.start_time = int(time.time())
       self.end_time = self.start_time + 2
       self.miner = 'testminer'
-      self.version = '2.1.5'
+      self.version = '2.2.0'
       self.nftID = '1'
       self.location_id = 'P11'
 

@@ -354,13 +354,20 @@ export default observer(() => {
     };
 
     const renderNFTSelectOptions = () => {
-        return NFTStatus.filter(item => item.Connection == 'Not assigned').map((item, index) => {
+        return NFTStatus.filter(item => item.Connection == 'Not assigned').map((item) => {
             return {
                 value : item.NFT.toString(),
                 label : "NFT " + item.NFT.toString(),
                 group : 'Testnet Miner'
             }
         });
+    };
+
+    const getDefaultOption = () => {
+        let optionList = renderNFTSelectOptions();
+        if (optionList.length == 0)
+            return "-1";
+        return optionList[0].value;
     };
 
     if (nft.loading) {
@@ -371,18 +378,22 @@ export default observer(() => {
         )
     }
 
+    console.log('defaultOptionA', getDefaultOption());
+    console.log('defaultOptionB', renderNFTSelectOptions());
+
     return (
         <Layout>
             <div style={{display : 'flex'}}>
                 <Select
                     placeholder={nft.infoList.length > 0 ? "Choose NFT to " : "No NFTs to assign"}
                     data={renderNFTSelectOptions()}
+                    key={getDefaultOption()}
+                    defaultValue={getDefaultOption()}
                     style={{
                         marginRight : 10
                     }}
                     onChange={setSelectedNFT}
                 />
-
                 <Button
                     style={{ marginBottom: '10px' }}
                     onClick={onSecureMinerConnection}
