@@ -206,7 +206,6 @@ export default observer(() => {
             .then((data) => {
                 if (data.data == 'success') {
                     god.pollingData();
-                    console.log('call polling data');
                     setTimeout(() => {
                         god.currentNetwork.loadBalance();
                     }, 2000);

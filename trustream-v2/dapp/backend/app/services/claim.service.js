@@ -16,6 +16,19 @@ let timerID = null;
 let isPending = false;
 
 const onResult = async () => {
+    // Address: 0xE03eEc6FAE0ed6716142d484Ce6a81B7179df605 NFT: 159 Reward: 117347280895862670n
+    // console.log('called again');
+    // await updateClaimToken({
+    //     address : '0xE03eEc6FAE0ed6716142d484Ce6a81B7179df605',
+    //     amount : BigInt('117347280895862670'),
+    //     uptime : 5250,
+    //     nft_id : 159,
+    //     multiplier : 17500,
+    //     epoch : 463011
+    // })
+
+    // return;
+
     if (isPending) return;
 
     // hh:mm:ss the minute should be bigger than > 10.

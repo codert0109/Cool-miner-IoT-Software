@@ -1,12 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
   const Claim = sequelize.define("claim", {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
-    },
     address: {
-      type : Sequelize.STRING
+      type : Sequelize.STRING,
+      primaryKey: true
     },
     token : {
       type : Sequelize.STRING
@@ -18,6 +14,5 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE
     }
   });
-
   return Claim;
 };

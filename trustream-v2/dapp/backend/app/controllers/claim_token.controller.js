@@ -102,9 +102,10 @@ exports.updateClaimToken = async ({address, amount, uptime, nft_id, multiplier, 
   try {
     let data = await claim.findOne({ where : { address }})
     let prv_amount = BigInt(0);
+    console.log('data exist', data != null);
     if (data != null) {
       prv_amount = BigInt(data.token);
-      await claim.update( { address, token : (prv_amount + amount).toString()}, { where : { id : data.id } });
+      await claim.update( { address, token : (prv_amount + amount).toString()}, { where : { address } });
     } else {
       await claim.create( { address, token : amount.toString() });
     }
