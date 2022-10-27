@@ -2,7 +2,7 @@ const EPOCH_INTERVAL_SECONDS = 1 * 60 * 60;             // 3600s = 1h
 const EPOCH_INTERVAL = EPOCH_INTERVAL_SECONDS * 1000;   // 3600s = 1h
 const TIMER_INTERVAL = 5000;
 const unit = BigInt(Math.pow(10, 18));
-const DISTRIBUTION_AMOUNT = BigInt(10) * unit;
+const DISTRIBUTION_AMOUNT = BigInt(1000) * unit;
 
 const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
@@ -16,19 +16,6 @@ let timerID = null;
 let isPending = false;
 
 const onResult = async () => {
-    // Address: 0xE03eEc6FAE0ed6716142d484Ce6a81B7179df605 NFT: 159 Reward: 117347280895862670n
-    // console.log('called again');
-    // await updateClaimToken({
-    //     address : '0xE03eEc6FAE0ed6716142d484Ce6a81B7179df605',
-    //     amount : BigInt('117347280895862670'),
-    //     uptime : 5250,
-    //     nft_id : 159,
-    //     multiplier : 17500,
-    //     epoch : 463011
-    // })
-
-    // return;
-
     if (isPending) return;
 
     // hh:mm:ss the minute should be bigger than > 10.
