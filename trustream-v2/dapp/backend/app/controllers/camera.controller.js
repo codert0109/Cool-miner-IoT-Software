@@ -4,10 +4,36 @@ const P = db.P
 const Op = db.Sequelize.Op;
 
 // Kernel Function
+
+// exports.assignNextCamera = async ({nft_id, camera}, success_callback, error_callback) => {
+//   let table_index = camera.tableid;
+//   P[table_index].findOne({ where : { id : camera.id }})
+//     .then((data) => {
+//       if (data) {
+//         P[table_index].destroy(
+//           { where : { id : camera.id } }
+//         ).then((data) => {
+//           success_callback(data);
+//         }).catch((err) => {
+//           console.error('errors occured', err);
+//           error_callback(err);
+//         });
+//       } else {
+//         console.error('errors occured, assignNFTCamera cannot find old record.');
+//         error_callback();
+//       }
+//     })
+//     .catch((err) => {
+//       console.error('errors occured', err);
+//       error_callback(err);
+//     });
+// };
+
 /**
  * This function records nft_id & camera.id information to P table.
  * If id exists in P table, it will update nft_id and timestamp.
  */
+
 exports.assignNFTToCamera = async ({nft_id, camera, isRemove}, success_callback, error_callback) => {
   if (isRemove == null)
     isRemove = false;
