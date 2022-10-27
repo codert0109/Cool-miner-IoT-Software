@@ -71,16 +71,17 @@ export default observer((props: Props) => {
         <thead className={classes.thead}>
           <tr>
             <th className={classes.th} key="1">Epoch Duration</th>
-            <th className={classes.th} key="2">NFTs </th>
+            <th className={classes.th} key="2">Active Miners</th>
             <th className={classes.th} key="3">Accumulated Weight Rating</th>
             <th className={classes.th} key="4">Epoch Rewards</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className={classnames(classes.center, classes.green)} key="1">{duration} Seconds</td>
+            {/* <td className={classnames(classes.center, classes.green)} key="1">{duration} Seconds</td> */}
+            <td className={classnames(classes.center, classes.green)} key="1">{duration / 60} Minutes</td>
             <td className={classes.center} key="2">{miner}</td>
-            <td className={classes.center} key="3">{weight}</td>
+            <td className={classes.center} key="3">{Math.round(weight / 3600 * 100) / 100}</td>
             <td className={classes.center} key="4">{reward} ELUM</td>
           </tr>
         </tbody>

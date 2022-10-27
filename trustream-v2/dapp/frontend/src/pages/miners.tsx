@@ -74,8 +74,6 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     const UpdateLocalMinerInfo = () => {
-        // return setMinerName('hi');
-
         const url = `${publicConfig.DEVICE_URL}/get_status`;
         $.get(url)
             .then((data) => {
@@ -197,7 +195,16 @@ export default observer(() => {
             return;
         }
 
-        if (selectedNFT == null) {
+
+        let choosenNFT = selectedNFT;
+
+        if (choosenNFT == null) {
+            if (getDefaultOption() != "-1")
+                choosenNFT = getDefaultOption();
+        }
+
+        if (choosenNFT == null) {
+            
             Swal.fire(
                 'Info',
                 `<p>You need to choose an NFT to secure your Mining Connection.</p>`,
@@ -209,7 +216,7 @@ export default observer(() => {
         const performAction = () => {
             auth.$().post(`${BACKEND_URL}/api/nft_auth/create`, {
                 address: god.currentNetwork.account,
-                nft_id: selectedNFT,
+                nft_id: choosenNFT,
                 miner: minerName // we should upgrade this one
             }).then((data) => {
                 if (data.data.status == 'success') {
@@ -224,7 +231,7 @@ export default observer(() => {
                     const url = `${publicConfig.DEVICE_URL}/set_signature`;
 
                     const wallet = god.currentNetwork.account;
-                    const nftID = selectedNFT;
+                    const nftID = choosenNFT;
 
                     const link = data.data.camera.link;
                     const location_id = 'P' + (data.data.camera.tableid + 1) + data.data.camera.id;
@@ -377,9 +384,6 @@ export default observer(() => {
             </Layout>
         )
     }
-
-    console.log('defaultOptionA', getDefaultOption());
-    console.log('defaultOptionB', renderNFTSelectOptions());
 
     return (
         <Layout>

@@ -119,7 +119,7 @@ export default observer((props: Props) => {
                             return (
                                 <tr key={index}>
                                     <td className={classnames(classes.center, classes.green)} key="1">{formatUpTime(item.epoch)}</td>
-                                    <td className={classes.center} key="2">{item.uptime} seconds</td>
+                                    <td className={classes.center} key="2">{item.uptime / 60} Minutes</td>
                                     <td className={classes.center} key="3">X {item.multiplier / 10000}</td>
                                     <td className={classes.center} key="4">{item.reward == null ? 0 : formatDecimalWeb3(BigInt(item.reward))} ELUM</td>
                                     {/* <td className={classes.center} key="5">10800 minutes</td> */}

@@ -183,7 +183,7 @@ export default observer(() => {
     };
 
     const hasBalance = () => {
-        return god.currentChain.Coin.balance.format != 0;
+        return god.currentChain.Coin.balance.format <= 1;
     };
 
     const onClaimTokens = () => {
