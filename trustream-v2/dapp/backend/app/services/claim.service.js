@@ -89,7 +89,7 @@ const onResult = async () => {
             if (totUptime == 0) {
                 curReward = BigInt(0);
             } else {
-                curReward = DISTRIBUTION_AMOUNT * BigInt(deviceUpTimeData[i].uptime) / BigInt(totUptime);
+                curReward = DISTRIBUTION_AMOUNT * BigInt(parseInt(deviceUpTimeData[i].uptime + 1e-8)) / BigInt(totUptime);
             }
 
             console.log('Address:', deviceUpTimeData[i].address,
