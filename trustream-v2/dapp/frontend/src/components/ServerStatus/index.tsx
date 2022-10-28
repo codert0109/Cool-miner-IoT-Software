@@ -7,6 +7,7 @@ import Router, { useRouter } from 'next/router';
 import { Loader } from '@mantine/core';
 import { Refresh } from 'tabler-icons-react';
 import { publicConfig } from "../../config/public";
+import { useStore } from "@/store/index";
 const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
@@ -59,6 +60,7 @@ const useStyles = createStyles((theme) => ({
 export default function() {
     const INTERVAL_TIME = 1000 * 60 * 5; // every 5 minute, it will update
 
+    const { nft } = useStore();
     const { classes, theme } = useStyles();
 
     const [serverStatus, setServerStatus] = useState([
@@ -75,15 +77,14 @@ export default function() {
     const updateStatus = () => {
         setLoading(true);
         
-
-        $.post(`${BACKEND_URL}/api/device_status/getActiveMinerCnt`)
+        nft.callContract('getTotalNFT', [])
             .then((data) => {
-                setTotMinerCnt(data.data.count);
+                setTotMinerCnt(parseInt(data.toString()));
             })
             .catch((err) => {
                 console.error(err);
                 setTotMinerCnt(0);
-            });
+            })
 
         $.get(`${BACKEND_URL}/api/status/servers`)
             .then(function (data : any) {

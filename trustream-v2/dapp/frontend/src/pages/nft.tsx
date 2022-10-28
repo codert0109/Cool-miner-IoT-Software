@@ -183,7 +183,7 @@ export default observer(() => {
     };
 
     const hasBalance = () => {
-        return god.currentChain.Coin.balance.format <= 1;
+        return god.currentChain.Coin.balance.format > 1;
     };
 
     const onClaimTokens = () => {
@@ -261,10 +261,12 @@ export default observer(() => {
             {nft.loading && <Loading />}
             {!nft.loading && nft.typeList.length > 0 &&
                 <>
-                    {!hasNFT() && !hasBalance() &&
+                    {
+                        !hasBalance() &&
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
                             Claim Tokens
-                        </Button>}
+                        </Button>
+                    }
                     {renderOWNEDNFT()}
 
                     <div className={classes.marketplace}>MARKETPLACE</div>

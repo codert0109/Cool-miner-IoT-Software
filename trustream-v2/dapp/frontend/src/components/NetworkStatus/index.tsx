@@ -66,7 +66,7 @@ export default observer((props: Props) => {
   }, []);
 
   return (
-    <Box label="Overall Network Stats" headerClass={classes.orange}>
+    <Box label="Overall Network Stats During last Epoch" headerClass={classes.orange}>
       <table className={classes.NFTTable}>
         <thead className={classes.thead}>
           <tr>
