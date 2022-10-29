@@ -194,7 +194,7 @@ export default observer(() => {
                 'error'
             )
         }
-        if (hasNFT() || hasBalance()) {
+        if (hasBalance()) {
             Swal.fire(
                 'Error!',
                 'You can not claim tokens since you already buy an NFT.',
