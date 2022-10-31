@@ -19,8 +19,8 @@ export default observer((props: Props) => {
 
     useEffect(() => {
         auth.$().post(`${BACKEND_URL}/api/device_uptime/getUpTimeInfo`, {
-            address: '0x8b7e9dAb3c280A13A987EC3836f5c01E60326d2D'
-            // address: god.currentNetwork.account,
+            // address: '0x8b7e9dAb3c280A13A987EC3836f5c01E60326d2D'
+            address: god.currentNetwork.account,
         }).then((response: any) => {
             let data : any = response.data;
             let info : any = data.data;
