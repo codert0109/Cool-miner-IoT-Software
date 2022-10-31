@@ -37,9 +37,10 @@ export default observer((props: Props) => {
             });
 
             data.rewardHistory.data.forEach(item => {
-                obj[item.nft_id].history.push(parseInt(item.reward_info) / Math.pow(10, data.rewardHistory.precision));
+                obj[item[0].nft_id].history.push(parseInt(item[0].reward_info) / Math.pow(10, data.rewardHistory.precision));
             });
 
+            console.log('terrible', obj);
             setEpochInfo(Object.keys(obj).map(key => {
                 return {
                     nft_id : key,
