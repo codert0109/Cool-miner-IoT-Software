@@ -269,31 +269,59 @@ exports.verify = (req, res) => {
             if (data.assigned == true && error == 'yes') {
               isRemove = true;
             }
-            camera.assignNFTToCamera(
-              {
-                nft_id : nft_id,
-                camera : data,
-                isRemove : isRemove
-              },
-              () => {
-                if (isRemove == false) {
+            if (isRemove == false) {
+              camera.assignNFTToCamera(
+                {
+                  nft_id : nft_id,
+                  camera : data,
+                  isRemove : isRemove
+                },
+                () => {
                   res.send({
                     status: 'OK',
                     message: 'Signature is valid.',
                     link : data.link,
                     location_id : 'P' + (data.tableid + 1) + data.id
                   })
-                } else {
-                  // The nft_id record has been marked -1 so it will assign new video link.
-                  this.verify(req, res);
-                }
-              },
-              () => {
-                res.send({
-                  status: 'ERR',
-                  message: 'Invalid signature',
+                },
+                () => {
+                  res.send({
+                    status: 'ERR',
+                    message: 'Invalid signature',
+                  })
+                });
+            } else {
+              camera.findFreeNextCamera({ nft_id, camera : data, isRemove : true})
+                .then((data) => {
+                  camera.assignNFTToCamera(
+                    {
+                      nft_id : nft_id,
+                      camera : data,
+                      isRemove : false
+                    },
+                    () => {
+                      res.send({
+                        status: 'OK',
+                        message: 'Signature is valid.',
+                        link : data.link,
+                        location_id : 'P' + (data.tableid + 1) + data.id
+                      })
+                    },
+                    () => {
+                      res.send({
+                        status: 'ERR',
+                        message: 'Invalid signature',
+                      })
+                    });
                 })
-              });
+                .catch((err) => {
+                  console.error('error', err);
+                  res.send({
+                    status: 'ERR',
+                    message: 'Errors occured',
+                  })
+                });
+            } 
           })
           .catch((err) => {
             console.error('error', err);

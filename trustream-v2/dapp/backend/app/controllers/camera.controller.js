@@ -30,6 +30,95 @@ const Op = db.Sequelize.Op;
 // };
 
 /**
+ * This function needs to assign next available camera.
+ */
+exports.findFreeNextCamera = async ({nft_id, camera, isRemove}, success_callback, error_callback) => {
+  if (isRemove != true) {
+    console.error('assignNFTToNextCamera is not working');
+    error_callback();
+    return null;
+  }
+
+  // We need to remove assigned camera.
+  await P[camera.tableid].destroy({ where : { id : camera.id } });
+
+  // We need to move forward with new video link.
+  for (let p_index = 0; p_index < P.length; p_index++) {
+    let i = (p_index + camera.tableid) % P.length;
+    let column = '$' + P[i].name + '$';
+    let timestamp = '$' + P[i].name + '.timestamp$';
+    let ans = null;
+    
+    if (i == camera.tableid) {
+      ans = await Camera.findOne({
+        where: {
+          [Op.and] : [
+            {
+              id : {
+                [Op.gt] : camera.id
+              }
+            },
+            {
+              [Op.or] : [
+                {
+                  [column] : null
+                },
+                {
+                  [timestamp] : {
+                    // we assume that if the updated timestamp is older than 1 hour, we will assign new NFT.
+                    [Op.lt] : Math.floor(Date.now() / 1000) - 15 * 60 
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        include: {
+          model: P[i],
+          as: P[i].name,
+          require: false,
+        },
+        order: [['id', 'ASC']],
+      })
+    } else {
+      ans = await Camera.findOne({
+        where: {
+          [Op.or] : [
+            {
+              [column] : null
+            },
+            {
+              [timestamp] : {
+                // we assume that if the updated timestamp is older than 1 hour, we will assign new NFT.
+                [Op.lt] : Math.floor(Date.now() / 1000) - 15 * 60 
+              }
+            }
+          ]
+        },
+        include: {
+          model: P[i],
+          as: P[i].name,
+          require: false,
+        },
+        order: [['id', 'ASC']],
+      })
+    }
+    if (ans) {
+      return {
+        id : ans.id,
+        link : ans.link,
+        orientation : ans.orientation,
+        coordinates : ans.coordinates,
+        tableid : i,
+        assigned : false      // not assigned yet
+      };
+    }
+  }
+
+  return null;
+};
+
+/**
  * This function records nft_id & camera.id information to P table.
  * If id exists in P table, it will update nft_id and timestamp.
  */
@@ -37,6 +126,11 @@ const Op = db.Sequelize.Op;
 exports.assignNFTToCamera = async ({nft_id, camera, isRemove}, success_callback, error_callback) => {
   if (isRemove == null)
     isRemove = false;
+
+  if (isRemove == true) {
+    exports.assignNFTToNextCamera({nft_id, camera, isRemove}, success_callback, error_callback);
+    return;
+  }
   
   let update_nft_id = isRemove ? -1 : nft_id;
 
