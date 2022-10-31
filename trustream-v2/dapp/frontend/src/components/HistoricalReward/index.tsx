@@ -60,10 +60,6 @@ const useStyles = createStyles((theme) => ({
         justifyContent: 'center'
     },
 
-    height400: {
-        height: 400
-    },
-
     body : {
         display : 'flex',
         width : '100%'
@@ -122,7 +118,7 @@ export default observer((props: Props) => {
     };
 
     return (
-        <Box label={renderHeader()} bodyClass={classes.height400}>
+        <Box label={renderHeader()}>
             <div className={classes.body}>
                 <div className={classes.leftChild}>
                     <ScrollArea sx={{ height: '180px', width: '100%' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
