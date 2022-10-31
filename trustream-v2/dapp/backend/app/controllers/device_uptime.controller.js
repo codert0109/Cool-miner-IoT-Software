@@ -3,7 +3,7 @@ const Device_Uptime = db.device_uptimes
 const Op = db.Sequelize.Op;
 const { getValue } = require('./key_status.controller')
 const MINER_CONFIG = require('../config/miner.config')
-const { sequelize } = require('../models')
+const { sequelize, Sequelize } = require('../models')
 // const Device_Data = db.device_datas;
 // const Op = db.Sequelize.Op;
 
@@ -84,12 +84,74 @@ exports.getUpTimeInfo = (req, res) => {
           ],
         },
       })
-        .then((data) => {
-          res.send({
-            status: 'OK',
-            address,
-            data,
-          })
+        .then((uptimeInfo) => {
+          const periodWeek = 24 * 7;
+          const periodMonth = periodWeek * 30;
+          const periodYear = periodMonth * 12;
+          const precision = 8;
+
+          let periodList = [periodWeek, periodMonth, periodYear];
+          let periodName = ['Past Week', 'Past Month', 'Past Year'];
+
+          let promiseList = [];
+          
+          for (let i = 0; i < periodList.length; i++) {
+            promiseList.push(
+              Device_Uptime.findAll({
+                attributes: [
+                  'nft_id',
+                  [
+                    sequelize.fn(
+                      'SUM', 
+                      sequelize.cast(
+                        sequelize.fn(
+                          'LEFT', 
+                          sequelize.col('reward'), 
+                          -(18 - precision)
+                        ),
+                        'BIGINT'
+                      )
+                    ),     
+                    'reward_info'
+                  ]
+                ],
+                where : {
+                  [Op.and]: [
+                    {
+                      address: address,
+                    },
+                    {
+                      epoch: {
+                        [Op.gt]: data.value - periodList[i],
+                        [Op.lte]: data.value,
+                      },
+                    },
+                  ],
+                },
+                group : ['nft_id']
+              })
+            );
+          }
+
+          Promise.all(promiseList)
+            .then((promiseData) => {
+              res.send({
+                status: 'OK',
+                address,
+                data : uptimeInfo,
+                rewardHistory : {
+                  data : promiseData,
+                  precision
+                }
+              })
+            })
+            .catch((err) => {
+              console.error(err);
+              res.send({
+                status: 'ERR',
+                message: 'Internal Server Error',
+              })
+            });
         })
         .catch((err) => {
           console.error('errors in device_uptime.getUpTimeInfo', err)

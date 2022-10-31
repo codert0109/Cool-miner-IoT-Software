@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from "@/components/Container/Box";
-import { Button, createStyles } from '@mantine/core';
+import { Button, createStyles, ScrollArea } from '@mantine/core';
 import classnames from 'classnames';
 import { formatDecimalWeb3, formatUpTime } from '@/utils/index';
 import { useStore } from '@/store/index';
 import { publicConfig } from "../../config/public";
+import HistoricalPeriod from './HistoricalPeriod';
 
 const { BACKEND_URL } = publicConfig;
 
@@ -57,6 +58,25 @@ const useStyles = createStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+
+    height400: {
+        height: 400
+    },
+
+    body : {
+        display : 'flex',
+        width : '100%'
+    },
+
+    leftChild : {
+        flexGrow : 1,
+        flexShrink : 1
+    },
+
+    rightChild : {
+        width : 130,
+        marginLeft : 10
     }
 }));
 
@@ -64,7 +84,7 @@ const useStyles = createStyles((theme) => ({
 export default observer((props: Props) => {
     const { auth } = useStore();
     const { classes } = useStyles();
-
+    const [scrolled, setScrolled] = useState(false);
     const [name, setName] = useState('');
 
     useEffect(() => {
@@ -102,33 +122,46 @@ export default observer((props: Props) => {
     };
 
     return (
-        <Box label={renderHeader()}>
-            <table className={classes.NFTTable}>
-                <thead className={classes.thead}>
-                    <tr>
-                        <th className={classes.th} key="1">Epoch Time</th>
-                        <th className={classes.th} key="2">Mining Time</th>
-                        <th className={classes.th} key="3">Multiplier</th>
-                        <th className={classes.th} key="4">Epoch Reward</th>
-                        {/* <th className={classes.th} key="4">Total Uptime</th> */}
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        props.info.map((item, index) => {
-                            return (
-                                <tr key={index}>
-                                    <td className={classnames(classes.center, classes.green)} key="1">{formatUpTime(item.epoch)}</td>
-                                    <td className={classes.center} key="2">{item.uptime / 60} Minutes</td>
-                                    <td className={classes.center} key="3">X {item.multiplier / 10000}</td>
-                                    <td className={classes.center} key="4">{item.reward == null ? 0 : formatDecimalWeb3(BigInt(item.reward))} ELUM</td>
-                                    {/* <td className={classes.center} key="5">10800 minutes</td> */}
+        <Box label={renderHeader()} bodyClass={classes.height400}>
+            <div className={classes.body}>
+                <div className={classes.leftChild}>
+                    <ScrollArea sx={{ height: '180px', width: '100%' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+                        <table className={classes.NFTTable}>
+                            <thead className={classes.thead}>
+                                <tr>
+                                    <th className={classes.th} key="1">Epoch Time</th>
+                                    <th className={classes.th} key="2">Mining Time</th>
+                                    <th className={classes.th} key="3">Multiplier</th>
+                                    <th className={classes.th} key="4">Epoch Reward</th>
+                                    {/* <th className={classes.th} key="4">Total Uptime</th> */}
                                 </tr>
-                            );
-                        })
-                    }
-                </tbody>
-            </table>
+                            </thead>
+                            <tbody>
+                                {
+                                    props.info.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td className={classnames(classes.center, classes.green)} key="1">{formatUpTime(item.epoch)}</td>
+                                                <td className={classes.center} key="2">{item.uptime / 60} Minutes</td>
+                                                <td className={classes.center} key="3">X {item.multiplier / 10000}</td>
+                                                <td className={classes.center} key="4">{item.reward == null ? 0 : formatDecimalWeb3(BigInt(item.reward))} ELUM</td>
+                                                {/* <td className={classes.center} key="5">10800 minutes</td> */}
+                                            </tr>
+                                        );
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    </ScrollArea>
+                </div>
+                <div className={classes.rightChild}>
+                    <HistoricalPeriod label="Past Week" token={props.history[0]}/>
+                    <div style={{height : 2}}></div>
+                    <HistoricalPeriod label="Past Month" token={props.history[1]}/>
+                    <div style={{height : 2}}></div>
+                    <HistoricalPeriod label="Past Year" token={props.history[2]}/>
+                </div>
+            </div>
         </Box>
     );
 });
@@ -136,4 +169,5 @@ export default observer((props: Props) => {
 interface Props {
     nft_id: number;
     info: any;
+    history : Array<string>;
 }
