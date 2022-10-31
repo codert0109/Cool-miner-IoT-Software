@@ -19,7 +19,7 @@ export default observer((props: Props) => {
 
     useEffect(() => {
         auth.$().post(`${BACKEND_URL}/api/device_uptime/getUpTimeInfo`, {
-            address: '0x33bf360A6468E3C34f5261feD16109a8c7f7B0Df'
+            address: '0x8b7e9dAb3c280A13A987EC3836f5c01E60326d2D'
             // address: god.currentNetwork.account,
         }).then((response: any) => {
             let data : any = response.data;
@@ -37,10 +37,11 @@ export default observer((props: Props) => {
             });
 
             data.rewardHistory.data.forEach(item => {
-                obj[item[0].nft_id].history.push(parseInt(item[0].reward_info) / Math.pow(10, data.rewardHistory.precision));
+                item.forEach(subitem => {
+                    obj[subitem.nft_id].history.push(parseInt(subitem.reward_info) / Math.pow(10, data.rewardHistory.precision));
+                });
             });
 
-            console.log('terrible', obj);
             setEpochInfo(Object.keys(obj).map(key => {
                 return {
                     nft_id : key,
@@ -52,6 +53,8 @@ export default observer((props: Props) => {
             console.error(err);
         });
     }, [god.currentNetwork.account]);
+
+    console.log('epochInfo', epochInfo);
 
     return (
         <>
