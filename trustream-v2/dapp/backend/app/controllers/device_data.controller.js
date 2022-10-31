@@ -25,6 +25,17 @@ const checkActive = (address, callback) => {
     });
 };
 
+// Return the latest active miner.
+exports.getMinerNameFromAddressNFTID = async ({address, nft_id}) => {
+  try {
+    let data = await Device_Data.findOne({ where : { address, nft_id }, order: [['start_time', 'DESC']]});
+    return data;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 // Code function to return number of active miner.
 exports.getActiveMinerCnt = async (address) => {
   try {

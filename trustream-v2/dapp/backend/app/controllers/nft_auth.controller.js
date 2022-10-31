@@ -2,6 +2,7 @@ const db = require('../models')
 const NFT_Auth = db.nft_auth
 const { getRandomSessionID } = require('../utils')
 const camera = require('./camera.controller')
+const { getMinerNameFromAddressNFTID } = require('./device_data.controller');
 
 // This is Kernel Function
 // Before call this function, please check authentication.
@@ -166,14 +167,27 @@ exports.getStatus = (req, res) => {
           },
         })
       } else {
-        res.send({
-          status: 'OK',
-          data: {
-            nft_id,
-            miner: data.miner,
-            session: getRandomSessionID(),
-          },
-        })
+        getMinerNameFromAddressNFTID({ address, nft_id })
+          .then((data1) => {
+            let miner = data1.miner ? data1.miner : null;
+            if (miner == null) 
+              miner = data.miner;
+            res.send({
+              status: 'OK',
+              data: {
+                nft_id,
+                miner,
+                session: getRandomSessionID(),
+              },
+            })
+          })
+          .catch((err) => {
+            console.error(err)
+            res.send({
+              status: 'ERR',
+              message: 'Internal Server Error',
+            })
+          });
       }
     })
     .catch((err) => {
