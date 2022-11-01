@@ -213,7 +213,7 @@ exports.findAll = (req, res) => {
 
   Device_Data.count()
     .then(cnt => {
-      Device_Data.findAll({offset, limit, order: [['start_time', 'DESC']]})
+      Device_Data.findAll({offset, limit, order: [['upload_time', 'DESC']]})
         .then(data => {
           res.send({
             offset,
