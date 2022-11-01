@@ -85,13 +85,13 @@ exports.getUpTimeInfo = (req, res) => {
         },
       })
         .then((uptimeInfo) => {
-          const periodWeek = 24 * 7;
+          const periodDay = 24;
+          const periodWeek = periodDay * 7;
           const periodMonth = periodWeek * 30;
-          const periodYear = periodMonth * 12;
           const precision = 8;
 
-          let periodList = [periodWeek, periodMonth, periodYear];
-          let periodName = ['Past Week', 'Past Month', 'Past Year'];
+          let periodList = [periodDay, periodWeek, periodMonth];
+          let periodName = ['Past Day', 'Past Week', 'Past Month'];
 
           let promiseList = [];
           

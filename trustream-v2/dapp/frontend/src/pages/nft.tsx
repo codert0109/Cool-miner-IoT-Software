@@ -121,7 +121,16 @@ export default observer(() => {
                     'Error!',
                     `<p>Only Waitlist participants can obtain a mining NFT at this time.</p>
                      <p>Please ensure you are using the same email address you used to sign up to the Waitlist.</p>
-                     <p>If you are not on the Waitlist, stay tuned as mining will be opening to the public in the near future!</p>`,
+                     <p>If you are not on the Waitlist, stay tuned as mining will be opening to the public in the near future!</p>
+                     <p>Oct 26th - BETA testers + Waitlist positions 1 - 100</br>
+                     Oct 27th - Waitlist positions 101 - 600</br>
+                     Oct 28th - Waitlist positions 601 - 1100</br>
+                     Oct 29th - Waitlist positions 1101 - 1600</br>
+                     Oct 30th - Waitlist positions 1601 - 2100</br>
+                     Oct 31th - Waitlist positions 2101 - 2600</br>
+                     Nov 1st - Waitlist positions 2601 - 3100</br>
+                     Nov 2nd - Waitlist positions 3101 and up</br>
+                     Nov 3rd - Public Access</p>`,
                     'error'
                 )
                 return;

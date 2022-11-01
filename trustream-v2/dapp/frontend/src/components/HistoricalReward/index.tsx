@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from "@/components/Container/Box";
-import { Button, createStyles, ScrollArea } from '@mantine/core';
+import { Button, createStyles, ScrollArea, Table } from '@mantine/core';
 import classnames from 'classnames';
 import { formatDecimalWeb3, formatUpTime } from '@/utils/index';
 import { useStore } from '@/store/index';
@@ -18,7 +18,19 @@ const useStyles = createStyles((theme) => ({
     },
 
     thead: {
-        borderBottom: '1px solid black',
+        position: 'sticky',
+        top: 0,
+        backgroundColor: theme.white,
+        transition: 'box-shadow 150ms ease',
+
+        '&::after': {
+            content: '""',
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
+        },
     },
 
     orange: {
@@ -26,7 +38,10 @@ const useStyles = createStyles((theme) => ({
     },
 
     th: {
-        borderBottom: '1px solid black'
+        // borderBottom: '1px solid black',
+        // color : 'black'
+        textAlign : 'center !important' as any,
+        color : 'black !important'
     },
 
     center: {
@@ -73,13 +88,18 @@ const useStyles = createStyles((theme) => ({
     rightChild : {
         width : 130,
         marginLeft : 10
-    }
+    },
+
+    scrolled: {
+        boxShadow: theme.shadows.sm,
+    },
 }));
 
 
 export default observer((props: Props) => {
     const { auth } = useStore();
-    const { classes } = useStyles();
+    const { classes, cx } = useStyles();
+    
     const [scrolled, setScrolled] = useState(false);
     const [name, setName] = useState('');
 
@@ -122,8 +142,8 @@ export default observer((props: Props) => {
             <div className={classes.body}>
                 <div className={classes.leftChild}>
                     <ScrollArea sx={{ height: '180px', width: '100%' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-                        <table className={classes.NFTTable}>
-                            <thead className={classes.thead}>
+                        <Table className={classes.NFTTable}>
+                            <thead className={cx(classes.thead, { [classes.scrolled]: scrolled })}>
                                 <tr>
                                     <th className={classes.th} key="1">Epoch Time</th>
                                     <th className={classes.th} key="2">Mining Time</th>
@@ -147,15 +167,15 @@ export default observer((props: Props) => {
                                     })
                                 }
                             </tbody>
-                        </table>
+                        </Table>
                     </ScrollArea>
                 </div>
                 <div className={classes.rightChild}>
-                    <HistoricalPeriod label="Past Week" token={props.history[0]}/>
+                    <HistoricalPeriod label="Past Day" token={props.history[0]}/>
                     <div style={{height : 2}}></div>
-                    <HistoricalPeriod label="Past Month" token={props.history[1]}/>
+                    <HistoricalPeriod label="Past Week" token={props.history[1]}/>
                     <div style={{height : 2}}></div>
-                    <HistoricalPeriod label="Past Year" token={props.history[2]}/>
+                    <HistoricalPeriod label="Past Month" token={props.history[2]}/>
                 </div>
             </div>
         </Box>
