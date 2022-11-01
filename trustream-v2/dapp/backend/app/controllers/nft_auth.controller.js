@@ -267,7 +267,7 @@ exports.verify = (req, res) => {
   }
 
   const { address, signature, nft_id, error } = req.body;
-
+  
   NFT_Auth.findOne({ where: { address, session_id: signature, nft_id } })
     .then((data) => {
       if (data === null) {

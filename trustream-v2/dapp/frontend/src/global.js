@@ -5,5 +5,8 @@ module.exports = {
             return window;
         }
         return {};
+    },
+    isBrave : async () => {
+        return (navigator.brave && await navigator.brave.isBrave() || false)
     }
 };
