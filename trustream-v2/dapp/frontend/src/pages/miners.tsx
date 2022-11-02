@@ -81,38 +81,27 @@ export default observer(() => {
     useEffect(() => {
         axios.get(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`)
             .then((data) => {
-                console.error('getting google success');
+                // no problem, still go
             })
             .catch((err) => {
-                console.error('getting google failed', err);
-            });
-        // var nativeError = console.error.bind(console) //store native function
-        // console.error = function(...text){ //override
-        //     if (text[1].indexOf('ERR_CONNECTION_REFUSED') != -1) {
-        //         const check = async () => {
-        //             console.log('working');
-        //             let isBrave = await global.isBrave();
-        //             if (isBrave == true || true) {
-        //                 if (errorShowed == true)
-        //                     return;
-        //                 Swal.fire(
-        //                     'Warning',
-        //                     `<p>Our system has detected you are currently using Brave Web Browser.</p>
-        //                      <p>You will need to turn Brave Shields Down or open miner.elumicate.com with a different browser.</p>`,
-        //                     'warning'
-        //                 );
-        //                 setErorShowed(true);
-        //             }
-        //         };
+                const check = async () => {
+                    console.log('working');
+                    let isBrave = await global.isBrave();
+                    if (isBrave == true) {
+                        if (errorShowed == true)
+                            return;
+                        Swal.fire(
+                            'Warning',
+                            `<p>Our system has detected you are currently using Brave Web Browser.</p>
+                             <p>You will need to turn Brave Shields Down or open miner.elumicate.com with a different browser.</p>`,
+                            'warning'
+                        );
+                        setErorShowed(true);
+                    }
+                };
         
-        //         check();
-        //     }
-        //     nativeError('<<<' + text);
-        //     nativeError('<<<' + text.indexOf('at'));
-        // }
-        // return () => {
-        //     console.error = nativeError;
-        // }
+                check();
+            });
     }, []);
 
     const UpdateLocalMinerInfo = () => {
