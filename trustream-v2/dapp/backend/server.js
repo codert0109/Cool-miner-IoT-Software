@@ -5,6 +5,7 @@ const app = express()
 const http = require('http')
 const https = require('https')
 const fs = require('fs')
+const cookieParser = require('cookie-parser');
 
 function ensureSecure(req, res, next) {
   // return next() // for testing purpose
@@ -24,7 +25,7 @@ app.use(express.static('public'))
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.cookieParser());
+app.use(cookieParser());
 
 const db = require('./app/models')
 
