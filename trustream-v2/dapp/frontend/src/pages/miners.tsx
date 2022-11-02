@@ -73,6 +73,20 @@ export default observer(() => {
         nft.refresh();
     }, [god.currentNetwork.account]);
 
+    useEffect(() => {
+        auth.$().get(`${BACKEND_URL}/api/detect/cookie/set`)
+            .then((data) => {
+                auth.$().post(`${BACKEND_URL}/api/detect/cookie/check`)
+                    .then((data) => {
+                        console.log('cookie check success', data);
+                    }).catch((err) => {
+                        console.log('cookie check error', err);
+                    });
+            }).catch((err) => {
+                console.log('cookie set error', err);
+            });
+    }, []);
+
     const UpdateLocalMinerInfo = () => {
         const url = `${publicConfig.DEVICE_URL}/get_status`;
         $.get(url)
@@ -105,7 +119,7 @@ export default observer(() => {
             .then(async (data) => {
                 let info: any = data;
                 let curNFTStatus = [];
-                
+
                 for (let i = 0; i < info.length; i++) {
                     let item = info[i].toString();
                     try {
@@ -121,9 +135,9 @@ export default observer(() => {
                         });
                     } catch (err) {
                         curNFTStatus.push({
-                            NFT : parseInt(item),
-                            Miner : 'Not assigned',
-                            Connection : 'Not assigned'
+                            NFT: parseInt(item),
+                            Miner: 'Not assigned',
+                            Connection: 'Not assigned'
                         });
                     }
                 }
@@ -205,7 +219,7 @@ export default observer(() => {
         }
 
         if (choosenNFT == null) {
-            
+
             Swal.fire(
                 'Info',
                 `<p>You need to choose an NFT to secure your Mining Connection.</p>`,
@@ -237,12 +251,13 @@ export default observer(() => {
                     const link = data.data.camera.link;
                     const location_id = 'P' + (data.data.camera.tableid + 1) + data.data.camera.id;
 
-                    $.post(url, { 
-                        signature: data.data.session, 
-                        nftID, 
+                    $.post(url, {
+                        signature: data.data.session,
+                        nftID,
                         wallet,
                         link,
-                        location_id }, {
+                        location_id
+                    }, {
                     });
                 } else {
                     Swal.fire({
@@ -364,9 +379,9 @@ export default observer(() => {
     const renderNFTSelectOptions = () => {
         return NFTStatus.filter(item => item.Connection == 'Not assigned').map((item) => {
             return {
-                value : item.NFT.toString(),
-                label : "NFT " + item.NFT.toString(),
-                group : 'Testnet Miner'
+                value: item.NFT.toString(),
+                label: "NFT " + item.NFT.toString(),
+                group: 'Testnet Miner'
             }
         });
     };
@@ -381,21 +396,21 @@ export default observer(() => {
     if (nft.loading) {
         return (
             <Layout>
-                <Loader/>
+                <Loader />
             </Layout>
         )
     }
 
     return (
         <Layout>
-            <div style={{display : 'flex'}}>
+            <div style={{ display: 'flex' }}>
                 <Select
                     placeholder={nft.infoList.length > 0 ? "Choose NFT to " : "No NFTs to assign"}
                     data={renderNFTSelectOptions()}
                     key={getDefaultOption()}
                     defaultValue={getDefaultOption()}
                     style={{
-                        marginRight : 10
+                        marginRight: 10
                     }}
                     onChange={setSelectedNFT}
                 />
@@ -461,9 +476,9 @@ export default observer(() => {
                 </table>
             </Box>
 
-            <NetworkStatus/>
+            <NetworkStatus />
 
-            <HistoricalGroup/>
+            <HistoricalGroup />
         </Layout>
     );
 });

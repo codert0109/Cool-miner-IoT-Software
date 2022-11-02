@@ -10,4 +10,5 @@ module.exports = (app) => {
   require('./camera.routes')(app)
   require('./email.routes')(app)
   require('./epoch.routes')(app)
+  require('./bravedetect.routes')(app)
 }
