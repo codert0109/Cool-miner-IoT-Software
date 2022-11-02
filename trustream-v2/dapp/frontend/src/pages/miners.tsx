@@ -74,9 +74,6 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     const UpdateLocalMinerInfo = () => {
-        setMinerName('kkk');
-        return;
-        
         const url = `${publicConfig.DEVICE_URL}/get_status`;
         $.get(url)
             .then((data) => {
@@ -98,6 +95,7 @@ export default observer(() => {
                 }
             })
             .catch((err) => {
+                console.error(err);
                 setMinerName('');
             });
     };
