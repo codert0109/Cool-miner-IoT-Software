@@ -95,6 +95,7 @@ export default observer(() => {
                 }
             })
             .catch((err) => {
+                console.error('miner manage', err.response);
                 console.error(err);
                 setMinerName('');
             });
