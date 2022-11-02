@@ -79,7 +79,7 @@ export default observer(() => {
     }, [god.currentNetwork.account]);
 
     useEffect(() => {
-        axios.get(`https://www.google.com/`)
+        axios.get(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`)
             .then((data) => {
                 console.error('getting google success');
             })
