@@ -14,9 +14,12 @@ import { Select } from '@mantine/core';
 import NetworkStatus from "@/components/NetworkStatus";
 import HistoricalReward from "@/components/HistoricalReward";
 import HistoricalGroup from "@/components/HistoricalGroup";
+const global = require('../global.js');
 
 const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
+
+import axios from 'axios';
 
 const useStyles = createStyles((theme) => ({
     progressBar: {
@@ -69,22 +72,47 @@ export default observer(() => {
     const [minerName, setMinerName] = useState('');
     const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
 
+    const [errorShowed, setErorShowed] = useState(false);
+
     useEffect(() => {
         nft.refresh();
     }, [god.currentNetwork.account]);
 
     useEffect(() => {
-        auth.$().get(`${BACKEND_URL}/api/detect/cookie/set`)
+        axios.get(`https://www.google.com/`)
             .then((data) => {
-                auth.$().post(`${BACKEND_URL}/api/detect/cookie/check`)
-                    .then((data) => {
-                        console.log('cookie check success', data);
-                    }).catch((err) => {
-                        console.log('cookie check error', err);
-                    });
-            }).catch((err) => {
-                console.log('cookie set error', err);
+                console.error('getting google success');
+            })
+            .catch((err) => {
+                console.error('getting google failed', err);
             });
+        // var nativeError = console.error.bind(console) //store native function
+        // console.error = function(...text){ //override
+        //     if (text[1].indexOf('ERR_CONNECTION_REFUSED') != -1) {
+        //         const check = async () => {
+        //             console.log('working');
+        //             let isBrave = await global.isBrave();
+        //             if (isBrave == true || true) {
+        //                 if (errorShowed == true)
+        //                     return;
+        //                 Swal.fire(
+        //                     'Warning',
+        //                     `<p>Our system has detected you are currently using Brave Web Browser.</p>
+        //                      <p>You will need to turn Brave Shields Down or open miner.elumicate.com with a different browser.</p>`,
+        //                     'warning'
+        //                 );
+        //                 setErorShowed(true);
+        //             }
+        //         };
+        
+        //         check();
+        //     }
+        //     nativeError('<<<' + text);
+        //     nativeError('<<<' + text.indexOf('at'));
+        // }
+        // return () => {
+        //     console.error = nativeError;
+        // }
     }, []);
 
     const UpdateLocalMinerInfo = () => {
@@ -109,7 +137,6 @@ export default observer(() => {
                 }
             })
             .catch((err) => {
-                console.log(JSON.stringify(err))
                 setMinerName('');
             });
     };

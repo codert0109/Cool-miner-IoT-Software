@@ -62,19 +62,6 @@ export default function ({ className }) {
     const { god } = useStore();
 
     useEffect(() => {
-        const check = async () => {
-            let isBrave = await global.isBrave();
-            if (isBrave == true) {
-                Swal.fire(
-                    'Warning',
-                    `<p>Our system detects you are currently using Brave Web Browser.</p>
-                     <p>You need to deactivate brave shield or open miner.elumicate.com with Chrome</p>`,
-                    'warning'
-                );
-            }
-        };
-
-        check();
     }, []);
 
     return (
