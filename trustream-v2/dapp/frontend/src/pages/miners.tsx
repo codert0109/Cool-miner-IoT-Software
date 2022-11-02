@@ -14,7 +14,6 @@ import { Select } from '@mantine/core';
 import NetworkStatus from "@/components/NetworkStatus";
 import HistoricalReward from "@/components/HistoricalReward";
 import HistoricalGroup from "@/components/HistoricalGroup";
-const global = require('../global.js');
 
 const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
@@ -72,37 +71,9 @@ export default observer(() => {
     const [minerName, setMinerName] = useState('');
     const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
 
-    const [errorShowed, setErorShowed] = useState(false);
-
     useEffect(() => {
         nft.refresh();
     }, [god.currentNetwork.account]);
-
-    useEffect(() => {
-        axios.get(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`)
-            .then((data) => {
-                // no problem, still go
-            })
-            .catch((err) => {
-                const check = async () => {
-                    console.log('working');
-                    let isBrave = await global.isBrave();
-                    if (isBrave == true) {
-                        if (errorShowed == true)
-                            return;
-                        Swal.fire(
-                            'Warning',
-                            `<p>Our system has detected you are currently using Brave Web Browser.</p>
-                             <p>You will need to turn Brave Shields Down or open miner.elumicate.com with a different browser.</p>`,
-                            'warning'
-                        );
-                        setErorShowed(true);
-                    }
-                };
-        
-                check();
-            });
-    }, []);
 
     const UpdateLocalMinerInfo = () => {
         const url = `${publicConfig.DEVICE_URL}/get_status`;

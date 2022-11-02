@@ -1,8 +1,9 @@
 import { useStore } from '@/store/index';
 import { createStyles, useMantineTheme } from '@mantine/core';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const global = require('../../global.js');
 
@@ -61,7 +62,32 @@ export default function ({ className }) {
     const { classes } = useStyles();
     const { god } = useStore();
 
+    const [errorShowed, setErorShowed] = useState(false);
+    
     useEffect(() => {
+        axios.get(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`)
+            .then((data) => {
+                // no problem, still go
+            })
+            .catch((err) => {
+                const check = async () => {
+                    console.log('working');
+                    let isBrave = await global.isBrave();
+                    if (isBrave == true) {
+                        if (errorShowed == true)
+                            return;
+                        Swal.fire(
+                            'Warning',
+                            `<p>Our system has detected you are currently using Brave Web Browser.</p>
+                             <p>You will need to turn Brave Shields Down or open miner.elumicate.com with a different browser.</p>`,
+                            'warning'
+                        );
+                        setErorShowed(true);
+                    }
+                };
+        
+                check();
+            });
     }, []);
 
     return (
