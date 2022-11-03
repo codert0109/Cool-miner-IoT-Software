@@ -15,21 +15,27 @@ const useStyles = createStyles((theme) => ({
 
     textinfo: {
         marginLeft: 10,
-        fontSize: '0.9rem',
+        fontSize: '0.65rem',
         overflow: 'hidden',
         textOverflow: 'ellipsis'
     },
+    assigninfo : {
+        color : 'rgb(0, 255, 17)'
+    },
+    minertype : {
+        fontSize : '1.2em'
+    },
     infodiv: {
         padding: 5,
-        paddingLeft: 0,
         marginTop: 10,
         marginLeft: 10,
         fontSize: '1.2rem',
         marginBottom: 10,
         cursor: 'pointer',
-        height: 40,
+        height: 80,
         display: 'flex',
         alignItems: 'center',
+        background: theme.colorScheme == 'dark' ? 'black' : 'white'
     },
     node: {
         paddingLeft: 10,
@@ -147,7 +153,6 @@ export default function NFTStatus({ title, imgurl, price, acquiredTime, id }) {
                 {isDetailShow === false && <div><p className={classes.header}>{title}</p></div>}
                 <div className={classes.imgdiv}>
                     <img src={imgurl} width="100%"></img>
-                    {/* <div className={classes.imgtext}>{text}</div> */}
                 </div>
                 <div className={classes.info}>
                     {
@@ -219,12 +224,18 @@ export default function NFTStatus({ title, imgurl, price, acquiredTime, id }) {
 
 
             <div className={classes.infodiv + ' ' + classes.success} onClick={() => setModalOpen(true)}>
-                <img style={{ height: "100%" }} src="/images/nft/TestNet.png"></img>
-                <span className={classes.textinfo}>
-                    <span>Testnet Miner </span>
+                <div style={{ height: "100%", padding : 5 }}>
+                    <img style={{ height: "100%" }} src="/images/nft/TestNet.png"></img>
+                </div>
+                <div className={classes.textinfo}>
+                    {/* <span>Testnet Miner </span>
                     | <span style={{ whiteSpace: 'nowrap' }}>contract address {ContractAddress.ElumNFT} </span>
-                    | <span style={{ whiteSpace: 'nowrap' }}>acquired on {getAcquiredTime()}</span>
-                </span>
+                    | <span style={{ whiteSpace: 'nowrap' }}>acquired on {getAcquiredTime()}</span> */}
+                    <div className={classes.minertype}>Testnet Miner</div>
+                    <div>Token ID: {id}</div>
+                    <div>Acquired on {getAcquiredTime()}</div>
+                    <div className={classes.assigninfo}>Assigned</div>
+                </div>
             </div>
         </>
     );

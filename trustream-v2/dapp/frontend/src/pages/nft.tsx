@@ -254,6 +254,12 @@ export default observer(() => {
         return (
             <>
                 <div className={classes.caption}>OWNED</div>
+                <SimpleGrid
+                        cols={3}
+                        breakpoints={[
+                            { maxWidth: 'xs', cols: 1 },
+                        ]}
+                >
                 {
                     nft.infoList.map((item, index) => {
                         return (
@@ -267,6 +273,7 @@ export default observer(() => {
                         )
                     })
                 }
+                </SimpleGrid>
             </>
         );
     };

@@ -2,7 +2,7 @@ const EPOCH_INTERVAL_SECONDS = 1 * 60 * 60;             // 3600s = 1h
 const EPOCH_INTERVAL = EPOCH_INTERVAL_SECONDS * 1000;   // 3600s = 1h
 const TIMER_INTERVAL = 5000;
 const unit = BigInt(Math.pow(10, 18));
-const DISTRIBUTION_AMOUNT = BigInt(1000) * unit;
+
 
 const key_status = require('../controllers/key_status.controller');
 const device_uptime = require('../controllers/device_uptime.controller');
@@ -51,6 +51,9 @@ const onResult = async () => {
             'Epoch' : last_epoch, 
             'Time:' : new Date().toString()
         });
+
+        const DISTRIBUTION_AMOUNT_DB = await key_status.getValue('TOKEN_PER_EPOCH').value;
+        const DISTRIBUTION_AMOUNT = BigInt(DISTRIBUTION_AMOUNT_DB);
                 
         await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
 

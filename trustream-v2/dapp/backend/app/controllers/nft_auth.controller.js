@@ -169,7 +169,9 @@ exports.getStatus = (req, res) => {
       } else {
         getMinerNameFromAddressNFTID({ address, nft_id })
           .then((data1) => {
-            let miner = data1.miner ? data1.miner : null;
+            let miner = null;
+            if (data1 != null)
+              miner = data1.miner ? data1.miner : null;
             if (miner == null) 
               miner = data.miner;
             res.send({

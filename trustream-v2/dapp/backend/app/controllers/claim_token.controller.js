@@ -1,6 +1,7 @@
 const db = require('../models')
 const claim = db.claim
 const { updateUptimeInfo } = require('./device_uptime.controller');
+const { updateValue, getValue } = require('./key_status.controller');
 
 const Web3 = require('web3');
 const { CENTRAL_WALLET } = require('../config/db.config');
@@ -201,6 +202,48 @@ exports.claimReward = async (req, res) => {
     address,
     amount : amount.toString()
   });
+};
+
+exports.getDistributeToken = async (req, res) => {
+  getValue('TOKEN_PER_EPOCH')
+    .then((data) => {
+      res.send({
+        status : 'OK',
+        message : data
+      })
+    })
+    .catch((err) => {
+      console.error(err);
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      })
+    })
+};
+
+exports.updateDistributeToken = async (req, res) => {
+  const { token } = req.body;
+  if (token == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+    return;
+  }
+  updateValue('TOKEN_PER_EPOCH', token)
+    .then(() => {
+      res.send({
+        status : 'OK',
+        message : `TOKNE_PER_EPOCH updated as ${token}`
+      })
+    })
+    .catch((err) => {
+      console.error(err);
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      })
+    })
 };
 
 exports.get = async (req, res) => {
