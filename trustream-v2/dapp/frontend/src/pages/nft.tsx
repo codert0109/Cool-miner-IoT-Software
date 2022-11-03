@@ -82,6 +82,8 @@ export default observer(() => {
     const { god, nft, auth } = useStore();
     const [pending, isPending] = useState(false);
 
+    const [claimPending, setClaimPending] = useState(false);
+
     useEffect(() => {
         nft.refresh();
     }, [god.currentNetwork.account]);
@@ -211,12 +213,14 @@ export default observer(() => {
             )
             return;
         }
+        setClaimPending(true);
         axios.post(`${BACKEND_URL}/api/claim_tokens`, { account: god.currentNetwork.account })
             .then((data) => {
                 if (data.data == 'success') {
                     god.pollingData();
                     setTimeout(() => {
                         god.currentNetwork.loadBalance();
+                        setClaimPending(false);
                     }, 2000);
                     Swal.fire(
                         'Congratulations!',
@@ -229,10 +233,12 @@ export default observer(() => {
                         'Something went wrong!',
                         'error'
                     )
+                    setClaimPending(false);
                 }
             })
             .catch((err) => {
                 console.error('err received', err);
+                setClaimPending(false);
             });
     };
 
@@ -271,7 +277,7 @@ export default observer(() => {
             {!nft.loading && nft.typeList.length > 0 &&
                 <>
                     {
-                        !hasBalance() &&
+                        !hasBalance() && claimPending == false &&
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
                             Claim Tokens
                         </Button>
