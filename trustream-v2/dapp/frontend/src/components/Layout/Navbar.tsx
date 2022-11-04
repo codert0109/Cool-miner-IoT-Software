@@ -134,11 +134,11 @@ export const NavbarSimple = observer(() => {
 
   const data = [
     { link: '/',                                          label: t('dashboard'),  icon: Home,             __blank : false, access : 'public' },
-    { link: '/admin',                                     label: 'Admin',         icon: Lock,             __blank : false, access : 'admin' },
     { link: '/miners',                                    label: 'Miner',         icon: FileDatabase,     __blank : false, access : 'public' },
     { link: '/nft',                                       label: 'NFT',           icon: Stack2,           __blank : false, access : 'public' },
     { link: '/staking',                                   label: 'Staking',       icon: ZoomMoney,        __blank : false, access : 'public' },
     { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon,         __blank : false, access : 'public' },
+    { link: '/admin',                                     label: 'Admin',         icon: Lock,             __blank : false, access : 'admin' },
     { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,             __blank : true,  access : 'public' },
     { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,             __blank : true,  access : 'public' },
   ];
@@ -175,7 +175,7 @@ export const NavbarSimple = observer(() => {
       style={{ 
         // backgroundColor: '#000000C0',
         // backgroundColor: '#C7C7C7C0',
-        backgroundColor : theme.colorScheme == 'dark' ? '#000000C0' : '#C7C7C7F0',
+        backgroundColor : theme.colorScheme == 'dark' ? '#000000FF' : '#C7C7C7FF',
         boxShadow : 'rgb(255 255 255 / 19%) 2px 0px 10px 0px',
         zIndex : 101
       }}
