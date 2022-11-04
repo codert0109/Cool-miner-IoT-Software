@@ -181,8 +181,13 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   }
   const address = values[1]
 
+  console.log('ok1');
+  console.log('payload.toString()', payload.toString());
+
   // Decode the JSON message
   let decodedPayload = eval('('+payload.toString()+')');
+
+  console.log('decodePayload', decodedPayload)
 
   if (!await checkVersion(decodedPayload.message.version)) {
     console.log("Discard message with version error, ", decodedPayload.message.version);
