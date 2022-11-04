@@ -106,7 +106,7 @@ async function updateUpTime(address : string, nftID : string) {
       if (elapsedTime < 0)          // needs to update, please sync with database
         elapsedTime = 0;
 
-      if (elapsedTime < UPLOAD_THRESMS) {
+      if (false && elapsedTime < UPLOAD_THRESMS) {
         console.log('blocked: data is uploading too fast.');
         return false;
       }
