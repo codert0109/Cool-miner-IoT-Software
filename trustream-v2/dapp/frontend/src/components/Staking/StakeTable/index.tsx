@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from "@/components/Container/Box";
 import WhiteLabel from "@/components/WhiteLabel";
-import { createStyles, Loader, Grid } from '@mantine/core';
+import { createStyles, Loader, Grid, ScrollArea } from '@mantine/core';
 import { useStore } from '../../../store/index';
 import { formatMultiplier, formatTime } from '@/utils/index';
 
@@ -30,6 +30,7 @@ const useStyles = createStyles((theme) => ({
 export default observer((props: Props) => {
     const { classes } = useStyles();
     const { god, stake } = useStore();
+    const [scrolled, setScrolled] = useState(false);
 
     // useEffect(() => {
     //     stake.refresh();
@@ -110,10 +111,12 @@ export default observer((props: Props) => {
         // if (stake.stakingTable.period.length != 4)
         //     return <></>
         return (
-            <>
-                {renderHead()}
-                {renderBody()}
-            </>
+            <ScrollArea sx={{ width: '100%' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+                <div style={{ minWidth : 600 }}>
+                    {renderHead()}
+                    {renderBody()}
+                </div>
+            </ScrollArea>
         )
     };
 
