@@ -47,7 +47,6 @@ function getCurrentEpoch() {
 async function updateUpTime(address, nftID) {
     const UPLOAD_INTERVAL = 5 * 60;
     const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
-    console.log('updateUpTime called');
     try {
         let result = await models_1.deviceDataRepository.findOne({
             where: { address, nft_id: nftID },
@@ -69,7 +68,9 @@ async function updateUpTime(address, nftID) {
                 address,
                 uptime: UPLOAD_INTERVAL,
                 nft_id: nftID,
-                epoch: current_epoch
+                epoch: current_epoch,
+                multiplier: 0,
+                reward: '0'
             });
         }
         else {
@@ -77,7 +78,9 @@ async function updateUpTime(address, nftID) {
                 address,
                 uptime: upload_record.uptime + UPLOAD_INTERVAL,
                 epoch: current_epoch,
-                nft_id: nftID
+                nft_id: nftID,
+                multiplier: 0,
+                reward: '0'
             }, { where: { address, epoch: current_epoch, nft_id: nftID } });
         }
         return true;
@@ -154,9 +157,6 @@ async function onMqttData(context, topic, payload) {
         console.log(`WARNING: Dropping data message: location_id is invalid ${location_id}`);
         return;
     }
-    let { miner } = decodedPayload.message;
-    if (miner == undefined)
-        miner = 'Not set';
     let result = true;
     if (nftID !== undefined) {
         result = await updateUpTime(address, nftID);
@@ -178,7 +178,6 @@ async function onMqttData(context, topic, payload) {
             total: decodedPayload.message.total,
             location_id: decodedPayload.message.location_id,
             upload_time: Date.now(),
-            miner,
             nft_id: nftID
         });
     }

@@ -91,8 +91,6 @@ async function updateUpTime(address : string, nftID : string) {
   const UPLOAD_INTERVAL = 5 * 60;
   const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
 
-  console.log('updateUpTime called');
-
   try {
     let result = await deviceDataRepository.findOne(
       { 
@@ -121,7 +119,9 @@ async function updateUpTime(address : string, nftID : string) {
         address, 
         uptime : UPLOAD_INTERVAL,
         nft_id : nftID,
-        epoch : current_epoch
+        epoch : current_epoch,
+        multiplier : 0,
+        reward : '0'
       });
     } else {
       await deviceUptimeRepository.update(
@@ -129,7 +129,9 @@ async function updateUpTime(address : string, nftID : string) {
           address, 
           uptime : upload_record.uptime + UPLOAD_INTERVAL,
           epoch : current_epoch,
-          nft_id : nftID
+          nft_id : nftID,
+          multiplier : 0,
+          reward : '0'
         },
         { where : { address, epoch : current_epoch, nft_id : nftID }});
     }
