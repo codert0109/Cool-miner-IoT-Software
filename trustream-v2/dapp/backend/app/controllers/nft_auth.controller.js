@@ -2,7 +2,6 @@ const db = require('../models')
 const NFT_Auth = db.nft_auth
 const { getRandomSessionID } = require('../utils')
 const camera = require('./camera.controller')
-const { getMinerNameFromAddressNFTID } = require('./device_data.controller');
 
 // This is Kernel Function
 // Before call this function, please check authentication.

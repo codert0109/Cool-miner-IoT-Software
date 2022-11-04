@@ -25,17 +25,6 @@ const checkActive = (address, callback) => {
     });
 };
 
-// Return the latest active miner.
-exports.getMinerNameFromAddressNFTID = async ({address, nft_id}) => {
-  try {
-    let data = await Device_Data.findOne({ where : { address, nft_id }, order: [['start_time', 'DESC']]});
-    return data;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-};
-
 // Code function to return number of active miner.
 exports.getActiveMinerCnt = async (address) => {
   try {
@@ -126,38 +115,6 @@ exports.isActive = (req, res) => {
       address
     })
   });
-}
-
-exports.getMinerName = (req, res) => {
-  let address = req.query.address;
-  if (address == null) {
-    res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    });
-  } else {
-    Device_Data.findOne({ where : { address}, order: [['start_time', 'DESC']]})
-    .then((data) => {
-      if (data === null) {
-        res.send({
-          status : 'OK',
-          miner : 'Not set'
-        })
-      } else {
-        res.send({
-          status : 'OK',
-          miner : data.miner
-        })
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.send({
-        status : 'ERR',
-        message : 'Internal Server Error'
-      });
-    });
-  }
 }
 
 // exports.getUploadCnt = (req, res) => {

@@ -6,9 +6,6 @@ module.exports = (sequelize, Sequelize) => {
     address: {
       type : Sequelize.STRING
     },
-    miner: {
-      type : Sequelize.STRING
-    },
     start_time: {
       type : Sequelize.INTEGER
     },
