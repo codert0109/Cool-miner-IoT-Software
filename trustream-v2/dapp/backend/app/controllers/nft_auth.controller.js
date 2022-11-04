@@ -161,7 +161,6 @@ exports.getStatus = (req, res) => {
           status: 'OK',
           data: {
             nft_id,
-            miner: 'Not set',
             session: null,
           },
         })
@@ -170,7 +169,6 @@ exports.getStatus = (req, res) => {
           status: 'OK',
           data: {
             nft_id,
-            miner: data.miner,
             session: getRandomSessionID()
           },
         })
