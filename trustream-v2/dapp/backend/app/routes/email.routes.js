@@ -1,10 +1,9 @@
-module.exports = app => {
-    const email = require("../controllers/email.controller.js");
+module.exports = (app) => {
+  const email = require('../controllers/email.controller.js')
 
-    var router = require("express").Router();
+  var router = require('express').Router()
 
-    router.post("/verify",  email.verifyEmail);
+  router.post('/verify', email.verifyEmail)
 
-    app.use("/api/email", router);
-  };
-  
+  app.use('/api/email', router)
+}
