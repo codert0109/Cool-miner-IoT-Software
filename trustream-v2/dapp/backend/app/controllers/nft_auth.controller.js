@@ -2,6 +2,7 @@ const db = require('../models')
 const NFT_Auth = db.nft_auth
 const { getRandomSessionID } = require('../utils')
 const camera = require('./camera.controller')
+const MINER_CONFIG = require('../config/miner.config');
 
 // This is Kernel Function
 // Before call this function, please check authentication.
@@ -160,16 +161,34 @@ exports.getStatus = (req, res) => {
           data: {
             nft_id,
             session: null,
+            active : false
           },
         })
       } else {
-        res.send({
-          status: 'OK',
-          data: {
-            nft_id,
-            session: getRandomSessionID()
-          },
-        })
+        let timePast = -1;
+        if (data.updated_at != null)
+          timePast = Date.now() - new Date(data.updated_at).getMilliseconds();
+        if (timePast != -1 && timePast <= MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {      //  5min = 5*60*1000 ms
+          res.send({
+            status: 'OK',
+            data: {
+              nft_id,
+              session: getRandomSessionID(),
+              active : true
+            }
+          })
+        } else {
+          checkActive({address, nft_id, function(result) {
+            res.send({
+              status: 'OK',
+              data: {
+                nft_id,
+                session: getRandomSessionID(),
+                active : result
+              }
+            })
+          }});
+        }
       }
     })
     .catch((err) => {

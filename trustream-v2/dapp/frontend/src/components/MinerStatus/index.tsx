@@ -90,12 +90,12 @@ export default observer(() => {
                         });
                         let info = data.data.data;
                         curNFTStatus.push({
-                            name: (info.miner ? info.miner : 'Not set') + '(' + info.nft_id + ')',
+                            name: item,
                             working : info.session ? true : false
                         });
                     } catch (err) {
                         curNFTStatus.push({
-                            name : 'Not set' + '(' + parseInt(item) + ')',
+                            name : item,
                             working : false
                         })
                     }
