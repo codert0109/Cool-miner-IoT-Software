@@ -6,7 +6,7 @@ module.exports = (sequelize, Sequelize) => {
     duration : {
       type : Sequelize.INTEGER
     },
-    miner : {
+    miner : {                             // the total number of miners
       type : Sequelize.INTEGER
     },
     weight : {

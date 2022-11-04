@@ -9,7 +9,6 @@ const camera = require('./camera.controller')
 function createNFTSession(
   address,
   nft_id,
-  miner,
   success_callback,
   error_callback,
 ) {
@@ -17,7 +16,7 @@ function createNFTSession(
     .then(() => {
       let session_id = getRandomSessionID();
       let session_start = Date.now();
-      NFT_Auth.create({ address, nft_id, miner, session_id, session_start })
+      NFT_Auth.create({ address, nft_id, session_id, session_start })
         .then(() => {
           success_callback(session_id)
         })
@@ -62,7 +61,7 @@ function removeNFTSession(address, nft_id, success_callback, error_callback) {
 // Please add auth middleware before accessing this link.
 
 exports.create = (req, res) => {
-  const { address, nft_id, miner } = req.body
+  const { address, nft_id } = req.body
   if (address === undefined || nft_id === undefined) {
     res.send({
       status: 'ERR',
@@ -74,7 +73,6 @@ exports.create = (req, res) => {
   createNFTSession(
     address,
     nft_id,
-    miner,
     async (nft_session) => {
       let freeCamera = await camera.findFreeCamera(nft_id)
       if (freeCamera == null) {
@@ -338,6 +336,3 @@ exports.verify = (req, res) => {
       })
     })
 }
-
-exports.createNFTSession = createNFTSession
-exports.removeNFTSession = removeNFTSession

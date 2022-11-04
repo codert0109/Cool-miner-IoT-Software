@@ -233,10 +233,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   //   return null
   // }
 
-  let { miner } = decodedPayload.message;
-
-  if (miner == undefined) miner = 'Not set';
-
   let result = true;
 
   if (nftID !== undefined) {
@@ -259,7 +255,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
       total               : decodedPayload.message.total,
       location_id         : decodedPayload.message.location_id,
       upload_time         : Date.now(),
-      miner,
       nft_id              : nftID
     })
   }

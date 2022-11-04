@@ -21,12 +21,6 @@ export class NftAuthModel extends BaseModel<NftAuthModel> {
     allowNull: false,
     type: DataType.STRING(64)
   })
-  public miner!: string;
-
-  @Column({
-    allowNull: false,
-    type: DataType.STRING(64)
-  })
   public session_id!: string;
 
   // ignored some schema fields.
