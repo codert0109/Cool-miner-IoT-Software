@@ -52,7 +52,8 @@ const onResult = async () => {
             'Time:' : new Date().toString()
         });
 
-        const DISTRIBUTION_AMOUNT_DB = await key_status.getValue('TOKEN_PER_EPOCH').value;
+        const DISTRIBUTION_AMOUNT_DB = (await key_status.getValue('TOKEN_PER_EPOCH')).value;
+
         const DISTRIBUTION_AMOUNT = BigInt(DISTRIBUTION_AMOUNT_DB);
                 
         await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
