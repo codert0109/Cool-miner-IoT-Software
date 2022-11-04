@@ -8,7 +8,7 @@ const fs = require('fs')
 const cookieParser = require('cookie-parser');
 
 function ensureSecure(req, res, next) {
-  return next() // for testing purpose
+  // return next() // for testing purpose
 
   if (req.secure) {
     // OK, continue
