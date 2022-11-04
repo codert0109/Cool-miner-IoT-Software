@@ -81,7 +81,7 @@ export default observer(() => {
             .then(async (data) => {
                 let info: any = data;
                 let curNFTStatus = [];
-                
+
                 for (let i = 0; i < info.length; i++) {
                     let item = info[i].toString();
                     try {
@@ -91,13 +91,13 @@ export default observer(() => {
                         let info = data.data.data;
                         curNFTStatus.push({
                             name: item,
-                            working : info.session ? true : false
+                            working: info.active,
                         });
                     } catch (err) {
                         curNFTStatus.push({
-                            name : item,
-                            working : false
-                        })
+                            name: item,
+                            working: false,
+                        });
                     }
                 }
 
