@@ -115,7 +115,7 @@ export default function TableScrollArea({ data }: TableScrollAreaProps) {
                 <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <tr>
                         <th>Epoch Time</th>
-                        <th>NFT id</th>
+                        <th>NFT</th>
                         <th>Wallet</th>
                         {/* <th>Pedestrians</th>
                         <th>Cars</th>
