@@ -234,7 +234,7 @@ export default function NFTStatus({ title, imgurl, price, acquiredTime, id }) {
                     <div className={classes.minertype}>Testnet Miner</div>
                     <div>Token ID: {id}</div>
                     <div>Acquired on {getAcquiredTime()}</div>
-                    <div className={classes.assigninfo}>Assigned</div>
+                    {/* <div className={classes.assigninfo}>Assigned</div> */}
                 </div>
             </div>
         </>
