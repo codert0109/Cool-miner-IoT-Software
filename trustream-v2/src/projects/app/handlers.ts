@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { 
   deviceDataRepository, 
-  portalAuthRepository,
   deviceUptimeRepository, 
   nftAuthRepository,
   keystatusRepository,
@@ -189,6 +188,8 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
     console.log("Discard message with version error, ", decodedPayload.message.version);
     return;
   }
+
+  console.log('decodedPayload', decodedPayload);
 
   // First, recover the address from the message signature
   const message : any = JSON.stringify(decodedPayload.message)
