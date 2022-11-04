@@ -112,7 +112,7 @@ export default observer((props: Props) => {
         //     return <></>
         return (
             <ScrollArea sx={{ width: '100%' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-                <div style={{ minWidth : 600 }}>
+                <div style={{ minWidth : 600, marginBottom : 10 }}>
                     {renderHead()}
                     {renderBody()}
                 </div>
