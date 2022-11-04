@@ -6,13 +6,13 @@ const env = require('../config/env');
 
 // Core API Functions for Device_Data
 
-const checkActive = ({address, nft_id, callback}) => {
+exports.checkActive = ({address, nft_id, callback}) => {
   Device_Data.findOne({ where : { address, nft_id }, order: [['upload_time', 'DESC']]})
     .then((data) => {
       if (data === null)
         callback(false);
       else {
-        if (Date.now() - new Date(data.upload_time) > MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
+        if (Date.now() - new Date(data.upload_time) < MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
           callback(false);
         } else {
           callback(true);
@@ -110,7 +110,7 @@ exports.isActive = (req, res) => {
     return;
   }
 
-  checkActive({address, nft_id, callback : function(active) {
+  exports.checkActive({address, nft_id, callback : function(active) {
     res.send({
       status : 'SUCCESS',
       active,

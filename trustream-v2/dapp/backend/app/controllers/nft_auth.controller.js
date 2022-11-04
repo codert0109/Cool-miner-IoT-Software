@@ -3,6 +3,7 @@ const NFT_Auth = db.nft_auth
 const { getRandomSessionID } = require('../utils')
 const camera = require('./camera.controller')
 const MINER_CONFIG = require('../config/miner.config');
+const { checkActive } = require('./device_data.controller');
 
 // This is Kernel Function
 // Before call this function, please check authentication.
@@ -166,8 +167,10 @@ exports.getStatus = (req, res) => {
         })
       } else {
         let timePast = -1;
+        
         if (data.updated_at != null)
-          timePast = Date.now() - new Date(data.updated_at).getMilliseconds();
+          timePast = Date.now() - new Date(data.updated_at);
+        
         if (timePast != -1 && timePast <= MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {      //  5min = 5*60*1000 ms
           res.send({
             status: 'OK',
@@ -178,7 +181,7 @@ exports.getStatus = (req, res) => {
             }
           })
         } else {
-          checkActive({address, nft_id, function(result) {
+          checkActive({address, nft_id, callback : function(result) {
             res.send({
               status: 'OK',
               data: {
