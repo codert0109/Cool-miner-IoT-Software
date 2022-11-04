@@ -167,29 +167,14 @@ exports.getStatus = (req, res) => {
           },
         })
       } else {
-        getMinerNameFromAddressNFTID({ address, nft_id })
-          .then((data1) => {
-            let miner = null;
-            if (data1 != null)
-              miner = data1.miner ? data1.miner : null;
-            if (miner == null) 
-              miner = data.miner;
-            res.send({
-              status: 'OK',
-              data: {
-                nft_id,
-                miner,
-                session: getRandomSessionID(),
-              },
-            })
-          })
-          .catch((err) => {
-            console.error(err)
-            res.send({
-              status: 'ERR',
-              message: 'Internal Server Error',
-            })
-          });
+        res.send({
+          status: 'OK',
+          data: {
+            nft_id,
+            miner: data.miner,
+            session: getRandomSessionID()
+          },
+        })
       }
     })
     .catch((err) => {
