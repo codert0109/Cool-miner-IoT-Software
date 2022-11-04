@@ -20,7 +20,8 @@ import {
   Help,
   Lock,
   Stack2,
-  ZoomMoney
+  ZoomMoney,
+  FileDatabase
 } from 'tabler-icons-react';
 
 import { useStore } from '../../store/index';
@@ -132,13 +133,14 @@ export const NavbarSimple = observer(() => {
   }, [god.currentNetwork.account]);
 
   const data = [
-    { link: '/',                                          label: t('dashboard'),  icon: Home,     __blank : false, access : 'public' },
-    { link: '/admin',                                     label: 'Admin',         icon: Lock,     __blank : false, access : 'admin' },
-    { link: '/nft',                                       label: 'NFT',           icon: Stack2,   __blank : false, access : 'public' },
-    { link: '/staking',                                   label: 'Staking',       icon: ZoomMoney,__blank : false, access : 'public' },
-    { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon, __blank : false, access : 'public' },
-    { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,     __blank : true,  access : 'public' },
-    { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,     __blank : true,  access : 'public' },
+    { link: '/',                                          label: t('dashboard'),  icon: Home,             __blank : false, access : 'public' },
+    { link: '/admin',                                     label: 'Admin',         icon: Lock,             __blank : false, access : 'admin' },
+    { link: '/miners',                                    label: 'Miner',         icon: FileDatabase,     __blank : false, access : 'public' },
+    { link: '/nft',                                       label: 'NFT',           icon: Stack2,           __blank : false, access : 'public' },
+    { link: '/staking',                                   label: 'Staking',       icon: ZoomMoney,        __blank : false, access : 'public' },
+    { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon,         __blank : false, access : 'public' },
+    { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,             __blank : true,  access : 'public' },
+    { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,             __blank : true,  access : 'public' },
   ];
 
   const links = data.filter((item) => item.access === 'public' || (isAdmin && item.access === 'admin')).map((item) => (
