@@ -13,9 +13,9 @@ exports.checkActive = ({address, nft_id, callback}) => {
         callback(false);
       else {
         if (Date.now() - new Date(data.upload_time) < MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
-          callback(false);
-        } else {
           callback(true);
+        } else {
+          callback(false);
         }
       }
     })
