@@ -386,7 +386,7 @@ export default observer(() => {
           <thead className={classes.thead}>
             <tr>
               <th className={classes.th} key="1">
-                Miner Status(Updated every 5 minutes)
+                Miner Status (Updated every 5 minutes)
               </th>
               <th className={classes.th} key="2">
                 NFT Status
