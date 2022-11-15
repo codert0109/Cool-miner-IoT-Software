@@ -56,6 +56,35 @@ task('setMaxNFT', 'Set MAX NFT Per Wallet')
     }
   })
 
+
+/**
+ * Tasks to mint nft.
+ * Command: npx hardhat mintNFT --count {value} --network testnet
+ * For example: npx hardhat mintNFT --count 1 --network testnet
+ */
+task('mintNFT', 'Mint NFT')
+  .addParam('count', 'Mint NFT')
+  .setAction(async (taskArgs) => {
+    let count = taskArgs.count
+    try {
+      console.log(`Mint NFT: ${count}`)
+      const ElumNFTContract = await ethers.getContractFactory('ElumNFT')
+      const ElumNFT = await ElumNFTContract.attach(contractAddressList.ElumNFT)
+
+      //  const before_value = await ElumNFT.getMaxNFTPerWallet();
+      //  console.log('Before', before_value);
+
+      let tx = ElumNFT.mint([0], [parseInt(count)])
+
+      const receipt = await tx
+      await receipt.wait()
+
+      console.log(`Setting Success!`)
+    } catch (err) {
+      console.log('Errors occured in setMaxNFT', err)
+    }
+  })
+
 /**
  * Tasks to buy nft
  * Command: npx hardhat buyNFT --type {value} --amount {amount} --network testnet
@@ -72,7 +101,7 @@ task('buyNFT', 'Buy NFT')
       const ElumNFTContract = await ethers.getContractFactory('ElumNFT')
       const ElumNFT = await ElumNFTContract.attach(contractAddressList.ElumNFT)
 
-      let tx = ElumNFT.buyNFT(type, amount, { value : (BigInt(3) * BigInt(Math.pow(10, 18))).toString()})
+      let tx = ElumNFT.buyNFT(type, amount, { value: (BigInt(3) * BigInt(Math.pow(10, 18))).toString() })
 
       const receipt = await tx
       await receipt.wait()
@@ -88,27 +117,27 @@ task('buyNFT', 'Buy NFT')
  * Command: npx hardhat transferNFT --to {address} --id {id} --network testnet
  * For example: npx hardhat buyNFT --to 0x78...192 --id 1 --network testnet
  */
- task('transferNFT', 'Transfer NFT')
- .addParam('to', 'Receiver Address')
- .addParam('id', 'NFT id')
- .setAction(async (taskArgs) => {
-   let to = taskArgs.to;
-   let id = taskArgs.id;
-   try {
-     console.log(`transferNFT to:${to} id:${id}`)
-     const ElumNFTContract = await ethers.getContractFactory('ElumNFT')
-     const ElumNFT = await ElumNFTContract.attach(contractAddressList.ElumNFT)
+task('transferNFT', 'Transfer NFT')
+  .addParam('to', 'Receiver Address')
+  .addParam('id', 'NFT id')
+  .setAction(async (taskArgs) => {
+    let to = taskArgs.to;
+    let id = taskArgs.id;
+    try {
+      console.log(`transferNFT to:${to} id:${id}`)
+      const ElumNFTContract = await ethers.getContractFactory('ElumNFT')
+      const ElumNFT = await ElumNFTContract.attach(contractAddressList.ElumNFT)
 
-     let tx = ElumNFT.transferNFT([id], to)
+      let tx = ElumNFT.transferNFT([id], to)
 
-     const receipt = await tx
-     await receipt.wait()
+      const receipt = await tx
+      await receipt.wait()
 
-     console.log(`Transfer NFT Success!`)
-   } catch (err) {
-     console.log('Errors occured in transfer NFT', err)
-   }
- })
+      console.log(`Transfer NFT Success!`)
+    } catch (err) {
+      console.log('Errors occured in transfer NFT', err)
+    }
+  })
 
 module.exports = {
   solidity: '0.8.4',
