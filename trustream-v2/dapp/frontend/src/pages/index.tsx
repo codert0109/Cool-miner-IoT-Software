@@ -1,5 +1,5 @@
 import Layout from "@/components/EntireLayout";
-import { Grid } from "@mantine/core";
+import { createStyles, Grid } from "@mantine/core";
 import UPTIME from "@/components/UPTIME";
 import ServerStatus from "@/components/ServerStatus";
 import UpdateInfoTable from "@/components/UpdateInfoTable";
@@ -8,12 +8,24 @@ import WalletBalance from "@/components/WalletBalance";
 import TokenRewards from "@/components/TokenRewards";
 import Token from "@/components/Token";
 import TokenTransfer from "@/components/TokenTransfer";
-import { useLocalObservable, observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 
 import React, { useEffect } from 'react';
 import { useStore } from '@/store/index';
+import classNames from "classnames";
+
+const BREAKPOINT = '@media (max-width: 755px)';
+
+const useStyles = createStyles((theme) => ({
+  updateTable : {
+    [BREAKPOINT] : {
+      display : 'none'
+    }
+  }
+}));
 
 export default observer((props) => {
+  const { classes } = useStyles();
   const { god, token } = useStore();
 
   useEffect(() => {
@@ -41,7 +53,7 @@ export default observer((props) => {
             </Grid.Col>
           </Grid>
         </Grid.Col>
-        <Grid.Col sm={12} md={12}>
+        <Grid.Col sm={12} md={12} className={classes.updateTable}>
           <Box label="Release Updates">
             <UpdateInfoTable/>
           </Box>

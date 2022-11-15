@@ -6,16 +6,16 @@ const env = require('../config/env');
 
 // Core API Functions for Device_Data
 
-const checkActive = (address, callback) => {
-  Device_Data.findOne({ where : { address }, order: [['start_time', 'DESC']]})
+exports.checkActive = ({address, nft_id, callback}) => {
+  Device_Data.findOne({ where : { address, nft_id }, order: [['upload_time', 'DESC']]})
     .then((data) => {
       if (data === null)
         callback(false);
       else {
-        if (Date.now() - new Date(data.start_time * 1000) > MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
-          callback(false);
-        } else {
+        if (Date.now() - new Date(data.upload_time) < MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {
           callback(true);
+        } else {
+          callback(false);
         }
       }
     })
@@ -23,17 +23,6 @@ const checkActive = (address, callback) => {
       console.error(err);
       callback(false);
     });
-};
-
-// Return the latest active miner.
-exports.getMinerNameFromAddressNFTID = async ({address, nft_id}) => {
-  try {
-    let data = await Device_Data.findOne({ where : { address, nft_id }, order: [['start_time', 'DESC']]});
-    return data;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
 };
 
 // Code function to return number of active miner.
@@ -111,7 +100,9 @@ exports.getActiveMiner = (req, res) => {
 
 exports.isActive = (req, res) => {
   let address = req.query.address;
-  if (address == null) {
+  let nft_id = req.query.nft_id;
+
+  if (address == null || nft_id == null) {
     res.send({
       status : 'ERR',
       message : 'Bad request'
@@ -119,45 +110,14 @@ exports.isActive = (req, res) => {
     return;
   }
 
-  checkActive(address, function(active) {
+  exports.checkActive({address, nft_id, callback : function(active) {
     res.send({
       status : 'SUCCESS',
       active,
-      address
+      address,
+      nft_id
     })
-  });
-}
-
-exports.getMinerName = (req, res) => {
-  let address = req.query.address;
-  if (address == null) {
-    res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    });
-  } else {
-    Device_Data.findOne({ where : { address}, order: [['start_time', 'DESC']]})
-    .then((data) => {
-      if (data === null) {
-        res.send({
-          status : 'OK',
-          miner : 'Not set'
-        })
-      } else {
-        res.send({
-          status : 'OK',
-          miner : data.miner
-        })
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.send({
-        status : 'ERR',
-        message : 'Internal Server Error'
-      });
-    });
-  }
+  }});
 }
 
 // exports.getUploadCnt = (req, res) => {

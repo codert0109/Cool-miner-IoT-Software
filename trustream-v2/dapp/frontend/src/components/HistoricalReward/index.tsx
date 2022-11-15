@@ -101,19 +101,6 @@ export default observer((props: Props) => {
     const { classes, cx } = useStyles();
     
     const [scrolled, setScrolled] = useState(false);
-    const [name, setName] = useState('');
-
-    useEffect(() => {
-        const process = async () => {
-            let data = await auth.$().post(`${BACKEND_URL}/api/nft_auth/status`, {
-                nft_id: props.nft_id
-            });
-            console.log('nft_info', data);
-            let info = data.data.data;
-            setName((info.miner ? info.miner : 'Not set') + '(' + info.nft_id + ')');
-        };
-        process();
-    }, [props.nft_id]);
 
     const renderLabel = () => {
         return (
@@ -131,7 +118,7 @@ export default observer((props: Props) => {
                     {/* {status === false && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
                     {status === true && <img src="/images/status/working.png" className={classes.imgStyle}></img>} */}
                     <img src="/images/status/working.png" className={classes.imgStyle}></img>
-                    {name}
+                    {props.nft_id}
                 </div>
             </>
         );

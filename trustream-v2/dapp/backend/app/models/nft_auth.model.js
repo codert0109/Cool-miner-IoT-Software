@@ -10,9 +10,6 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true
     },
-    miner: {
-      type : Sequelize.STRING
-    },
     address: {
       type : Sequelize.STRING
     },

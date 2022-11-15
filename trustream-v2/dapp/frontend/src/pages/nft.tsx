@@ -82,6 +82,8 @@ export default observer(() => {
     const { god, nft, auth } = useStore();
     const [pending, isPending] = useState(false);
 
+    const [claimPending, setClaimPending] = useState(false);
+
     useEffect(() => {
         nft.refresh();
     }, [god.currentNetwork.account]);
@@ -101,40 +103,6 @@ export default observer(() => {
                 'error'
             )
             return;
-        }
-
-        let person_email = prompt("Please enter your email address", "");
-        if (person_email == null || person_email == "") {
-            Swal.fire(
-                'Warning!',
-                'You need to input your email address.',
-                'warning'
-            )
-            return;
-        } else {
-            let ret = await auth.$().post(`${BACKEND_URL}/api/email/verify`, {
-                email : person_email
-            });
-            console.log('nft verify email', ret);
-            if (ret.data.status === 'ERR') {
-                Swal.fire(
-                    'Error!',
-                    `<p>Only Waitlist participants can obtain a mining NFT at this time.</p>
-                     <p>Please ensure you are using the same email address you used to sign up to the Waitlist.</p>
-                     <p>If you are not on the Waitlist, stay tuned as mining will be opening to the public in the near future!</p>
-                     <p>Oct 26th - BETA testers + Waitlist positions 1 - 100</br>
-                     Oct 27th - Waitlist positions 101 - 600</br>
-                     Oct 28th - Waitlist positions 601 - 1100</br>
-                     Oct 29th - Waitlist positions 1101 - 1600</br>
-                     Oct 30th - Waitlist positions 1601 - 2100</br>
-                     Oct 31th - Waitlist positions 2101 - 2600</br>
-                     Nov 1st - Waitlist positions 2601 - 3100</br>
-                     Nov 2nd - Waitlist positions 3101 and up</br>
-                     Nov 3rd - Public Access</p>`,
-                    'error'
-                )
-                return;
-            }
         }
 
         let totalPrice = nft.typeList[type_id].price;
@@ -211,12 +179,14 @@ export default observer(() => {
             )
             return;
         }
+        setClaimPending(true);
         axios.post(`${BACKEND_URL}/api/claim_tokens`, { account: god.currentNetwork.account })
             .then((data) => {
                 if (data.data == 'success') {
                     god.pollingData();
                     setTimeout(() => {
                         god.currentNetwork.loadBalance();
+                        setClaimPending(false);
                     }, 2000);
                     Swal.fire(
                         'Congratulations!',
@@ -229,10 +199,12 @@ export default observer(() => {
                         'Something went wrong!',
                         'error'
                     )
+                    setClaimPending(false);
                 }
             })
             .catch((err) => {
                 console.error('err received', err);
+                setClaimPending(false);
             });
     };
 
@@ -248,6 +220,12 @@ export default observer(() => {
         return (
             <>
                 <div className={classes.caption}>OWNED</div>
+                <SimpleGrid
+                        cols={3}
+                        breakpoints={[
+                            { maxWidth: 'xs', cols: 1 },
+                        ]}
+                >
                 {
                     nft.infoList.map((item, index) => {
                         return (
@@ -261,6 +239,7 @@ export default observer(() => {
                         )
                     })
                 }
+                </SimpleGrid>
             </>
         );
     };
@@ -271,7 +250,7 @@ export default observer(() => {
             {!nft.loading && nft.typeList.length > 0 &&
                 <>
                     {
-                        !hasBalance() &&
+                        !hasBalance() && claimPending == false &&
                         <Button onClick={onClaimTokens} className={classes.gridDivBtn}>
                             Claim Tokens
                         </Button>

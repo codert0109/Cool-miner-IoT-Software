@@ -81,7 +81,7 @@ export default observer(() => {
             .then(async (data) => {
                 let info: any = data;
                 let curNFTStatus = [];
-                
+
                 for (let i = 0; i < info.length; i++) {
                     let item = info[i].toString();
                     try {
@@ -90,14 +90,16 @@ export default observer(() => {
                         });
                         let info = data.data.data;
                         curNFTStatus.push({
-                            name: (info.miner ? info.miner : 'Not set') + '(' + info.nft_id + ')',
-                            working : info.session ? true : false
+                            name: item,
+                            session : info.session,
+                            working: info.active,
                         });
                     } catch (err) {
                         curNFTStatus.push({
-                            name : 'Not set' + '(' + parseInt(item) + ')',
-                            working : false
-                        })
+                            name: item,
+                            session : info.session,
+                            working: false,
+                        });
                     }
                 }
 
@@ -129,11 +131,6 @@ export default observer(() => {
     }, []);
 
     const renderLabel = () => {
-        let status = true;
-        for (let item of minerStatus) {
-            status = status && item.working;
-        }
-
         return (
             <div className={classes.centerAlign}>
                 {
@@ -143,8 +140,6 @@ export default observer(() => {
                         &nbsp;&nbsp;
                     </>
                 }
-                {status === false && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
-                {status === true && <img src="/images/status/working.png" className={classes.imgStyle}></img>}
                 <span>My Miners</span>
             </div>
         )
@@ -173,8 +168,9 @@ export default observer(() => {
                         {item.name}
                     </div>
                     <div>
-                        {item.working === false && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
                         {item.working === true && <img src="/images/status/working.png" className={classes.imgStyle}></img>}
+                        {item.working === false && item.session == null && <img src="/images/status/stopped.png" className={classes.imgStyle}></img>}
+                        {item.working === false && item.session != null && <img src="/images/status/warning.png" className={classes.imgStyle}></img>}
                     </div>
                 </div>
             );

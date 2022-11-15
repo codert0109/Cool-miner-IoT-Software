@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { 
   deviceDataRepository, 
-  portalAuthRepository,
   deviceUptimeRepository, 
   nftAuthRepository,
   keystatusRepository,
@@ -91,8 +90,6 @@ async function updateUpTime(address : string, nftID : string) {
   const UPLOAD_INTERVAL = 5 * 60;
   const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
 
-  console.log('updateUpTime called');
-
   try {
     let result = await deviceDataRepository.findOne(
       { 
@@ -121,7 +118,9 @@ async function updateUpTime(address : string, nftID : string) {
         address, 
         uptime : UPLOAD_INTERVAL,
         nft_id : nftID,
-        epoch : current_epoch
+        epoch : current_epoch,
+        multiplier : 0,
+        reward : '0'
       });
     } else {
       await deviceUptimeRepository.update(
@@ -129,7 +128,9 @@ async function updateUpTime(address : string, nftID : string) {
           address, 
           uptime : upload_record.uptime + UPLOAD_INTERVAL,
           epoch : current_epoch,
-          nft_id : nftID
+          nft_id : nftID,
+          multiplier : 0,
+          reward : '0'
         },
         { where : { address, epoch : current_epoch, nft_id : nftID }});
     }
@@ -191,8 +192,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   // First, recover the address from the message signature
   const message : any = JSON.stringify(decodedPayload.message)
 
-  console.log('message', message);
-
   const signature = decodedPayload.signature
 
   let isValid: boolean = false
@@ -233,10 +232,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   //   return null
   // }
 
-  let { miner } = decodedPayload.message;
-
-  if (miner == undefined) miner = 'Not set';
-
   let result = true;
 
   if (nftID !== undefined) {
@@ -259,7 +254,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
       total               : decodedPayload.message.total,
       location_id         : decodedPayload.message.location_id,
       upload_time         : Date.now(),
-      miner,
       nft_id              : nftID
     })
   }

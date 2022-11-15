@@ -2,7 +2,8 @@ const db = require('../models')
 const NFT_Auth = db.nft_auth
 const { getRandomSessionID } = require('../utils')
 const camera = require('./camera.controller')
-const { getMinerNameFromAddressNFTID } = require('./device_data.controller');
+const MINER_CONFIG = require('../config/miner.config');
+const { checkActive } = require('./device_data.controller');
 
 // This is Kernel Function
 // Before call this function, please check authentication.
@@ -10,7 +11,6 @@ const { getMinerNameFromAddressNFTID } = require('./device_data.controller');
 function createNFTSession(
   address,
   nft_id,
-  miner,
   success_callback,
   error_callback,
 ) {
@@ -18,7 +18,7 @@ function createNFTSession(
     .then(() => {
       let session_id = getRandomSessionID();
       let session_start = Date.now();
-      NFT_Auth.create({ address, nft_id, miner, session_id, session_start })
+      NFT_Auth.create({ address, nft_id, session_id, session_start })
         .then(() => {
           success_callback(session_id)
         })
@@ -63,7 +63,7 @@ function removeNFTSession(address, nft_id, success_callback, error_callback) {
 // Please add auth middleware before accessing this link.
 
 exports.create = (req, res) => {
-  const { address, nft_id, miner } = req.body
+  const { address, nft_id } = req.body
   if (address === undefined || nft_id === undefined) {
     res.send({
       status: 'ERR',
@@ -75,7 +75,6 @@ exports.create = (req, res) => {
   createNFTSession(
     address,
     nft_id,
-    miner,
     async (nft_session) => {
       let freeCamera = await camera.findFreeCamera(nft_id)
       if (freeCamera == null) {
@@ -162,32 +161,37 @@ exports.getStatus = (req, res) => {
           status: 'OK',
           data: {
             nft_id,
-            miner: 'Not set',
             session: null,
+            active : false
           },
         })
       } else {
-        getMinerNameFromAddressNFTID({ address, nft_id })
-          .then((data1) => {
-            let miner = data1.miner ? data1.miner : null;
-            if (miner == null) 
-              miner = data.miner;
+        let timePast = -1;
+        
+        if (data.updated_at != null)
+          timePast = Date.now() - new Date(data.updated_at);
+        
+        if (timePast != -1 && timePast <= MINER_CONFIG.MINEDATA_TIME_OUT * 1000) {      //  5min = 5*60*1000 ms
+          res.send({
+            status: 'OK',
+            data: {
+              nft_id,
+              session: getRandomSessionID(),
+              active : true
+            }
+          })
+        } else {
+          checkActive({address, nft_id, callback : function(result) {
             res.send({
               status: 'OK',
               data: {
                 nft_id,
-                miner,
                 session: getRandomSessionID(),
-              },
+                active : result
+              }
             })
-          })
-          .catch((err) => {
-            console.error(err)
-            res.send({
-              status: 'ERR',
-              message: 'Internal Server Error',
-            })
-          });
+          }});
+        }
       }
     })
     .catch((err) => {
@@ -354,6 +358,3 @@ exports.verify = (req, res) => {
       })
     })
 }
-
-exports.createNFTSession = createNFTSession
-exports.removeNFTSession = removeNFTSession

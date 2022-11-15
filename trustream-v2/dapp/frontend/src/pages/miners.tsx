@@ -66,9 +66,8 @@ export default observer(() => {
     const { god, auth, nft } = useStore();
 
     const [hasNFT, setHasNFT] = useState(false);
-    const [NFTLists, setNFTLists] = useState([]);
     const [NFTStatus, setNFTStatus] = useState([]);
-    const [minerName, setMinerName] = useState('');
+    const [localConnection, setLocalConnection] = useState(false);
     const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
 
     useEffect(() => {
@@ -81,23 +80,23 @@ export default observer(() => {
             .then((data) => {
                 let info = data.data;
                 if (info.message == 'an error has occured') {
-                    setMinerName('');
+                    setLocalConnection(false);
                 } else {
                     auth.$().post(`${BACKEND_URL}/api/nft_auth/verifySignature`, {
                         signature: info.signature
                     }).then((data) => {
                         if (data.data.status === 'OK') {
-                            setMinerName('');
+                            setLocalConnection(false);
                         } else {
-                            setMinerName(info.miner);
+                            setLocalConnection(true);
                         }
                     }).catch((err) => {
-                        setMinerName(info.miner);
+                        setLocalConnection(true);
                     });
                 }
             })
             .catch((err) => {
-                setMinerName('');
+                setLocalConnection(true);
             });
     };
 
@@ -116,14 +115,14 @@ export default observer(() => {
                         let info = data.data.data;
                         curNFTStatus.push({
                             NFT: info.nft_id,
-                            Miner: info.miner ? info.miner : 'Not set',
+                            Active: info.active,
                             // This session is random fake session. Just check if it is null or not.
                             Connection: info.session ? 'Assigned' : 'Not assigned'
                         });
                     } catch (err) {
                         curNFTStatus.push({
                             NFT: parseInt(item),
-                            Miner: 'Not assigned',
+                            Active: false,
                             Connection: 'Not assigned'
                         });
                     }
@@ -132,7 +131,7 @@ export default observer(() => {
                 setNFTStatus(curNFTStatus);
             })
             .catch((err) => {
-                setNFTLists([]);
+                setNFTStatus([]);
             })
     };
 
@@ -218,8 +217,7 @@ export default observer(() => {
         const performAction = () => {
             auth.$().post(`${BACKEND_URL}/api/nft_auth/create`, {
                 address: god.currentNetwork.account,
-                nft_id: choosenNFT,
-                miner: minerName // we should upgrade this one
+                nft_id: choosenNFT
             }).then((data) => {
                 if (data.data.status == 'success') {
                     Swal.fire({
@@ -405,9 +403,9 @@ export default observer(() => {
                     style={{ marginBottom: '10px' }}
                     onClick={onSecureMinerConnection}
                     rightIcon={<Send size={18} />}
-                    disabled={minerName === ''}
+                    disabled={localConnection === false}
                     sx={{ paddingRight: 12 }}>
-                    {minerName !== '' ? `Secure ${minerName} Connection` : `Secure Connection`}
+                    Secure Connection
                 </Button>
             </div>
 
@@ -416,7 +414,7 @@ export default observer(() => {
                 <table className={classes.NFTTable}>
                     <thead className={classes.thead}>
                         <tr>
-                            <th className={classes.th} key="1">Miner Name</th>
+                            <th className={classes.th} key="1">Miner Status</th>
                             <th className={classes.th} key="2">NFT Status</th>
                             <th className={classes.th} key="3">NFT ID</th>
                             <th className={`${classes.th} ${classes.btn_th}`} key="4">&nbsp;&nbsp;</th>
@@ -433,7 +431,7 @@ export default observer(() => {
                                 : NFTStatus.map((item, index) =>
                                     <tr key={index}>
                                         <td className={classes.center} key="1">
-                                            {item.Miner}
+                                            {item.Active == true ? 'Active' : 'Not Active'}
                                         </td>
                                         <td className={`${classes.green} ${classes.center}`} key="2">
                                             {item.Connection}

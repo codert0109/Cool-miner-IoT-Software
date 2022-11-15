@@ -8,6 +8,7 @@ import UpdateComponent from "../components/Admin/Update";
 import Camera from "@/components/Admin/Camera";
 import NFTConfig from "@/components/Admin/NFTConfig";
 import { useEffect } from "react";
+import TokenConfig from "@/components/Admin/TokenConfig";
 
 const useStyles = createStyles((theme) => ({
 }));
@@ -40,6 +41,9 @@ export default function TableReviews() {
                     <Tabs.Tab label="NFT" value="nft">
                         <NFTConfig/>
                     </Tabs.Tab>
+                    {/* <Tabs.Tab label="Token" value="nft">
+                        <TokenConfig/>
+                    </Tabs.Tab> */}
                 </Tabs>
             </ScrollArea>
         </Layout>
