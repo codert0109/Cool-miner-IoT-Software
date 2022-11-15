@@ -265,33 +265,17 @@ export default observer(() => {
                 performAction();
             },
             () => {
-                Swal.fire({
-                    title: 'Error',
-                    html: `<p>You need to login to secure miner connection.</p>`,
-                    icon: 'error',
-                    showCancelButton: true
-                }).then((result) => {
-                    if (!result.isConfirmed) {
-                        return;
-                    }
-                    auth.login(
-                        () => {
-                            performAction();
-                        },
-                        () => {
-                            Swal.fire({
-                                title: 'Error',
-                                html: `<p>Errors Occured while login.</p>`,
-                                icon: 'error',
-                            });
+                auth.login(
+                    () => {
+                        performAction();
+                    },
+                    () => {
+                        Swal.fire({
+                            title: 'Error',
+                            html: `<p>Errors Occured while login.</p>`,
+                            icon: 'error',
                         });
-                }).catch(() => {
-                    Swal.fire({
-                        title: 'Info',
-                        html: `<p>Securing Miner Connection has been failed.</p>`,
-                        icon: 'info',
                     });
-                });
             }
         );
     };
@@ -330,33 +314,17 @@ export default observer(() => {
                 performAction();
             },
             () => {
-                Swal.fire({
-                    title: 'Error',
-                    html: `<p>You need to login to secure miner connection.</p>`,
-                    icon: 'error',
-                    showCancelButton: true
-                }).then((result) => {
-                    if (!result.isConfirmed) {
-                        return;
-                    }
-                    auth.login(
-                        () => {
-                            performAction();
-                        },
-                        () => {
-                            Swal.fire({
-                                title: 'Error',
-                                html: `<p>Errors Occured while login.</p>`,
-                                icon: 'error',
-                            });
+                auth.login(
+                    () => {
+                        performAction();
+                    },
+                    () => {
+                        Swal.fire({
+                            title: 'Error',
+                            html: `<p>Errors Occured while login.</p>`,
+                            icon: 'error',
                         });
-                }).catch(() => {
-                    Swal.fire({
-                        title: 'Info',
-                        html: `<p>Securing Miner Connection has been failed.</p>`,
-                        icon: 'info',
                     });
-                });
             }
         );
     };
