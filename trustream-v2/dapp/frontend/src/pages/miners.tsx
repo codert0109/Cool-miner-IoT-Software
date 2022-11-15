@@ -14,6 +14,7 @@ import { Select } from '@mantine/core';
 import NetworkStatus from '@/components/NetworkStatus';
 import HistoricalReward from '@/components/HistoricalReward';
 import HistoricalGroup from '@/components/HistoricalGroup';
+import { useRouter } from 'next/router';
 
 const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
@@ -58,6 +59,15 @@ const useStyles = createStyles((theme) => ({
 
   btn_th: {
     width: 110
+  },
+
+  info: {
+    marginBottom: 15
+  },
+
+  link: {
+    cursor: 'pointer',
+    color: 'rgb(190, 190, 255)'
   }
 }));
 
@@ -65,13 +75,21 @@ export default observer(() => {
   const { classes } = useStyles();
   const { god, auth, nft } = useStore();
 
+  const router = useRouter();
+
   const [hasNFT, setHasNFT] = useState(false);
   const [NFTStatus, setNFTStatus] = useState([]);
   const [localConnection, setLocalConnection] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
 
+  const Refresh = () => {
+    UpdateNFTStatus();
+    UpdateLocalMinerInfo();
+  };
+
   useEffect(() => {
     nft.refresh();
+    Refresh();
   }, [god.currentNetwork.account]);
 
   const UpdateLocalMinerInfo = () => {
@@ -132,22 +150,12 @@ export default observer(() => {
             });
           }
         }
-
         setNFTStatus(curNFTStatus);
       })
-      .catch((err) => {
+      .catch(() => {
         setNFTStatus([]);
       });
   };
-
-  const Refresh = () => {
-    UpdateNFTStatus();
-    UpdateLocalMinerInfo();
-  };
-
-  useEffect(() => {
-    UpdateLocalMinerInfo();
-  }, [god.currentNetwork.account]);
 
   useEffect(() => {
     let timerID = setInterval(() => {
@@ -157,10 +165,6 @@ export default observer(() => {
       clearInterval(timerID);
     };
   }, []);
-
-  useEffect(() => {
-    UpdateNFTStatus();
-  }, [god.currentNetwork.account]);
 
   const checkNFT = async () => {
     const NFTContractAddress = ContractAddress.ElumNFT;
@@ -363,8 +367,33 @@ export default observer(() => {
     );
   }
 
+  // When User has NFT but he has no NFTs to assign
+  const hasNFTButNoAssignable = () => {
+    return NFTStatus.length > 0 && renderNFTSelectOptions().length == 0;
+  };
+
+  const hasNoNFT = () => {
+    return NFTStatus.length == 0;
+  };
+
   return (
     <Layout>
+      {hasNFTButNoAssignable() && (
+        <div className={classes.info}>You have no available NFTs to secure a new connection. Click Remove Miner to release your current NFT's signature, or Purchase more NFTs to add more miners.</div>
+      )}
+      {hasNoNFT() && (
+        <div className={classes.info}>
+          You need NFT in order to secure your mining connection.&nbsp;
+          <span
+            className={classes.link}
+            onClick={() => {
+              router.push('/nft');
+            }}
+          >
+            Click here to buy your NFT
+          </span>
+        </div>
+      )}
       <div style={{ display: 'flex' }}>
         <Select
           placeholder={nft.infoList.length > 0 ? 'Choose NFT to ' : 'No NFTs to assign'}
