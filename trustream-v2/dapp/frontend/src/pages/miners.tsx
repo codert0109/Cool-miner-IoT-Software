@@ -401,13 +401,14 @@ export default observer(() => {
           key={getDefaultOption()}
           defaultValue={getDefaultOption()}
           style={{
-            marginRight: 10
+            marginRight: 10,
+            marginBottom: 10
           }}
           onChange={setSelectedNFT}
         />
-        <Button style={{ marginBottom: '10px' }} onClick={onSecureMinerConnection} rightIcon={<Send size={18} />} disabled={localConnection === false} sx={{ paddingRight: 12 }}>
+        {/* <Button style={{ marginBottom: '10px' }} onClick={onSecureMinerConnection} rightIcon={<Send size={18} />} disabled={localConnection === false} sx={{ paddingRight: 12 }}>
           Secure Connection
-        </Button>
+        </Button> */}
       </div>
 
       <Box label="My Miners">
