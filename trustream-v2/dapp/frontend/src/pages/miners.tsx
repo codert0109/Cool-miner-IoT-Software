@@ -405,7 +405,7 @@ export default observer(() => {
       )}
       {hasNoNFT() && (
         <div className={classes.info}>
-          You need NFT in order to secure your mining connection.&nbsp;
+          You need an NFT in order to secure your mining connection.&nbsp;
           <span
             className={classes.link}
             onClick={() => {
