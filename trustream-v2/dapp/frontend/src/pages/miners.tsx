@@ -92,6 +92,26 @@ export default observer(() => {
     Refresh();
   }, [god.currentNetwork.account]);
 
+  useEffect(() => {
+    if (localConnection == false) return;
+
+    let freeNFTID = getDefaultOption();
+    if (freeNFTID == '-1') freeNFTID = null;
+
+    let nftCnt = NFTStatus.length;
+
+    if (freeNFTID != -1) {
+      // if there is a free NFT, we can assign it automatically.
+      onSecureMinerConnection(freeNFTID);
+    } else {
+      if (nftCnt == 0) {
+        // We have nothing to do. Anyway we need to show alert messages to users.
+      } else {
+        // User can replace any miner. We need to show instruction on miners' page.
+      }
+    }
+  }, [localConnection, NFTStatus]);
+
   const UpdateLocalMinerInfo = () => {
     const url = `${publicConfig.DEVICE_URL}/get_status`;
     $.get(url)
@@ -118,7 +138,7 @@ export default observer(() => {
         }
       })
       .catch((err) => {
-        setLocalConnection(true);
+        setLocalConnection(false);
       });
   };
 
@@ -192,7 +212,7 @@ export default observer(() => {
       });
   }, [god.currentNetwork.account]);
 
-  const onSecureMinerConnection = () => {
+  const onSecureMinerConnection = (choosenNFT: string) => {
     if (hasNFT === false) {
       Swal.fire(
         'Error',
@@ -204,7 +224,7 @@ export default observer(() => {
       return;
     }
 
-    let choosenNFT = selectedNFT;
+    if (choosenNFT == undefined) choosenNFT = selectedNFT;
 
     if (choosenNFT == null) {
       if (getDefaultOption() != '-1') choosenNFT = getDefaultOption();
@@ -289,7 +309,7 @@ export default observer(() => {
     );
   };
 
-  const onRemoveConnection = (nft_id) => {
+  const onReplaceConnection = (nft_id) => {
     const performAction = () => {
       auth
         .$()
@@ -299,12 +319,12 @@ export default observer(() => {
         })
         .then((data) => {
           if (data.data.status === 'success') {
-            Swal.fire({
-              title: 'Success',
-              html: `<p>Connection Removed!</p>`,
-              icon: 'success'
-            });
-            Refresh();
+            onSecureMinerConnection(nft_id);
+            // Swal.fire({
+            //   title: 'Success',
+            //   html: `<p>Connection Removed!</p>`,
+            //   icon: 'success'
+            // });
           } else {
             Swal.fire({
               title: 'Error',
@@ -379,7 +399,9 @@ export default observer(() => {
   return (
     <Layout>
       {hasNFTButNoAssignable() && (
-        <div className={classes.info}>You have no available NFTs to secure a new connection. Click Remove Miner to release your current NFT's signature, or Purchase more NFTs to add more miners.</div>
+        <div className={classes.info}>
+          You have no available NFTs to secure a new connection. Click Replace Miner to release your current NFT's signature, or Purchase more NFTs to add more miners.
+        </div>
       )}
       {hasNoNFT() && (
         <div className={classes.info}>
@@ -394,7 +416,7 @@ export default observer(() => {
           </span>
         </div>
       )}
-      <div style={{ display: 'flex' }}>
+      {/* <div style={{ display: 'flex' }}>
         <Select
           placeholder={nft.infoList.length > 0 ? 'Choose NFT to ' : 'No NFTs to assign'}
           data={renderNFTSelectOptions()}
@@ -406,10 +428,10 @@ export default observer(() => {
           }}
           onChange={setSelectedNFT}
         />
-        {/* <Button style={{ marginBottom: '10px' }} onClick={onSecureMinerConnection} rightIcon={<Send size={18} />} disabled={localConnection === false} sx={{ paddingRight: 12 }}>
+        <Button style={{ marginBottom: '10px' }} onClick={onSecureMinerConnection} rightIcon={<Send size={18} />} disabled={localConnection === false} sx={{ paddingRight: 12 }}>
           Secure Connection
-        </Button> */}
-      </div>
+        </Button>
+      </div> */}
 
       <Box label="My Miners">
         <table className={classes.NFTTable}>
@@ -451,13 +473,8 @@ export default observer(() => {
                   <td>
                     <div>
                       {item.Connection === 'Assigned' && (
-                        <Button
-                          onClick={() => onRemoveConnection(item.NFT)}
-                          className={classes.button}
-                          // variant="white"
-                          size="xs"
-                        >
-                          Remove Miner
+                        <Button onClick={() => onReplaceConnection(item.NFT)} className={classes.button} disabled={localConnection === false} size="xs">
+                          Replace Miner
                         </Button>
                       )}
                     </div>
