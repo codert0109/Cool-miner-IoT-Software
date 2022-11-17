@@ -10,16 +10,11 @@ import ContractAddress from '../contracts/contract-address.json';
 import { useEffect, useState } from 'react';
 import Box from '@/components/Container/Box';
 import { observer } from 'mobx-react-lite';
-import { Select } from '@mantine/core';
 import NetworkStatus from '@/components/NetworkStatus';
-import HistoricalReward from '@/components/HistoricalReward';
 import HistoricalGroup from '@/components/HistoricalGroup';
 import { useRouter } from 'next/router';
 
-const { ethereum } = require('../global.js').getWindow();
 const { BACKEND_URL } = publicConfig;
-
-import axios from 'axios';
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -80,7 +75,6 @@ export default observer(() => {
   const [hasNFT, setHasNFT] = useState(false);
   const [NFTStatus, setNFTStatus] = useState([]);
   const [localConnection, setLocalConnection] = useState(false);
-  const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
 
   const Refresh = () => {
     UpdateNFTStatus();
@@ -100,7 +94,7 @@ export default observer(() => {
 
     let nftCnt = NFTStatus.length;
 
-    if (freeNFTID != -1) {
+    if (freeNFTID != null) {
       // if there is a free NFT, we can assign it automatically.
       onSecureMinerConnection(freeNFTID);
     } else {
@@ -117,24 +111,30 @@ export default observer(() => {
     $.get(url)
       .then((data) => {
         let info = data.data;
+        console.log('message', info);
         if (info.message == 'an error has occured') {
           setLocalConnection(false);
         } else {
-          auth
-            .$()
-            .post(`${BACKEND_URL}/api/nft_auth/verifySignature`, {
-              signature: info.signature
-            })
-            .then((data) => {
-              if (data.data.status === 'OK') {
-                setLocalConnection(false);
-              } else {
+          if (info.signature == '') {
+            setLocalConnection(true);
+          } else {
+            auth
+              .$()
+              .post(`${BACKEND_URL}/api/nft_auth/verifySignature`, {
+                signature: info.signature
+              })
+              .then((data) => {
+                if (data.data.status === 'OK') {
+                  setLocalConnection(false);
+                } else {
+                  setLocalConnection(false);
+                }
+              })
+              .catch((err) => {
+                console.log('message', err);
                 setLocalConnection(true);
-              }
-            })
-            .catch((err) => {
-              setLocalConnection(true);
-            });
+              });
+          }
         }
       })
       .catch((err) => {
@@ -224,10 +224,10 @@ export default observer(() => {
       return;
     }
 
-    if (choosenNFT == undefined) choosenNFT = selectedNFT;
-
     if (choosenNFT == null) {
-      if (getDefaultOption() != '-1') choosenNFT = getDefaultOption();
+      if (getDefaultOption() != '-1') {
+        choosenNFT = getDefaultOption();
+      }
     }
 
     if (choosenNFT == null) {
@@ -244,14 +244,6 @@ export default observer(() => {
         })
         .then((data) => {
           if (data.data.status == 'success') {
-            Swal.fire({
-              title: 'Success',
-              html: `<p>Secure Miner Connection Success</p>`,
-              icon: 'success'
-            });
-
-            Refresh();
-
             const url = `${publicConfig.DEVICE_URL}/set_signature`;
 
             const wallet = god.currentNetwork.account;
@@ -270,7 +262,28 @@ export default observer(() => {
                 location_id
               },
               {}
-            );
+            )
+              .then((data) => {
+                Swal.fire({
+                  title: 'Success',
+                  html: `<p>Secure Miner Connection Success</p>`,
+                  icon: 'success'
+                });
+                Refresh();
+              })
+              .catch((err) => {
+                // Mining software didn't receive the signature, we need to remove the signature.
+                auth
+                  .$()
+                  .post(`${BACKEND_URL}/api/nft_auth/remove`, {
+                    address: god.currentNetwork.account,
+                    nft_id: choosenNFT
+                  })
+                  .then((data) => {
+                    Refresh();
+                  })
+                  .catch((err) => {});
+              });
           } else {
             Swal.fire({
               title: 'Error',
