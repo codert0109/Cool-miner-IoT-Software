@@ -57,7 +57,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   info: {
-    marginBottom: 15
+    marginBottom: 15,
+    color: 'red'
   },
 
   link: {
@@ -212,7 +213,7 @@ export default observer(() => {
       });
   }, [god.currentNetwork.account]);
 
-  const onSecureMinerConnection = (choosenNFT: string) => {
+  const onSecureMinerConnection = (choosenNFT: string, replaced: boolean = false) => {
     if (hasNFT === false) {
       Swal.fire(
         'Error',
@@ -264,11 +265,19 @@ export default observer(() => {
               {}
             )
               .then((data) => {
-                Swal.fire({
-                  title: 'Success',
-                  html: `<p>Secure Miner Connection Success</p>`,
-                  icon: 'success'
-                });
+                if (replaced == true) {
+                  Swal.fire({
+                    title: 'Success',
+                    html: `<p>Your NFT signature has been successfully replaced, you may now close the portal. Make sure to leave the mining software running to keep mining.</p>`,
+                    icon: 'success'
+                  });
+                } else {
+                  Swal.fire({
+                    title: 'Success',
+                    html: `<p>Your miner is now authenticated on the network. You can now close the mining portal, however be sure to keep your mining software running and ensure your computer does not automatically go into sleep mode or hibernation.</p>`,
+                    icon: 'success'
+                  });
+                }
                 Refresh();
               })
               .catch((err) => {
@@ -332,7 +341,7 @@ export default observer(() => {
         })
         .then((data) => {
           if (data.data.status === 'success') {
-            onSecureMinerConnection(nft_id);
+            onSecureMinerConnection(nft_id, true);
             // Swal.fire({
             //   title: 'Success',
             //   html: `<p>Connection Removed!</p>`,
@@ -413,7 +422,7 @@ export default observer(() => {
     <Layout>
       {hasNFTButNoAssignable() && (
         <div className={classes.info}>
-          You have no available NFTs to secure a new connection. Click Replace Miner to release your current NFT's signature, or Purchase more NFTs to add more miners.
+          You have no available NFTs to secure a new connection. Click Replace Miner to release your current NFT's signature, or &nbsp;<a href="/nft">Purchase more NFTs</a> to add more miners.
         </div>
       )}
       {hasNoNFT() && (
@@ -487,7 +496,7 @@ export default observer(() => {
                     <div>
                       {item.Connection === 'Assigned' && (
                         <Button onClick={() => onReplaceConnection(item.NFT)} className={classes.button} disabled={localConnection === false} size="xs">
-                          Replace Miner
+                          Replace Connection
                         </Button>
                       )}
                     </div>
