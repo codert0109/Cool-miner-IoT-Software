@@ -1,28 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  createStyles, 
-  Navbar, 
-  Group, 
-  Box, 
-  TextInput, 
-  Code, 
-  Text, 
-  Modal, 
-  ScrollArea
-} from '@mantine/core';
+import { createStyles, Navbar, Group, Box, TextInput, Code, Text, Modal, ScrollArea } from '@mantine/core';
 
-import {
-  Home,
-  Code as CodeIcon,
-  Search,
-  CloudDataConnection as ViewIcon,
-  News,
-  Help,
-  Lock,
-  Stack2,
-  ZoomMoney,
-  FileDatabase
-} from 'tabler-icons-react';
+import { Home, Code as CodeIcon, Search, CloudDataConnection as ViewIcon, News, Help, Lock, Stack2, ZoomMoney, FileDatabase, PhoneCall } from 'tabler-icons-react';
 
 import { useStore } from '../../store/index';
 import { observer } from 'mobx-react-lite';
@@ -95,12 +74,12 @@ const useStyles = createStyles((theme, _params, getRef) => {
       }
     },
 
-    navbar_title : {
-      color : theme.colorScheme === 'dark' ? 'white' : 'black'
+    navbar_title: {
+      color: theme.colorScheme === 'dark' ? 'white' : 'black'
     },
 
-    spliter : {
-      height : 10
+    spliter: {
+      height: 10
     }
   };
 });
@@ -117,75 +96,80 @@ export const NavbarSimple = observer(() => {
 
   useEffect(() => {
     const NFTContractAddress = ContractAddress.ElumNFT;
-    god.currentNetwork.execContract({
-      address : NFTContractAddress,
-      abi : NFTContractABI.abi,
-      method : 'owner'
-    }).then((data) => {
-      if (data == god.currentNetwork.account) {
-        setAdmin(true);
-      } else {
+    god.currentNetwork
+      .execContract({
+        address: NFTContractAddress,
+        abi: NFTContractABI.abi,
+        method: 'owner'
+      })
+      .then((data) => {
+        if (data == god.currentNetwork.account) {
+          setAdmin(true);
+        } else {
+          setAdmin(false);
+        }
+      })
+      .catch(() => {
         setAdmin(false);
-      }
-    }).catch(() => {
-      setAdmin(false);
-    });
+      });
   }, [god.currentNetwork.account]);
 
   const data = [
-    { link: '/',                                          label: t('dashboard'),  icon: Home,             __blank : false, access : 'public' },
-    { link: '/miners',                                    label: 'Miner',         icon: FileDatabase,     __blank : false, access : 'public' },
-    { link: '/nft',                                       label: 'NFT',           icon: Stack2,           __blank : false, access : 'public' },
-    { link: '/staking',                                   label: 'Staking',       icon: ZoomMoney,        __blank : false, access : 'public' },
-    { link: '/viewdata',                                  label: 'View Data',     icon: ViewIcon,         __blank : false, access : 'public' },
-    { link: '/admin',                                     label: 'Admin',         icon: Lock,             __blank : false, access : 'admin' },
-    { link: 'https://www.elumicate.com/elumicate-news/',  label: 'News',          icon: News,             __blank : true,  access : 'public' },
-    { link: 'https://www.elumicate.com/',                 label: 'About US',      icon: Help,             __blank : true,  access : 'public' },
+    { link: '/', label: t('dashboard'), icon: Home, __blank: false, access: 'public' },
+    { link: '/miners', label: 'Miner', icon: FileDatabase, __blank: false, access: 'public' },
+    { link: '/nft', label: 'NFT', icon: Stack2, __blank: false, access: 'public' },
+    { link: '/staking', label: 'Staking', icon: ZoomMoney, __blank: false, access: 'public' },
+    { link: '/viewdata', label: 'View Data', icon: ViewIcon, __blank: false, access: 'public' },
+    { link: '/profile', label: 'My Profile', icon: PhoneCall, __blank: false, access: 'public' },
+    { link: '/admin', label: 'Admin', icon: Lock, __blank: false, access: 'admin' },
+    { link: 'https://www.elumicate.com/elumicate-news/', label: 'News', icon: News, __blank: true, access: 'public' },
+    { link: 'https://www.elumicate.com/', label: 'About US', icon: Help, __blank: true, access: 'public' }
   ];
 
-  const links = data.filter((item) => item.access === 'public' || (isAdmin && item.access === 'admin')).map((item) => (
-    <Box
-      className={cx(classes.link, { [classes.linkActive]: item.link === router.route })}
-      sx={{ cursor: 'pointer' }}
-      onClick={(event) => {
-        if (item.link) {
-          // if (item.label == 'View Data') {
-          //   setView(false);
-          // }
-          if (item.__blank) {
-            window.open(item.link, '_blank');
-          } else {
-            router.push(item.link);
+  const links = data
+    .filter((item) => item.access === 'public' || (isAdmin && item.access === 'admin'))
+    .map((item) => (
+      <Box
+        className={cx(classes.link, { [classes.linkActive]: item.link === router.route })}
+        sx={{ cursor: 'pointer' }}
+        onClick={(event) => {
+          if (item.link) {
+            // if (item.label == 'View Data') {
+            //   setView(false);
+            // }
+            if (item.__blank) {
+              window.open(item.link, '_blank');
+            } else {
+              router.push(item.link);
+            }
           }
-        }
-      }}
-    >
-      <item.icon className={classes.linkIcon} />
-      <span>{item.label}</span>
-    </Box>
-  ));
+        }}
+      >
+        <item.icon className={classes.linkIcon} />
+        <span>{item.label}</span>
+      </Box>
+    ));
 
   // if (user.layout.sidebarOpen.value) {
   //   return <></>
   // }
 
   return (
-
-    <Navbar 
-      style={{ 
+    <Navbar
+      style={{
         // backgroundColor: '#000000C0',
         // backgroundColor: '#C7C7C7C0',
-        backgroundColor : theme.colorScheme == 'dark' ? '#000000FF' : '#C7C7C7FF',
-        boxShadow : 'rgb(255 255 255 / 19%) 2px 0px 10px 0px',
-        zIndex : 101
+        backgroundColor: theme.colorScheme == 'dark' ? '#000000FF' : '#C7C7C7FF',
+        boxShadow: 'rgb(255 255 255 / 19%) 2px 0px 10px 0px',
+        zIndex: 101
       }}
-      p="md" 
+      p="md"
       pr={0}
-      hiddenBreakpoint="sm" 
-      hidden={!user.layout.sidebarOpen.value} 
+      hiddenBreakpoint="sm"
+      hidden={!user.layout.sidebarOpen.value}
       onClick={() => user.layout.sidebarOpen.setValue(false)}
-      width={{ sm: 300, lg: 300 }}>
-      
+      width={{ sm: 300, lg: 300 }}
+    >
       <ScrollArea offsetScrollbars={true} scrollHideDelay={0}>
         <Navbar.Section grow>
           <Group className={classes.header} position="apart" align={'center'}>
@@ -208,11 +192,7 @@ export const NavbarSimple = observer(() => {
             onClick={() => openSpotlight()}
           />
           {links}
-          <Modal
-            opened={isview}
-            onClose={() => setView(false)}
-            title="Introduce yourself!"
-          >
+          <Modal opened={isview} onClose={() => setView(false)} title="Introduce yourself!">
             {/* Modal content */}
           </Modal>
         </Navbar.Section>
@@ -220,10 +200,9 @@ export const NavbarSimple = observer(() => {
         <Navbar.Section>
           <ServerStatus />
         </Navbar.Section>
-        
+
         <Navbar.Section>
-          <div className={classes.spliter}>
-          </div>
+          <div className={classes.spliter}></div>
         </Navbar.Section>
 
         <Navbar.Section>
