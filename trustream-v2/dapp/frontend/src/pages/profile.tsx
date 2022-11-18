@@ -2,6 +2,8 @@ import Layout from '@/components/EntireLayout';
 import { createStyles, Button, ScrollArea } from '@mantine/core';
 import React from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
+import EmailMgr from '@/components/EmailMgr';
+import NotificationSetting from '@/components/NotificationSetting';
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -22,7 +24,8 @@ export default observer((props: Props) => {
   }));
   return (
     <Layout>
-      <ScrollArea>{store.count}</ScrollArea>
+      <EmailMgr />
+      <NotificationSetting/>
     </Layout>
   );
 });

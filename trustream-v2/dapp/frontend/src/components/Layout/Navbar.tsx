@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createStyles, Navbar, Group, Box, TextInput, Code, Text, Modal, ScrollArea } from '@mantine/core';
 
-import { Home, Code as CodeIcon, Search, CloudDataConnection as ViewIcon, News, Help, Lock, Stack2, ZoomMoney, FileDatabase, PhoneCall } from 'tabler-icons-react';
+import { Home, Search, CloudDataConnection as ViewIcon, News, Help, Lock, Stack2, ZoomMoney, FileDatabase, PhoneCall } from 'tabler-icons-react';
 
 import { useStore } from '../../store/index';
 import { observer } from 'mobx-react-lite';
