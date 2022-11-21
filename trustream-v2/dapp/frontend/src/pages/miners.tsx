@@ -58,7 +58,10 @@ const useStyles = createStyles((theme) => ({
 
   info: {
     marginBottom: 15,
-    color: 'red'
+    color: 'white',
+    backgroundColor: theme.colorScheme == 'dark' ? 'black' : 'gray',
+    padding: 10,
+    borderRadius: 10
   },
 
   link: {
@@ -106,6 +109,11 @@ export default observer(() => {
       }
     }
   }, [localConnection, NFTStatus]);
+
+  const isSigning = () => {
+    if (localConnection == false) return false;
+    return true;
+  };
 
   const UpdateLocalMinerInfo = () => {
     const url = `${publicConfig.DEVICE_URL}/get_status`;
@@ -420,12 +428,21 @@ export default observer(() => {
 
   return (
     <Layout>
-      {hasNFTButNoAssignable() && (
+      {isSigning() && hasNFTButNoAssignable() && (
         <div className={classes.info}>
-          You have no available NFTs to secure a new connection. Click Replace Miner to release your current NFT's signature, or &nbsp;<a href="/nft">Purchase more NFTs</a> to add more miners.
+          You have no available NFTs to secure a new connection. Click Replace Miner to release your current NFT's signature, or &nbsp;
+          <span
+            className={classes.link}
+            onClick={() => {
+              router.push('/nft');
+            }}
+          >
+            Purchase more NFTs
+          </span>{' '}
+          to add more miners.
         </div>
       )}
-      {hasNoNFT() && (
+      {isSigning() && hasNoNFT() && (
         <div className={classes.info}>
           You need an NFT in order to secure your mining connection.&nbsp;
           <span
