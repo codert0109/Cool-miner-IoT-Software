@@ -8,13 +8,14 @@ import { SpotlightProvider } from '@mantine/spotlight';
 import HeaderNav from '@/components/Header';
 import Footer from '@/components/Footer';
 import { createStyles } from '@mantine/core';
+import Alarm from '../Alarm';
 
 const useStyles = createStyles((theme) => ({
   rootDiv: {
     backgroundImage: 'url("/images/background.svg")',
     backgroundSize: 'initial',
     backgroundRepeat: 'repeat',
-    backgroundColor : (theme.colorScheme == 'dark' ? 'rgb(120, 120, 120)' : 'rgb(255, 255, 255')
+    backgroundColor: theme.colorScheme == 'dark' ? 'rgb(120, 120, 120)' : 'rgb(255, 255, 255'
   }
 }));
 
@@ -23,8 +24,8 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
   const { god, user } = useStore();
 
   let mainStyle = {
-    backgroundImage : '',
-    overflow : 'hidden'
+    backgroundImage: '',
+    overflow: 'hidden'
   };
 
   if (theme.colorScheme == 'dark') {
@@ -34,37 +35,27 @@ export const MainLayout = observer(({ children }: { children?: any }) => {
   }
 
   return (
-    <SpotlightProvider
-      actions={user.actions}
-      searchIcon={<Search size={20} />}
-      searchPlaceholder="Search..."
-      shortcut="mod + k"
-      nothingFoundMessage="Nothing found..."
-      highlightQuery>
+    <SpotlightProvider actions={user.actions} searchIcon={<Search size={20} />} searchPlaceholder="Search..." shortcut="mod + k" nothingFoundMessage="Nothing found..." highlightQuery>
       <div className={classes.rootDiv}>
         <AppShell
           styles={{
             // main: {
-              // backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(0,0,0,255))'
+            // backgroundImage: 'linear-gradient(to bottom, rgba(107,107,107,0), rgba(0,0,0,255))'
             // }
-            main : mainStyle
+            main: mainStyle
           }}
           className={classes.rootDiv}
           navbarOffsetBreakpoint="sm"
           asideOffsetBreakpoint="sm"
           fixed
           navbar={god.currentNetwork.account ? <NavbarSimple /> : undefined}
-          footer={
-            <Footer />
-          }
-          header={
-            <HeaderNav />
-          }
+          footer={<Footer />}
+          header={<HeaderNav />}
         >
+          <Alarm />
           {children}
         </AppShell>
       </div>
-
     </SpotlightProvider>
   );
 });

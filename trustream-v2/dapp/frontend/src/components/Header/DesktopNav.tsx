@@ -6,7 +6,7 @@ import { Box, Center, createStyles, Menu, Text } from '@mantine/core';
 import NFTContractABI from '../../contracts/ElumNFT.json';
 import ContractAddress from '../../contracts/contract-address.json';
 
-import { ChevronDown, Home, CloudDataConnection, Stack2, ZoomMoney, FileDatabase, Lock, PhoneCall } from 'tabler-icons-react';
+import { ChevronDown, Home, CloudDataConnection, Stack2, ZoomMoney, FileDatabase, Lock, PhoneCall, AlertTriangle } from 'tabler-icons-react';
 
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -14,6 +14,13 @@ import Link from 'next/link';
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef('icon');
   return {
+    alertStyle: {
+      backgroundColor: 'rgb(255, 102, 0) !important',
+      color: 'white',
+      '&:hover': {
+        backgroundColor: 'rgb(255, 134, 53) !important'
+      }
+    },
     links: {
       [theme.fn.smallerThan('sm')]: {
         display: 'none'
@@ -44,6 +51,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
       color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
       marginRight: theme.spacing.sm
     },
+    alertIcon: {
+      color: 'white'
+    },
     linkActive: {
       '&, &:hover': {
         backgroundColor: theme.colorScheme === 'dark' ? theme.fn.rgba(theme.colors[theme.primaryColor][8], 0.25) : theme.colors[theme.primaryColor][0],
@@ -68,6 +78,12 @@ interface HeaderSearchProps {
 }
 
 const links: Array<HeaderSearchProps> = [
+  {
+    link: '/alert',
+    label: 'Alert',
+    icon: AlertTriangle,
+    access: 'alert'
+  },
   {
     link: '/',
     label: 'Dashboard',
@@ -129,6 +145,7 @@ const DesktopNav = observer((props) => {
   }));
 
   const [isAdmin, setAdmin] = useState(false);
+  const [isAlert, setAlert] = useState(true);
 
   useEffect(() => {
     const NFTContractAddress = ContractAddress.ElumNFT;
@@ -151,7 +168,7 @@ const DesktopNav = observer((props) => {
   }, [god.currentNetwork.account]);
 
   const items = links
-    .filter((item) => item.access === 'public' || (item.access === 'admin' && isAdmin))
+    .filter((item) => item.access === 'public' || (item.access === 'admin' && isAdmin) || (item.access == 'alert' && isAlert))
     .map((link) => {
       const menuItems = link.links?.map((item) => <Menu.Item key={item.link}>{item.label}</Menu.Item>);
       if (menuItems) {
@@ -163,6 +180,7 @@ const DesktopNav = observer((props) => {
             transitionDuration={0}
             placement="end"
             gutter={1}
+            className={classes.alertStyle}
             control={
               <a
                 href={link.link}
@@ -186,13 +204,13 @@ const DesktopNav = observer((props) => {
       return (
         <Link href={link.link} key={link.label}>
           <Box
-            className={cx(classes.link, { [classes.linkActive]: link.link === router.route })}
+            className={cx(link.access == 'alert' ? classes.alertStyle : '', classes.link, { [classes.linkActive]: link.link === router.route })}
             sx={{ cursor: 'pointer' }}
             onClick={(event) => {
               setActive(link.label);
             }}
           >
-            <link.icon className={classes.linkIcon} />
+            <link.icon className={cx(classes.linkIcon, link.access == 'alert' ? classes.alertIcon : '')} />
             <span>{link.label}</span>
           </Box>
         </Link>
