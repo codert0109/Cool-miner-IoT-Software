@@ -4,8 +4,9 @@ module.exports = (app) => {
 
   var router = require('express').Router()
 
-  router.post('/get',     check_auth, profile.getProfile)
-  router.post('/update',  check_auth, profile.updateEmail)
+  router.post('/get',             check_auth, profile.getProfile)
+  router.post('/updateEmail',     check_auth, profile.updateEmail)
+  router.post('/updateSetting',   check_auth, profile.updateSetting)
 
   app.use('/api/profile', router)
 }
