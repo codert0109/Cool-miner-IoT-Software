@@ -129,7 +129,7 @@ const links: Array<HeaderSearchProps> = [
 ];
 
 const DesktopNav = observer((props) => {
-  const { god, lang, user } = useStore();
+  const { god, lang, user, alert } = useStore();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Home');
   const router = useRouter();
@@ -145,7 +145,6 @@ const DesktopNav = observer((props) => {
   }));
 
   const [isAdmin, setAdmin] = useState(false);
-  const [isAlert, setAlert] = useState(true);
 
   useEffect(() => {
     const NFTContractAddress = ContractAddress.ElumNFT;
@@ -168,7 +167,7 @@ const DesktopNav = observer((props) => {
   }, [god.currentNetwork.account]);
 
   const items = links
-    .filter((item) => item.access === 'public' || (item.access === 'admin' && isAdmin) || (item.access == 'alert' && isAlert))
+    .filter((item) => item.access === 'public' || (item.access === 'admin' && isAdmin) || (item.access == 'alert' && alert.hasAlert))
     .map((link) => {
       const menuItems = link.links?.map((item) => <Menu.Item key={item.link}>{item.label}</Menu.Item>);
       if (menuItems) {
@@ -185,7 +184,7 @@ const DesktopNav = observer((props) => {
               <a
                 href={link.link}
                 className={classes.link}
-                onClick={() => {
+                onClick={(e) => {
                   user.layout.sidebarOpen.setValue(false);
                 }}
               >
@@ -207,28 +206,19 @@ const DesktopNav = observer((props) => {
             className={cx(link.access == 'alert' ? classes.alertStyle : '', classes.link, { [classes.linkActive]: link.link === router.route })}
             sx={{ cursor: 'pointer' }}
             onClick={(event) => {
-              setActive(link.label);
+              if (link.access == 'alert') {
+                event.stopPropagation();
+                event.preventDefault();
+                alert.toggleOpen();
+              } else {
+                setActive(link.label);
+              }
             }}
           >
             <link.icon className={cx(classes.linkIcon, link.access == 'alert' ? classes.alertIcon : '')} />
             <span>{link.label}</span>
           </Box>
         </Link>
-        // <a
-        //   key={link.label}
-        //   href={link.link}
-        //   className={classes.link}
-        //   style={{
-        //     color: router.asPath === link.link ? '#ff3998' : '#000',
-        //     display: 'flex',
-        //     alignItems: 'center'
-        //   }}
-        // >
-        //   {link.icon && <link.icon size={20} />}
-        //   <Text ml={5}>
-        //     {link.label}
-        //   </Text>
-        // </a>
       );
     });
 

@@ -84,6 +84,7 @@ export class AuthStore {
         const nounce = await getNounce();
         if (nounce == null) {
             fail_callback();
+            return;
         }
 
         const signature = await signMessage(nounce);
@@ -93,6 +94,7 @@ export class AuthStore {
 
             if (sessionID == null) {
                 fail_callback();
+                return;
             }
 
             this.saveSession(sessionID);

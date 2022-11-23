@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import { createStyles } from '@mantine/core';
 import { AlertTriangle, ArrowBarToRight, ArrowBarToLeft } from 'tabler-icons-react';
+import { useStore } from '@/store/index';
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef('icon');
@@ -92,25 +93,32 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 export default observer((props: Props) => {
   const { classes, cx } = useStyles();
-
-  const [isShow, setShow] = useState(false);
+  const { god, auth, nft, profile, alert } = useStore();
 
   const onAlarmClick = () => {
-    setShow(!isShow);
+    alert.toggleOpen();
   };
+
+  useEffect(() => {
+    alert.refresh();
+  }, [god.currentNetwork.account]);
+
+  if (alert.hasAlert == false) {
+    return <></>
+  }
 
   return (
     <div className={classes.root} onClick={() => onAlarmClick()}>
       <div className={classes.header}>
         <div>
-          <div className={cx(classes.center, classes.btn)}>{isShow == true ? <ArrowBarToRight size="24" /> : <ArrowBarToLeft size="24" />}</div>
+          <div className={cx(classes.center, classes.btn)}>{alert.opened == true ? <ArrowBarToRight size="24" /> : <ArrowBarToLeft size="24" />}</div>
         </div>
         <div className={classes.flexgrow}>
           <AlertTriangle size="24" className={classes.alertIcon} />
-          {isShow && <div>Alert</div>}
+          {alert.opened && <div>Alert</div>}
         </div>
       </div>
-      {isShow && (
+      {alert.opened && (
         <div className={classes.body}>
           <div className={classes.bodyinner}>
             <div className={classes.bodyimg}>
@@ -119,12 +127,14 @@ export default observer((props: Props) => {
             <div className={classes.textdiv}>
               <div>
                 <b>
-                  Miner has been <span className={classes.red}>offline</span> for <span className={classes.red}>1 week</span>,
+                  {alert.getAlert().message}
+                  {/* Miner has been <span className={classes.red}>offline</span> for <span className={classes.red}>1 week</span>, */}
                 </b>
               </div>
               <div>
                 <b>
-                  You could have earn <span className={classes.orange}>100 tokens</span>.
+                  {alert.getAlert().submessage}
+                  {/* You could have earn <span className={classes.orange}>100 tokens</span>. */}
                 </b>
               </div>
             </div>

@@ -98,6 +98,20 @@ exports.getActiveMiner = (req, res) => {
   }
 };
 
+exports.getInactivePeriod = (req, res) => {
+  const { address, nft_id } = req.body;
+
+  if (address == null || nft_id == null) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    });
+    return;
+  }
+
+  
+};
+
 exports.isActive = (req, res) => {
   let address = req.query.address;
   let nft_id = req.query.nft_id;

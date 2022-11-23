@@ -8,6 +8,7 @@ export class ProfileStore {
     rootStore: RootStore;
     loading: boolean = true;
     email : string = '';
+    setting : string = '';
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -24,10 +25,12 @@ export class ProfileStore {
         try {
             let response : any = await auth.$().post(`${BACKEND_URL}/api/profile/get`);
             this.email = response.data.email;
+            this.setting = response.data.setting;
             this.loading = false;
         } catch (err) {
             console.error(err);
             this.email = '';
+            this.setting = '';
             this.loading = false;
         }
     }
@@ -35,6 +38,14 @@ export class ProfileStore {
     saveEmail(email : string) {
         const { auth } = this.rootStore;
 
-        return auth.$().post(`${BACKEND_URL}/api/profile/update`, { email });
+        return auth.$().post(`${BACKEND_URL}/api/profile/updateEmail`, { email });
+    }
+
+    saveSetting(setting : any) {
+        const { auth } = this.rootStore;
+
+        return auth.$().post(`${BACKEND_URL}/api/profile/updateSetting`, { 
+            setting : JSON.stringify(setting) 
+        });
     }
 }

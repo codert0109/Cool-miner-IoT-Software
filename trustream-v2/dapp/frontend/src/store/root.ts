@@ -8,6 +8,7 @@ import { StakeStore } from './stake';
 import { CameraStore } from './camera';
 import { RewardStore } from './reward';
 import { ProfileStore } from './profile';
+import { AlertStore } from './alert';
 
 export default class RootStore {
   lang = new LangStore();
@@ -20,4 +21,5 @@ export default class RootStore {
   camera = new CameraStore(this);
   reward = new RewardStore(this);
   profile = new ProfileStore(this);
+  alert = new AlertStore(this);
 }
