@@ -19,12 +19,16 @@ export class ProfileStore {
 
     async refresh() {
         const { auth } = this.rootStore;
+
+        this.loading = true;
         try {
             let response : any = await auth.$().post(`${BACKEND_URL}/api/profile/get`);
-            this.email = response.email;
+            this.email = response.data.email;
+            this.loading = false;
         } catch (err) {
             console.error(err);
             this.email = '';
+            this.loading = false;
         }
     }
 

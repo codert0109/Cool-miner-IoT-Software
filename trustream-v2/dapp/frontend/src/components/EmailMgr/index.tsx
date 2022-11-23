@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from '@/components/Container/Box';
-import { Button, createStyles, TextInput } from '@mantine/core';
+import { Button, createStyles, TextInput, Loader } from '@mantine/core';
 import { Edit, Eraser } from 'tabler-icons-react';
 import { useStore } from '@/store/index';
+import Swal from 'sweetalert2';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -24,7 +25,10 @@ const useStyles = createStyles((theme) => ({
     flexGrow: 1,
     width: 0,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
+    display : 'flex',
+    alignItems : 'center',
+    justifyContent : 'center'
   },
   btn: {
     paddingLeft: 4,
@@ -36,6 +40,9 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  w100 : {
+    width : '100%'
   }
 }));
 
@@ -65,12 +72,40 @@ export default observer((props: Props) => {
     setEmail(event.currentTarget.value);
   };
 
+  const updateEmail = (email : string) => {
+    profile.saveEmail(email)
+    .then((response : any) => {
+      if (response.data.status == 'OK') {
+        Swal.fire(
+          'Success',
+          `<p>Updating Email Success</p>`,
+          'success'
+        )
+      } else {
+        Swal.fire(
+          'Error',
+          `<p>Updating Email Failed</p>`,
+          'warning'
+        )
+      }
+      profile.refresh();
+    })
+    .catch((err) => {
+      Swal.fire(
+        'Error',
+        `<p>Updating Email Failed</p>`,
+        'warning'
+      )
+      profile.refresh();
+    });
+  };
+
   const onSave = (e) => {
-    profile.saveEmail(email);
+    updateEmail(email);
   };
 
   const onErase = (e) => {
-    profile.saveEmail('');
+    updateEmail('');
   };
 
   return (
@@ -78,16 +113,17 @@ export default observer((props: Props) => {
       <div className={classes.container}>
         <div className={classes.label}>Your email</div>
         <div className={classes.growdiv}>
-          <TextInput size="xs" type="email" value={email} onChange={onEmailChange}></TextInput>
+          {profile.loading && <Loader size="xs" className={classes.w100} />}
+          {!profile.loading && <TextInput size="xs" className={classes.w100} type="email" value={email} onChange={onEmailChange}></TextInput>}
         </div>
         <div className={classes.centerdiv}>
-          <Button size="xs" onClick={onSave} className={classes.btn}>
-            <Edit />
+          <Button loading={profile.loading} size="xs" onClick={onSave} className={classes.btn}>
+            <Edit/>
           </Button>
         </div>
         <div className={classes.centerdiv}>
-          <Button size="xs" onClick={onErase} className={classes.btn}>
-            <Eraser />
+          <Button loading={profile.loading} size="xs" onClick={onErase} className={classes.btn}>
+            <Eraser/>
           </Button>
         </div>
       </div>
