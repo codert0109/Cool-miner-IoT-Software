@@ -13,7 +13,6 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-interface Props {}
 
 export default observer((props: Props) => {
   const store = useLocalObservable(() => ({
@@ -29,3 +28,5 @@ export default observer((props: Props) => {
     </Layout>
   );
 });
+
+interface Props {}

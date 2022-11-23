@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocalObservable, observer } from 'mobx-react-lite';
 import Box from '@/components/Container/Box';
 import { Button, createStyles, TextInput } from '@mantine/core';
 import { Edit, Eraser } from 'tabler-icons-react';
+import { useStore } from '@/store/index';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -41,10 +42,35 @@ const useStyles = createStyles((theme) => ({
 export default observer((props: Props) => {
   const { classes } = useStyles();
   const [email, setEmail] = useState('');
+  const { god, auth, profile } = useStore();
+
+  useEffect(() => {
+    auth.check_auth(() => {
+      profile.refresh();
+    }, () => {
+      auth.login(() => {
+        profile.refresh();
+      }, () => {
+        
+      });
+    });
+  }, [god.currentNetwork.account]);
+
+  useEffect(() => {
+    setEmail(profile.email);
+  }, [profile.email]);
 
   // event handlers
   const onEmailChange = (event) => {
     setEmail(event.currentTarget.value);
+  };
+
+  const onSave = (e) => {
+    profile.saveEmail(email);
+  };
+
+  const onErase = (e) => {
+    profile.saveEmail('');
   };
 
   return (
@@ -55,12 +81,12 @@ export default observer((props: Props) => {
           <TextInput size="xs" type="email" value={email} onChange={onEmailChange}></TextInput>
         </div>
         <div className={classes.centerdiv}>
-          <Button size="xs" className={classes.btn}>
+          <Button size="xs" onClick={onSave} className={classes.btn}>
             <Edit />
           </Button>
         </div>
         <div className={classes.centerdiv}>
-          <Button size="xs" className={classes.btn}>
+          <Button size="xs" onClick={onErase} className={classes.btn}>
             <Eraser />
           </Button>
         </div>
