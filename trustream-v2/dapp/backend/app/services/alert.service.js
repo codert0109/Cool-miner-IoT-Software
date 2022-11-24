@@ -99,14 +99,14 @@ const onScanAlert = async () => {
                     let content = '';
                     for (let i = 0; i < alertList.length; i++) {
                         if (alertList[i].type == EVENT_NOTMINING) {
-                            content += `<p>Your NFT ${alertList[i].nft_id} did not start mining yet.</p>`
+                            content += `<p>Your Elumicate miner ${alertList[i].nft_id} did not start mining yet and this miner's rewards are no longer accumulating. Please ensure your computer is turned on and the mining software is actively running.</p>`
                         } else if (alertList[i].type == EVENT_NOTWORKING) {
                             let levelCaption = ['1 hour', '1 day', '1 week']
-                            content += `<p>Your NFT ${alertList[i].nft_id} has been offline more than ${levelCaption[alertList[i].level]}.</p>`
+                            content += `<p>Your Elumicate miner ${alertList[i].nft_id} has been offline for ${levelCaption[alertList[i].level]} and this miner's rewards are no longer accumulating. Please ensure your computer is turned on and the mining software is actively running.</p>`
                         }
                     }
 
-                    content += '<p>Please start mining to get more tokens.</p>'
+                    content += `<p>Common causes include the computer entering sleep or hibernation mode, or internet outage/communication issues. We recommend testing the internet connection, followed by rebooting the computer and software. If issues persist, you can try uninstalling and re-installing the latest version of the mining software found at Mining Software - Elumicate. You can also visit our discord group to ask for and offer assistance to others https://discord.gg/uVBdzJfPRK</p>`
                     return content;
                 };
 
