@@ -106,7 +106,7 @@ const onScanAlert = async () => {
                         }
                     }
 
-                    content += `<p>Common causes include the computer entering sleep or hibernation mode, or internet outage/communication issues. We recommend testing the internet connection, followed by rebooting the computer and software. If issues persist, you can try uninstalling and re-installing the latest version of the mining software found at Mining Software - Elumicate. You can also visit our discord group to ask for and offer assistance to others https://discord.gg/uVBdzJfPRK</p>`
+                    content += `<p>Common causes include the computer entering sleep or hibernation mode, or internet outage/communication issues. We recommend testing the internet connection, followed by rebooting the computer and software. If issues persist, you can try uninstalling and re-installing the latest version of the mining software found at <a href="www.elumicate.com/mining-software">Mining Software - Elumicate</a>. You can also visit our discord group to ask for and offer assistance to others https://discord.gg/uVBdzJfPRK</p>`
                     return content;
                 };
 
