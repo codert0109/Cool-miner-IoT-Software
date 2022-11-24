@@ -28,7 +28,9 @@ const createVerifyCode = () => {
     let str = "";
 
     for (let i = 0; i < 6; i++) {
-        str += digits[i];
+        let index = Math.random() * digits.length;
+        index = ~~index;
+        str += digits[index];
     }
 
     return str;
