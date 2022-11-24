@@ -10,7 +10,7 @@ exports.createEvent = async ({address, nft_id, type, level}) => {
 };
 
 exports.removeEvent = async ({address, nft_id, type}) => {
-  return await Alert.destroy({ address, nft_id, type });
+  return await Alert.destroy({ where : { address, nft_id, type }});
 };
 
 exports.updateEvent = async ({ address, nft_id, type, level }) => {
