@@ -33,6 +33,9 @@ db.sequelize
   .sync()
   .then(() => {
     console.log('Synced db.')
+    // register micro service
+    require('./app/services/claim.service').init();
+    require('./app/services/alert.service').init();
   })
   .catch((err) => {
     console.log('Failed to sync db: ' + err.message)
@@ -46,8 +49,7 @@ db.sequelize
 // register routes
 require('./app/routes')(app)
 
-// register micro service
-require('./app/services/claim.service').init();
+
 
 https
   .createServer(

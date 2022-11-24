@@ -47,6 +47,18 @@ exports.getStakingInfo = async (address) => {
   }
 };
 
+exports.getNFTCnt = async (address) => {
+  if (address == null)
+    return 0;
+  try {
+    let tx = await ElumNFT.methods.balanceOf(address).call();
+    return tx;
+  } catch (err) {
+    console.error('errors occured', err);
+    return null;
+  }
+};
+
 // This function update available claimed tokens.
 // exports.getAvailableClaimAmount = async (req, res) => {
 //   const { address } = req.body;

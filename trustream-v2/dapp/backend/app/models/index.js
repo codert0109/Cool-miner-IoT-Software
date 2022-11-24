@@ -39,6 +39,7 @@ db.emails = require("./email.model.js")(sequelize, Sequelize);
 db.epochs = require("./epoch.model.js")(sequelize, Sequelize);
 db.profiles = require("./profile.model.js")(sequelize, Sequelize);
 db.email_auth = require("./email_auth.model.js")(sequelize, Sequelize);
+db.alert = require("./alert.model.js")(sequelize, Sequelize);
 
 db.P = require("./p.model.js")(sequelize, Sequelize); //  array of P1, P2, P3 DB table
 

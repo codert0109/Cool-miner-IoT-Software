@@ -26,9 +26,9 @@ const useStyles = createStyles((theme) => ({
     width: 0,
     marginLeft: 10,
     marginRight: 10,
-    display : 'flex',
-    alignItems : 'center',
-    justifyContent : 'center'
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   btn: {
     paddingLeft: 4,
@@ -41,8 +41,8 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  w100 : {
-    width : '100%'
+  w100: {
+    width: '100%'
   }
 }));
 
@@ -58,7 +58,7 @@ export default observer((props: Props) => {
       auth.login(() => {
         profile.refresh();
       }, () => {
-        
+
       });
     });
   }, [god.currentNetwork.account]);
@@ -72,36 +72,62 @@ export default observer((props: Props) => {
     setEmail(event.currentTarget.value);
   };
 
-  const updateEmail = (email : string) => {
-    profile.saveEmail(email)
-    .then((response : any) => {
-      if (response.data.status == 'OK') {
-        Swal.fire(
-          'Success',
-          `<p>Updating Email Success</p>`,
-          'success'
-        )
-      } else {
+  const updateEmail = (email: string, code : string = '') => {
+    profile.saveEmail(email, code)
+      .then((response: any) => {
+        if (response.data.status == 'OK') {
+          Swal.fire(
+            'Success',
+            `<p>Updating Email Success</p>`,
+            'success'
+          )
+        } else {
+          Swal.fire(
+            'Error',
+            `<p>Updating Email Failed</p>`,
+            'warning'
+          )
+        }
+        profile.refresh();
+      })
+      .catch((err) => {
         Swal.fire(
           'Error',
           `<p>Updating Email Failed</p>`,
           'warning'
         )
-      }
-      profile.refresh();
-    })
-    .catch((err) => {
-      Swal.fire(
-        'Error',
-        `<p>Updating Email Failed</p>`,
-        'warning'
-      )
-      profile.refresh();
-    });
+        profile.refresh();
+      });
   };
 
   const onSave = (e) => {
-    updateEmail(email);
+    profile.verifyEmailRequest(email)
+      .then((data) => {
+        Swal.fire({
+          title: 'Email Verification Code',
+          input: 'number',
+          inputLabel: '6 Digits Verification Code was sent to your email.',
+          showCancelButton: true,
+          inputValidator: (value) => {
+            if (!value) {
+              return 'You need to write 6 digits!'
+            }
+            if (value.length != 6) {
+              return 'You need to input 6 digits!'
+            }
+          }
+        }).then((response : any) => {
+          if (response.isConfirmed == false) {
+            return;
+          }
+          updateEmail(email, response.value);
+        }).catch((err) => {
+          
+        });
+      })
+      .catch((err) => {
+
+      });
   };
 
   const onErase = (e) => {
@@ -118,12 +144,12 @@ export default observer((props: Props) => {
         </div>
         <div className={classes.centerdiv}>
           <Button loading={profile.loading} size="xs" onClick={onSave} className={classes.btn}>
-            <Edit/>
+            <Edit />
           </Button>
         </div>
         <div className={classes.centerdiv}>
           <Button loading={profile.loading} size="xs" onClick={onErase} className={classes.btn}>
-            <Eraser/>
+            <Eraser />
           </Button>
         </div>
       </div>
@@ -131,4 +157,4 @@ export default observer((props: Props) => {
   );
 });
 
-interface Props {}
+interface Props { }

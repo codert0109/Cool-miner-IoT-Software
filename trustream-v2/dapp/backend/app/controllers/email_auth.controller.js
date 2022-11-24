@@ -22,6 +22,8 @@ const sendMail = ({receiver, subject, content}) => {
     });
 };
 
+exports.sendMail = sendMail;
+
 const createVerifyCode = () => {
     const digits = "0123456789";
 

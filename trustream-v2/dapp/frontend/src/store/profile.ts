@@ -3,12 +3,13 @@ import { makeAutoObservable } from 'mobx';
 import RootStore from './root';
 import { publicConfig } from "../config/public";
 const { BACKEND_URL } = publicConfig;
+import Swal from 'sweetalert2';
 
 export class ProfileStore {
     rootStore: RootStore;
     loading: boolean = true;
-    email : string = '';
-    setting : string = '';
+    email: string = '';
+    setting: string = '';
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -23,7 +24,7 @@ export class ProfileStore {
 
         this.loading = true;
         try {
-            let response : any = await auth.$().post(`${BACKEND_URL}/api/profile/get`);
+            let response: any = await auth.$().post(`${BACKEND_URL}/api/profile/get`);
             this.email = response.data.email;
             this.setting = response.data.setting;
             this.loading = false;
@@ -35,17 +36,26 @@ export class ProfileStore {
         }
     }
 
-    saveEmail(email : string) {
+    saveEmail(email: string, code : string = '') {
         const { auth } = this.rootStore;
 
-        return auth.$().post(`${BACKEND_URL}/api/profile/updateEmail`, { email });
+        if (email == '')
+            return auth.$().post(`${BACKEND_URL}/api/profile/updateEmail`, { email, code });
+        else {
+            return auth.$().post(`${BACKEND_URL}/api/profile/updateEmail`, { email, code });
+        }
     }
 
-    saveSetting(setting : any) {
+    verifyEmailRequest(email : string) {
+        const { auth } = this.rootStore;
+        return auth.$().post(`${BACKEND_URL}/api/email_auth/verify`, { email }); 
+    }
+
+    saveSetting(setting: any) {
         const { auth } = this.rootStore;
 
-        return auth.$().post(`${BACKEND_URL}/api/profile/updateSetting`, { 
-            setting : JSON.stringify(setting) 
+        return auth.$().post(`${BACKEND_URL}/api/profile/updateSetting`, {
+            setting: JSON.stringify(setting)
         });
     }
 }
