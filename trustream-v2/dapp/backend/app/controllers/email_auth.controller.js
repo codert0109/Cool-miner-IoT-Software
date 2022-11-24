@@ -18,7 +18,7 @@ const sendMail = ({receiver, subject, content}) => {
         from : email_config.user,
         to : [receiver],
         subject : subject,
-        text : content
+        html : content
     });
 };
 
