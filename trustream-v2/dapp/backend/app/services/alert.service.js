@@ -107,6 +107,7 @@ const onScanAlert = async () => {
                     }
 
                     content += '<p>Please start mining to get more tokens.</p>'
+                    return content;
                 };
 
                 if (updateAlertList.length > 0) {
