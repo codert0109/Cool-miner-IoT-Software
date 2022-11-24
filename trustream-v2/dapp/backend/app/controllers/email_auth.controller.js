@@ -36,6 +36,27 @@ const createVerifyCode = () => {
     return str;
 };
 
+exports.verifyCode = (email, code, callback) => {
+    if (email == null || code == null) {
+        callback(false);
+    }
+    else if (toString.call(code) != '[object String]') {
+        callback(false);
+    } else if (code.length != 6) {
+        callback(false);
+    } else {
+        Email_Auth.findOne({ where : { email, code }})
+            .then((data) => {
+                if (data == null) callback(false);
+                else callback(true);
+            })
+            .catch((err) => {
+                console.error(err);
+                callback(false);
+            });
+    }
+};
+
 exports.verifyEmail = (req, res) => {
     const { email } = req.body;
 
