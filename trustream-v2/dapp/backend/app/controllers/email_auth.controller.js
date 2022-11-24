@@ -4,7 +4,7 @@ const db = require('../models')
 const Email_Auth = db.email_auth;
 
 const transporter = nodemailer.createTransport({
-  service : 'SendinBlue',
+  service : email_config.service,
   auth : {
     user : email_config.user,
     pass : email_config.pass
@@ -15,7 +15,7 @@ transporter.verify().then(console.log).catch(console.error);
 
 const sendMail = ({receiver, subject, content}) => {
     return transporter.sendMail({
-        from : email_config.user,
+        from : email_config.sender,
         to : [receiver],
         subject : subject,
         html : content
