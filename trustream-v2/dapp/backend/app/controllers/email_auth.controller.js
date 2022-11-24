@@ -1,4 +1,4 @@
-const email_config = require('../config/email.config');
+const email_config = require('../config/email.config.js');
 const nodemailer = require('nodemailer');
 const db = require('../models')
 const Email_Auth = db.email_auth;
