@@ -1,4 +1,4 @@
-const TIMER_INTERVAL = 1000 * 60 * 10; // 10 minutes alert system
+const TIMER_INTERVAL = 1000 * 10; // 10 minutes alert system
 const db = require('../models')
 const Profile = db.profiles
 
