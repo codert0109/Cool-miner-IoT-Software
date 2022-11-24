@@ -12,4 +12,5 @@ module.exports = (app) => {
   require('./epoch.routes')(app)
   require('./bravedetect.routes')(app)
   require('./profile.routes')(app)
+  require('./email_auth.routes')(app)
 }
