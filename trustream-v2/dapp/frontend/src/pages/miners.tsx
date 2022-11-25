@@ -511,8 +511,11 @@ export default observer(() => {
                   </td>
                   <td>
                     <div>
-                      {item.Connection === 'Assigned' && (
-                        <Button onClick={() => onReplaceConnection(item.NFT)} className={classes.button} disabled={localConnection === false} size="xs">
+                      {item.Connection === 'Assigned' && localConnection === true && (
+                        <Button 
+                          onClick={() => onReplaceConnection(item.NFT)} 
+                          className={classes.button} 
+                          size="xs">
                           Replace Connection
                         </Button>
                       )}
