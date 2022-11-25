@@ -39,13 +39,21 @@ export default observer((props: Props) => {
 
   const [setting, setSetting] = useState([
     {
-      label: 'Miner Activity Notification',
+      label: 'Alert when Miner has been offline for 1 hr',
       value: true
     },
     {
-      label: 'Staking Notification',
+      label: 'Alert when Miner has been offline for 1 day',
       value: true
-    }
+    },
+    {
+      label: 'Alert when Miner has been offline for 1 week',
+      value: true
+    },
+    {
+      label: 'Alert when Miner has been offline for 1 month',
+      value: true
+    },
   ]);
 
   useEffect(() => {

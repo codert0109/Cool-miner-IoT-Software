@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     setting: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(65536) // this should be large since it stored json object
     },
     created_at: {
       type: Sequelize.DATE
