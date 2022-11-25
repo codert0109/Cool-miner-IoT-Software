@@ -107,16 +107,13 @@ export class AlertStore {
                 address : god.currentNetwork.account
             });
 
-            console.log('alert response', response);
-            // let curCnt = response.data.data.CNT;
-
-            // if (nftCnt != curCnt) {
-            //     this.addAlert({
-            //         type : 'miner',
-            //         message : 'Miner has been offline for 1 hour.',
-            //         submessage : 'You could earn more tokens.'
-            //     });
-            // }
+            if (response.data.message != 'No Alert') {
+                this.addAlert({
+                    type : 'miner',
+                    message : response.data.message,
+                    submessage : ''
+                });
+            }
         } catch (err) {
         }
     }

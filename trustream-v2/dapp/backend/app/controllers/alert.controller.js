@@ -62,7 +62,7 @@ exports.getAlert = async (req, res) => {
       let levelCaption = ['1 hour', '1 day', '1 week']
       res.send({
         status : 'OK',
-        message : `Your NFT ${nft_id} has been offline for ${levelCaption[level]}.`
+        message : `Your NFT ${nft_id} has been offline for ${levelCaption[level]}.`,
       })
       return;
     }

@@ -131,12 +131,11 @@ export default observer((props: Props) => {
                   {/* Miner has been <span className={classes.red}>offline</span> for <span className={classes.red}>1 week</span>, */}
                 </b>
               </div>
-              <div>
+              {alert.getAlert().submessage != '' && <div>
                 <b>
                   {alert.getAlert().submessage}
-                  {/* You could have earn <span className={classes.orange}>100 tokens</span>. */}
                 </b>
-              </div>
+              </div> }
             </div>
           </div>
         </div>
