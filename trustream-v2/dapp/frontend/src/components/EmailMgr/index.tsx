@@ -143,13 +143,15 @@ export default observer((props: Props) => {
           {!profile.loading && <TextInput size="xs" className={classes.w100} type="email" value={email} onChange={onEmailChange}></TextInput>}
         </div>
         <div className={classes.centerdiv}>
-          <Button loading={profile.loading} size="xs" onClick={onSave} className={classes.btn}>
-            <Edit />
+          <Button color="green" loading={profile.loading} size="xs" onClick={onSave} className={classes.btn}>
+            Save
+            {/* <Edit /> */}
           </Button>
         </div>
         <div className={classes.centerdiv}>
-          <Button loading={profile.loading} size="xs" onClick={onErase} className={classes.btn}>
-            <Eraser />
+          <Button color="red" loading={profile.loading} size="xs" onClick={onErase} className={classes.btn}>
+            Clear
+            {/* <Eraser /> */}
           </Button>
         </div>
       </div>

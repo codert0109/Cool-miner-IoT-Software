@@ -103,7 +103,7 @@ export default observer((props: Props) => {
     alert.refresh();
   }, [god.currentNetwork.account]);
 
-  if (alert.hasAlert == false) {
+  if (alert.hasAlert == false || alert.visible == false) {
     return <></>
   }
 

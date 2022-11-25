@@ -116,7 +116,7 @@ const links: Array<HeaderSearchProps> = [
   },
   {
     link: '/profile',
-    label: 'My Profile',
+    label: 'Alert Settings',
     icon: PhoneCall,
     access: 'public'
   },
@@ -209,7 +209,7 @@ const DesktopNav = observer((props) => {
               if (link.access == 'alert') {
                 event.stopPropagation();
                 event.preventDefault();
-                alert.toggleOpen();
+                alert.setVisible(!alert.visible);
               } else {
                 setActive(link.label);
               }

@@ -20,6 +20,7 @@ export class AlertStore {
     rootStore: RootStore;
     loading: boolean = true;
     hasAlert : boolean = false;
+    visible : boolean = false;
     opened : boolean = false;
 
     typelist: Array<AlertInfo> = [];
@@ -33,6 +34,10 @@ export class AlertStore {
         });
 
         this.initTypeList();
+    }
+
+    setVisible(flag : boolean) {
+        this.visible = flag;
     }
 
     toggleOpen() {

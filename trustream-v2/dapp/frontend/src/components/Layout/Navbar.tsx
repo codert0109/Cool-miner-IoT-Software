@@ -120,7 +120,7 @@ export const NavbarSimple = observer(() => {
     { link: '/nft', label: 'NFT', icon: Stack2, __blank: false, access: 'public' },
     { link: '/staking', label: 'Staking', icon: ZoomMoney, __blank: false, access: 'public' },
     { link: '/viewdata', label: 'View Data', icon: ViewIcon, __blank: false, access: 'public' },
-    { link: '/profile', label: 'My Profile', icon: PhoneCall, __blank: false, access: 'public' },
+    { link: '/profile', label: 'Alert Settings', icon: PhoneCall, __blank: false, access: 'public' },
     { link: '/admin', label: 'Admin', icon: Lock, __blank: false, access: 'admin' },
     { link: 'https://www.elumicate.com/elumicate-news/', label: 'News', icon: News, __blank: true, access: 'public' },
     { link: 'https://www.elumicate.com/', label: 'About US', icon: Help, __blank: true, access: 'public' }
