@@ -103,19 +103,20 @@ export class AlertStore {
             let info: any = data;
             let nftCnt = info.length;
 
-            let response = await auth.$().post(`${BACKEND_URL}/api/device_status/getActiveMiner`, {
+            let response = await auth.$().post(`${BACKEND_URL}/api/alert/get`, {
                 address : god.currentNetwork.account
             });
 
-            let curCnt = response.data.data.CNT;
+            console.log('alert response', response);
+            // let curCnt = response.data.data.CNT;
 
-            if (nftCnt != curCnt) {
-                this.addAlert({
-                    type : 'miner',
-                    message : 'Miner has been offline for 1 hour.',
-                    submessage : 'You could earn more tokens.'
-                });
-            }
+            // if (nftCnt != curCnt) {
+            //     this.addAlert({
+            //         type : 'miner',
+            //         message : 'Miner has been offline for 1 hour.',
+            //         submessage : 'You could earn more tokens.'
+            //     });
+            // }
         } catch (err) {
         }
     }

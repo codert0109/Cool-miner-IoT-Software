@@ -13,4 +13,5 @@ module.exports = (app) => {
   require('./bravedetect.routes')(app)
   require('./profile.routes')(app)
   require('./email_auth.routes')(app)
+  require('./alert.routes')(app)
 }
