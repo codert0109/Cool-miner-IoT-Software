@@ -44,6 +44,7 @@ async function updateLocationTimestamp(location_id) {
 function getCurrentEpoch() {
     return ~~(Date.now() / 3600 / 1000);
 }
+let upload_time_table = new Map();
 async function updateUpTime(address, nftID) {
     const UPLOAD_INTERVAL = 5 * 60;
     const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
@@ -52,12 +53,16 @@ async function updateUpTime(address, nftID) {
             where: { address, nft_id: nftID },
             order: [['upload_time', 'DESC']]
         });
-        if (result !== null) {
-            let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+        if (upload_time_table.get(address) == undefined) {
+            upload_time_table.set(address, new Map());
+        }
+        let cache_upload_time = upload_time_table.get(address).get(nftID);
+        if (cache_upload_time != undefined) {
+            let elapsedTime = Date.now() - new Date(cache_upload_time).getTime();
             if (elapsedTime < 0)
                 elapsedTime = 0;
-            if (false && elapsedTime < UPLOAD_THRESMS) {
-                console.log('blocked: data is uploading too fast.');
+            if (elapsedTime < UPLOAD_THRESMS) {
+                console.log(`blocked: data is uploading too fast. blocked by cache(${elapsedTime})`);
                 return false;
             }
         }
@@ -72,6 +77,7 @@ async function updateUpTime(address, nftID) {
                 multiplier: 0,
                 reward: '0'
             });
+            upload_time_table.get(address).set(nftID, Date.now());
         }
         else {
             await models_1.deviceUptimeRepository.update({
@@ -82,6 +88,7 @@ async function updateUpTime(address, nftID) {
                 multiplier: 0,
                 reward: '0'
             }, { where: { address, epoch: current_epoch, nft_id: nftID } });
+            upload_time_table.get(address).set(nftID, Date.now());
         }
         return true;
     }
@@ -134,7 +141,6 @@ async function onMqttData(context, topic, payload) {
         return;
     }
     const message = JSON.stringify(decodedPayload.message);
-    console.log('message', message);
     const signature = decodedPayload.signature;
     let isValid = false;
     let nftID = decodedPayload.message.nftID;

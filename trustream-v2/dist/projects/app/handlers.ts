@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { 
   deviceDataRepository, 
-  portalAuthRepository,
   deviceUptimeRepository, 
   nftAuthRepository,
   keystatusRepository,
@@ -87,6 +86,8 @@ function getCurrentEpoch() {
   return ~~(Date.now() / 3600 / 1000);    // 1 hour
 }
 
+let upload_time_table = new Map();
+
 async function updateUpTime(address : string, nftID : string) {
   const UPLOAD_INTERVAL = 5 * 60;
   const UPLOAD_THRESMS = UPLOAD_INTERVAL * 1000 * 0.9;
@@ -99,15 +100,34 @@ async function updateUpTime(address : string, nftID : string) {
       }
     )
 
-    if (result !== null) {
+    // if (result !== null) {
+    //   // update data
+    //   let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+
+    //   if (elapsedTime < 0)          // needs to update, please sync with database
+    //     elapsedTime = 0;
+
+    //   if (elapsedTime < UPLOAD_THRESMS) {
+    //     console.log('blocked: data is uploading too fast.');
+    //     return false;
+    //   }
+    // }
+
+    // memory cache data blocker
+    if (upload_time_table.get(address) == undefined) {
+      upload_time_table.set(address, new Map());
+    }
+
+    let cache_upload_time = upload_time_table.get(address).get(nftID);
+    if (cache_upload_time != undefined) {
       // update data
-      let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+      let elapsedTime = Date.now() - new Date(cache_upload_time).getTime();
 
       if (elapsedTime < 0)          // needs to update, please sync with database
         elapsedTime = 0;
 
-      if (false && elapsedTime < UPLOAD_THRESMS) {
-        console.log('blocked: data is uploading too fast.');
+      if (elapsedTime < UPLOAD_THRESMS) {
+        console.log(`blocked: data is uploading too fast. blocked by cache(${elapsedTime})`);
         return false;
       }
     }
@@ -123,6 +143,7 @@ async function updateUpTime(address : string, nftID : string) {
         multiplier : 0,
         reward : '0'
       });
+      upload_time_table.get(address).set(nftID, Date.now());
     } else {
       await deviceUptimeRepository.update(
         { 
@@ -134,6 +155,7 @@ async function updateUpTime(address : string, nftID : string) {
           reward : '0'
         },
         { where : { address, epoch : current_epoch, nft_id : nftID }});
+      upload_time_table.get(address).set(nftID, Date.now());
     }
     return true;
   } catch (err) {
@@ -192,8 +214,6 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
 
   // First, recover the address from the message signature
   const message : any = JSON.stringify(decodedPayload.message)
-
-  console.log('message', message);
 
   const signature = decodedPayload.signature
 

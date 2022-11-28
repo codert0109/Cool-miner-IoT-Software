@@ -14,6 +14,8 @@ import Swal from 'sweetalert2';
 
 export class AuthStore {
     rootStore: RootStore;
+    ethereum_request_handler : any = null;
+
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
@@ -69,13 +71,20 @@ export class AuthStore {
             const globalAccount = (god.currentNetwork as NetworkState).account;
             try {
                 const from = globalAccount;
-                const sign = await ethereum.request({
-                    method: 'personal_sign',
-                    params: [message, from, 'Random text'],
-                });
+                if (this.ethereum_request_handler == null) {
+                    this.ethereum_request_handler = ethereum.request({
+                        method: 'personal_sign',
+                        params: [message, from, 'Random text'],
+                    });
+                } 
+                const sign = await this.ethereum_request_handler;
+                console.log('sign ended', sign);
+                this.ethereum_request_handler = null;
                 return sign;
             } catch (err) {
+                console.log('sign ended with error');
                 console.error(err);
+                this.ethereum_request_handler = null;
                 return null;
             }
         }

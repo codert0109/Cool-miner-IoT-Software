@@ -58,7 +58,6 @@ export default observer((props: Props) => {
       auth.login(() => {
         profile.refresh();
       }, () => {
-
       });
     });
   }, [god.currentNetwork.account]);
@@ -106,7 +105,7 @@ export default observer((props: Props) => {
         Swal.fire({
           title: 'Email Verification Code',
           input: 'number',
-          inputLabel: '6 Digits Verification Code was sent to your email.',
+          html: 'Please enter the 6 Digit Verification Code that was sent to your provided email address.',
           showCancelButton: true,
           inputValidator: (value) => {
             if (!value) {
