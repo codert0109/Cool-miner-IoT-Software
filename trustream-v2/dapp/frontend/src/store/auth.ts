@@ -14,7 +14,9 @@ import Swal from 'sweetalert2';
 
 export class AuthStore {
     rootStore: RootStore;
+    getNounce_handler : any = null;
     ethereum_request_handler : any = null;
+    getSessionID_handler : any = null;
 
 
     constructor(rootStore: RootStore) {
@@ -90,7 +92,13 @@ export class AuthStore {
         }
 
         // starting point of function
-        const nounce = await getNounce();
+
+        if (this.getNounce_handler == null) {
+            this.getNounce_handler = getNounce();
+        }
+        const nounce = await this.getNounce_handler;
+        this.getNounce_handler = null;
+
         if (nounce == null) {
             fail_callback();
             return;
@@ -98,8 +106,13 @@ export class AuthStore {
 
         const signature = await signMessage(nounce);
 
+        console.log('signature returned', signature);
+
         if (signature !== null) {
-            let sessionID = await getSessionID(signature);
+            if (this.getSessionID_handler == null) {
+                this.getSessionID_handler = getSessionID(signature);
+            }
+            let sessionID = await this.getSessionID_handler;
 
             if (sessionID == null) {
                 fail_callback();

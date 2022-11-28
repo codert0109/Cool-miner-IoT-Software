@@ -56,8 +56,10 @@ export default observer((props: Props) => {
       profile.refresh();
     }, () => {
       auth.login(() => {
+        console.log('auth login success');
         profile.refresh();
       }, () => {
+        console.log('auth login failed');
       });
     });
   }, [god.currentNetwork.account]);
