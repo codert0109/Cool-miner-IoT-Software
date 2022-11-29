@@ -176,6 +176,15 @@ export default observer((props: Props) => {
       return `<p>You are staking ${amount} tokens for a period of ${stake.stakingTable.period_label[curIndex]}</p>`;
     };
 
+    if (BigInt(token.balance) < BigInt(amount) * TOKEN_UNIT) {
+      Swal.fire(
+        'Warning',
+        `<p>You don't have enough tokens available to perform this transaction.<p>`,
+        'warning'
+      );
+      return;
+    }
+
     Swal.fire({
       title: 'Info',
       html: getConfirmMessage(),
@@ -202,10 +211,10 @@ export default observer((props: Props) => {
             token.refresh();
             stake.refresh();
           })
-          .catch((err) => {
+          .catch((err : any) => {
             Swal.fire(
               'Error',
-              `<p>Errors occured while staking</p>`,
+              `<p>${err.reason}</p>`,
               'error'
             );
           });

@@ -107,7 +107,7 @@ export default observer((props: Props) => {
         Swal.fire({
           title: 'Email Verification Code',
           input: 'number',
-          html: 'Please enter the 6 Digit Verification Code that was sent to your provided email address.',
+          html: 'Please enter the 6 Digit Verification Code that was sent to the provided email address.',
           showCancelButton: true,
           inputValidator: (value) => {
             if (!value) {

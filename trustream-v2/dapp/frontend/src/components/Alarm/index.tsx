@@ -9,7 +9,8 @@ const useStyles = createStyles((theme, _params, getRef) => {
   return {
     body: {
       backgroundColor: 'black',
-      padding: 5
+      padding: 5,
+      width : '100%'
     },
     header: {
       display: 'flex',
@@ -25,7 +26,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
       justifyContent: 'center'
     },
     body_rimg: {
-      height: '100%'
+      // height: '100%',
+      width : 50,
+      height : 47
     },
     flexgrow: {
       flexGrow: 1,
@@ -62,13 +65,16 @@ const useStyles = createStyles((theme, _params, getRef) => {
       justifyContent: 'center',
       marginRight: 6
     },
-    root: {
+    group_root : {
       position: 'fixed',
       right: 0,
       top: 50,
-      color: 'white',
       zIndex: 1000,
-      backgroundColor: 'rgb(255, 102, 0)',
+    },
+
+    root: {
+      color: 'white',
+      // backgroundColor: 'rgb(255, 102, 0)',
       fontSize: '18px',
       display: 'flex',
       alignItems: 'center',
@@ -77,7 +83,8 @@ const useStyles = createStyles((theme, _params, getRef) => {
       cursor: 'pointer',
       userSelect: 'none',
       fontWeight: 'bold',
-      borderRadius: 3
+      borderRadius: 3,
+      marginTop : 10
     },
     alertIcon: {
       ref: icon,
@@ -103,45 +110,86 @@ export default observer((props: Props) => {
     alert.refresh();
   }, [god.currentNetwork.account]);
 
-  if (alert.hasAlert == false || alert.visible == false) {
-    return <></>
-  }
 
-  return (
-    <div className={classes.root} onClick={() => onAlarmClick()}>
-      <div className={classes.header}>
-        <div>
-          <div className={cx(classes.center, classes.btn)}>{alert.opened == true ? <ArrowBarToRight size="24" /> : <ArrowBarToLeft size="24" />}</div>
-        </div>
-        <div className={classes.flexgrow}>
-          <AlertTriangle size="24" className={classes.alertIcon} />
-          {alert.opened && <div>Alert</div>}
-        </div>
-      </div>
-      {alert.opened && (
-        <div className={classes.body}>
-          <div className={classes.bodyinner}>
-            <div className={classes.bodyimg}>
-              <img src="/images/alert/computer.png" className={classes.body_rimg} />
-            </div>
-            <div className={classes.textdiv}>
-              <div>
-                <b>
-                  {alert.getAlert().message}
-                  {/* Miner has been <span className={classes.red}>offline</span> for <span className={classes.red}>1 week</span>, */}
-                </b>
-              </div>
-              {alert.getAlert().submessage != '' && <div>
-                <b>
-                  {alert.getAlert().submessage}
-                </b>
-              </div> }
-            </div>
+  const renderAlertNode = ({color, caption, imgurl, opened, message, submessage}) => {
+    return (
+      <div className={classes.root} style={{backgroundColor: color}} onClick={() => onAlarmClick()}>
+        <div className={classes.header}>
+          <div>
+            <div className={cx(classes.center, classes.btn)}>{opened == true ? <ArrowBarToRight size="24" /> : <ArrowBarToLeft size="24" />}</div>
+          </div>
+          <div className={classes.flexgrow}>
+            <AlertTriangle size="24" className={classes.alertIcon} />
+            {opened && <div>{caption}</div>}
           </div>
         </div>
-      )}
+        {opened && (
+          <div className={classes.body}>
+            <div className={classes.bodyinner}>
+              <div className={classes.bodyimg}>
+                <img src={imgurl} className={classes.body_rimg} />
+              </div>
+              <div className={classes.textdiv}>
+                <div>
+                  <b>
+                    {message}
+                    {/* Miner has been <span className={classes.red}>offline</span> for <span className={classes.red}>1 week</span>, */}
+                  </b>
+                </div>
+                {submessage != '' && <div>
+                  <b>
+                    {submessage}
+                  </b>
+                </div>}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderMinerAlert = () => {
+    if (alert.hasAlert == false || alert.visible == false) 
+      return <></>
+    return renderAlertNode({
+      color : 'rgb(255, 102, 0)',
+      caption : 'Miner Alert',
+      imgurl : '/images/alert/computer.png',
+      opened : alert.opened,
+      message : alert.getAlert().message,
+      submessage : alert.getAlert().submessage
+    })
+  };
+
+  const MAIN_NET = 4689;
+  const TEST_NET = 4690;
+  
+  const renderNetworkAlert = () => {
+    console.log('chainId', god.currentChain.chainId, 'visible', alert.visible);
+    if (god.currentChain.chainId == TEST_NET || alert.visible == false) {
+      return <></>
+    } else {
+      console.log('tries to render');
+      return renderAlertNode({
+        color : 'rgb(149, 159, 1)',
+        caption : 'Network Alert',
+        imgurl : 'https://logo.chainbit.xyz/iotx',
+        opened : alert.opened,
+        message : 'You are not in the IoTex testnet.',
+        submessage : undefined
+      })
+    }
+  };
+
+  console.log('called again');
+
+  return (
+    <div className={classes.group_root}>
+      {renderMinerAlert()}
+      {renderNetworkAlert()}
     </div>
   );
 });
 
-interface Props {}
+interface Props { }
