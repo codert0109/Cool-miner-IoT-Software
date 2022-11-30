@@ -128,10 +128,10 @@ export class AlertStore {
                 type : 'profile_update',
                 color : 'rgb(76, 175, 80)',
                 caption : 'Profile Alert',
-                imgurl : '/images/alert/email.png',
+                imgurl : '/images/alert/email.jpg',
                 opened : true,
-                message : 'Email alerts are now available for optimal rewards.',
-                submessage : '',
+                message : 'Mining alerts are now available.',
+                submessage : `Click Alert Settings to get started.`,
                 link : '/profile'
             }, true);
             this.visible = true;

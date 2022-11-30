@@ -59,7 +59,8 @@ const useStyles = createStyles((theme, _params, getRef) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      flexGrow : 1
     },
     bodyimg: {
       height: '100%',
@@ -127,6 +128,10 @@ export default observer((props: Props) => {
   }, [god.currentNetwork.account]);
 
   const onAlarmClick = (index) => {
+    if (alert.getAlert()[index].type == 'network' && alert.getAlert()[index].opened == true) {
+      god.setShowConnecter(true);
+    }
+
     let link = alert.getAlert()[index].link;
     if (link != '') {
       router.push(link);
@@ -189,7 +194,7 @@ export default observer((props: Props) => {
         imgurl : 'https://logo.chainbit.xyz/iotx',
         opened : true,
         message : 'You are not in the IoTex testnet.',
-        submessage : 'Please switch the networks',
+        submessage : 'Please switch networks',
         link : ''
       }, true);
       alert.visible = true;

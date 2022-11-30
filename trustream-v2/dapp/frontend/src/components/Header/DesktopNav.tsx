@@ -167,7 +167,7 @@ const DesktopNav = observer((props) => {
   }, [god.currentNetwork.account]);
 
   const items = links
-    .filter((item) => item.access === 'public' || (item.access === 'admin' && isAdmin) || (item.access == 'alert' && alert.hasAlert))
+    .filter((item) => item.access === 'public' || (item.access === 'admin' && isAdmin) || (item.access == 'alert' && alert.hasAlert()))
     .map((link) => {
       const menuItems = link.links?.map((item) => <Menu.Item key={item.link}>{item.label}</Menu.Item>);
       if (menuItems) {
