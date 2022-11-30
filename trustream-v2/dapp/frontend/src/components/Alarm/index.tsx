@@ -129,8 +129,12 @@ export default observer((props: Props) => {
     let link = alert.getAlert()[index].link;
     if (link != '') {
       router.push(link);
+      if (link == '/profile') {
+        alert.setLoadEmailAlert();
+      }
+    } else {
+      alert.toggleOpen(index);
     }
-    alert.toggleOpen(index);
   };
 
   const renderAlertNode = ({color, caption, imgurl, opened, message, submessage}, index) => {
@@ -190,7 +194,7 @@ export default observer((props: Props) => {
     }
   }, [god.currentChain.chainId]);
 
-  if (alert.getAlert() == null) {
+  if (alert.getAlert() == null || alert.visible == false) {
     return <></>
   }
 

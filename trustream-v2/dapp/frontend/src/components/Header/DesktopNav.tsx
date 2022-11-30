@@ -210,7 +210,7 @@ const DesktopNav = observer((props) => {
                 event.stopPropagation();
                 event.preventDefault();
                 alert.setVisible(!alert.visible);
-                alert.opened = true;
+                alert.setAllOpen();
               } else {
                 setActive(link.label);
               }

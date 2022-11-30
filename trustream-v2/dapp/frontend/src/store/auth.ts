@@ -134,6 +134,10 @@ export class AuthStore {
         }
     }
 
+    getLocalStorage() {
+        return localStorage;
+    }
+    
     saveSession(session: string) {
         localStorage.setItem(SESSION_NAME, session);
     }

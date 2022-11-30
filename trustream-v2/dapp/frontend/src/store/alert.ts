@@ -15,10 +15,14 @@ interface AlertNode {
     link : string
 }
 
+const LOAD_EMAIL_ALERT = 'LOAD_EMAIL_ALERT';
+
 export class AlertStore {
     rootStore: RootStore;
     loading: boolean = true;
     visible : boolean = false;
+
+    load_email_alert : boolean = false;
 
     message: Array<AlertNode> = [];
 
@@ -32,6 +36,10 @@ export class AlertStore {
 
     setVisible(flag : boolean) {
         this.visible = flag;
+    }
+
+    setAllOpen() {
+        this.message.forEach(item => item.opened = true)
     }
 
     addAlert(info: AlertNode, override : boolean) {
@@ -68,6 +76,10 @@ export class AlertStore {
         return this.message;
     }
 
+    hasAlert() {
+        return this.message.length > 0;
+    }
+
     toggleOpen(index) {
         this.message[index].opened = !this.message[index].opened;
     }
@@ -98,17 +110,34 @@ export class AlertStore {
                 }, false);
             }
 
-            this.addAlert({
-                type : 'profile_update',
-                color : 'rgb(76, 175, 80)',
-                caption : 'Profile Alert',
-                imgurl : '/images/alert/email.png',
-                opened : true,
-                message : 'Email alerts are now available for optimal rewards.',
-                submessage : '',
-                link : '/profile'
-            }, true)
+            console.log('email alert', auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT'));
+
+            if (auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT') == 'loaded') {
+                this.load_email_alert = true;
+            }
+
+            if (this.load_email_alert == true) {
+                this.removeAlert('profile_update');
+            } else {
+                this.addAlert({
+                    type : 'profile_update',
+                    color : 'rgb(76, 175, 80)',
+                    caption : 'Profile Alert',
+                    imgurl : '/images/alert/email.png',
+                    opened : true,
+                    message : 'Email alerts are now available for optimal rewards.',
+                    submessage : '',
+                    link : '/profile'
+                }, true)
+            }
         } catch (err) {
         }
+    }
+
+    setLoadEmailAlert() {
+        const { auth } = this.rootStore;
+
+        auth.getLocalStorage().setItem(LOAD_EMAIL_ALERT, 'loaded');
+        this.removeAlert('profile_update');
     }
 }
