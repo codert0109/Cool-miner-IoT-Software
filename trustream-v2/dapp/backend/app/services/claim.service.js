@@ -55,9 +55,7 @@ const onResult = async () => {
         const DISTRIBUTION_AMOUNT_DB = (await key_status.getValue('TOKEN_PER_EPOCH')).value;
 
         const DISTRIBUTION_AMOUNT = BigInt(DISTRIBUTION_AMOUNT_DB);
-                
-        await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
-
+        
         let deviceUpTimeData = await device_uptime.getAll({
             epoch : last_epoch
         });
@@ -87,6 +85,10 @@ const onResult = async () => {
             weight      : totUptime,
             reward      : DISTRIBUTION_AMOUNT.toString()
         });
+
+        console.log('Epoch data uploaded', last_epoch);
+
+        await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let curReward;
@@ -127,6 +129,10 @@ const onResult = async () => {
         return;
     }
 };
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 exports.init = function() {
     if (timerID != null) {
