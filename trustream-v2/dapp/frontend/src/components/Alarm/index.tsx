@@ -201,7 +201,7 @@ export default observer((props: Props) => {
     }
   }, [god.currentChain.chainId]);
 
-  if (alert.getAlert() == null || alert.visible == false) {
+  if (alert.getAlert() == null || alert.visible == false || god.currentNetwork.account == undefined) {
     return <></>
   }
 
