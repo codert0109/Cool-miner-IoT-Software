@@ -74,9 +74,17 @@ export class AuthStore {
             try {
                 const from = globalAccount;
                 if (this.ethereum_request_handler == null) {
+                    let sign_message = 
+                        `Welcome to Elumicate!\n\nPlease Sign to access private information.\n\nThis request will not trigger a blockchain transaction or cost any gas fees.\n\nWallet address:\n${god.currentNetwork.account}\n\nNonce:\n${message}`;
+
+                    // this.ethereum_request_handler = ethereum.request({
+                    //     method: 'personal_sign',
+                    //     params: [message, from, 'Random text'],
+                    // });
+
                     this.ethereum_request_handler = ethereum.request({
                         method: 'personal_sign',
-                        params: [message, from, 'Random text'],
+                        params: [sign_message, from, 'Random text'],
                     });
                 } 
                 const sign = await this.ethereum_request_handler;

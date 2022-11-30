@@ -4,26 +4,22 @@ import RootStore from './root';
 import { publicConfig } from "../config/public";
 const { BACKEND_URL } = publicConfig;
 
-interface AlertInfo {
-    type: string,
-    icon: string,
-    priority: number
-}
-
 interface AlertNode {
-    type: string,
-    message: string,
-    submessage: string
+    type : string,
+    color : string,
+    caption : string,
+    imgurl : string,
+    opened : boolean,
+    message : string,
+    submessage : string,
+    link : string
 }
 
 export class AlertStore {
     rootStore: RootStore;
     loading: boolean = true;
-    hasAlert : boolean = false;
     visible : boolean = false;
-    opened : boolean = false;
 
-    typelist: Array<AlertInfo> = [];
     message: Array<AlertNode> = [];
 
     constructor(rootStore: RootStore) {
@@ -32,67 +28,48 @@ export class AlertStore {
         makeAutoObservable(this, {
             rootStore: false
         });
-
-        this.initTypeList();
     }
 
     setVisible(flag : boolean) {
         this.visible = flag;
     }
 
-    toggleOpen() {
-        this.opened = !this.opened;
-    }
-
-    initTypeList() {
-        this.typelist.push({
-            type: 'miner',
-            icon: '',
-            priority: 1
-        })
-        this.typelist.push({
-            type: 'staking',
-            icon: '',
-            priority: 2
-        })
-        this.typelist.push({
-            type: 'network',
-            icon: '',
-            priority: 0
-        })
-    }
-
-    addAlert(info: AlertNode) {
-        let flg = false;
-        this.message.forEach((item, index) => {
-            if (item.type == info.type) {
-                this.message[index] = info;
-                flg = true;
-                this.hasAlert = true;
+    addAlert(info: AlertNode, override : boolean) {
+        if (override == true) {
+            for (let i = 0; i < this.message.length; i++) {
+                if (this.message[i].type == info.type) {
+                    this.message[i] = {...info};
+                    return;
+                }
             }
-        });
-        if (flg == false) {
-            this.hasAlert = true;
-            this.message.push(info);
         }
+
+        // same type, same message not allowed
+        for (let i = 0; i < this.message.length; i++) {
+            if (this.message[i].type == info.type && this.message[i].message == info.message) {
+                return;
+            }
+        }
+        
+        this.message.push({...info});
     }
 
-    getPriority(type: string) {
-        let filterData = this.typelist.find(item => item.type == type);
-        if (filterData != null)
-            return filterData.priority;
-        return 100;
+    removeAlert(type : string) {
+        let sp = 0;
+        for (let i = 0; i < this.message.length; i++) {
+            if (this.message[i].type != type) {
+                this.message[sp++] = this.message[i];
+            }
+        }
+        this.message.splice(sp);
     }
 
     getAlert() {
-        if (this.message.length == 0)
-            return null;
+        return this.message;
+    }
 
-        // this.message.sort((a, b) => {
-        //     return this.getPriority(a.type) - this.getPriority(b.type)
-        // });
-
-        return this.message[this.message.length - 1];
+    toggleOpen(index) {
+        this.message[index].opened = !this.message[index].opened;
     }
 
     async refresh() {
@@ -101,19 +78,36 @@ export class AlertStore {
         try {
             let data = await nft.getNFTLists()
             let info: any = data;
-            let nftCnt = info.length;
 
             let response = await auth.$().post(`${BACKEND_URL}/api/alert/get`, {
                 address : god.currentNetwork.account
             });
 
+            this.removeAlert('miner');
+
             if (response.data.message != 'No Alert') {
                 this.addAlert({
                     type : 'miner',
+                    color : 'rgb(255, 102, 0)',
+                    caption : 'Miner Alert',
+                    imgurl : '/images/alert/computer.png',
+                    opened : true,
                     message : response.data.message,
-                    submessage : ''
-                });
+                    submessage : '',
+                    link : ''
+                }, false);
             }
+
+            this.addAlert({
+                type : 'profile_update',
+                color : 'rgb(76, 175, 80)',
+                caption : 'Profile Alert',
+                imgurl : '/images/alert/email.png',
+                opened : true,
+                message : 'Email alerts are now available for optimal rewards.',
+                submessage : '',
+                link : '/profile'
+            }, true)
         } catch (err) {
         }
     }

@@ -203,6 +203,8 @@ exports.login = (req, res) => {
           })
         } else {
           // We need to check the message.
+          nounce = `Welcome to Elumicate!\n\nPlease Sign to access private information.\n\nThis request will not trigger a blockchain transaction or cost any gas fees.\n\nWallet address:\n${address}\n\nNonce:\n${nounce}`;
+          
           if (verifySignature(address, nounce, password)) {
             const processNewSession = () => {
               // It is working now. Create random session id for that part.

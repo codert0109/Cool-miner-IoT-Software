@@ -3,6 +3,7 @@ import { useLocalObservable, observer } from 'mobx-react-lite';
 import { createStyles } from '@mantine/core';
 import { AlertTriangle, ArrowBarToRight, ArrowBarToLeft } from 'tabler-icons-react';
 import { useStore } from '@/store/index';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef('icon');
@@ -16,9 +17,11 @@ const useStyles = createStyles((theme, _params, getRef) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      width: '100%',
       paddingLeft: 5,
       paddingRight: 5
+    },
+    header100: {
+      width: '100%',
     },
     center: {
       display: 'flex',
@@ -70,6 +73,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
       right: 0,
       top: 50,
       zIndex: 1000,
+      display : 'flex',
+      flexDirection : 'column',
+      alignItems : 'flex-end'
     },
 
     root: {
@@ -84,7 +90,14 @@ const useStyles = createStyles((theme, _params, getRef) => {
       userSelect: 'none',
       fontWeight: 'bold',
       borderRadius: 3,
-      marginTop : 10
+      marginTop : 10,
+    },
+    root100 : {
+      width : '100%'
+    },
+    root_unopen : {
+      width : 60,
+      // float : 'right'
     },
     alertIcon: {
       ref: icon,
@@ -102,19 +115,28 @@ export default observer((props: Props) => {
   const { classes, cx } = useStyles();
   const { god, auth, nft, profile, alert } = useStore();
 
-  const onAlarmClick = () => {
-    alert.toggleOpen();
-  };
+  const router = useRouter();
+
+  // const onAlarmClick = () => {
+  //   alert.toggleOpen();
+  // };
 
   useEffect(() => {
     alert.refresh();
   }, [god.currentNetwork.account]);
 
+  const onAlarmClick = (index) => {
+    let link = alert.getAlert()[index].link;
+    if (link != '') {
+      router.push(link);
+    }
+    alert.toggleOpen(index);
+  };
 
-  const renderAlertNode = ({color, caption, imgurl, opened, message, submessage}) => {
+  const renderAlertNode = ({color, caption, imgurl, opened, message, submessage}, index) => {
     return (
-      <div className={classes.root} style={{backgroundColor: color}} onClick={() => onAlarmClick()}>
-        <div className={classes.header}>
+      <div className={opened ? cx(classes.root, classes.root100) : cx(classes.root, classes.root_unopen)} style={{backgroundColor: color}} onClick={() => onAlarmClick(index)}>
+        <div className={opened ? cx(classes.header, classes.header100) : classes.header}>
           <div>
             <div className={cx(classes.center, classes.btn)}>{opened == true ? <ArrowBarToRight size="24" /> : <ArrowBarToLeft size="24" />}</div>
           </div>
@@ -133,7 +155,6 @@ export default observer((props: Props) => {
                 <div>
                   <b>
                     {message}
-                    {/* Miner has been <span className={classes.red}>offline</span> for <span className={classes.red}>1 week</span>, */}
                   </b>
                 </div>
                 {submessage != '' && <div>
@@ -149,45 +170,33 @@ export default observer((props: Props) => {
     );
   };
 
-  const renderMinerAlert = () => {
-    if (alert.hasAlert == false || alert.visible == false) 
-      return <></>
-    return renderAlertNode({
-      color : 'rgb(255, 102, 0)',
-      caption : 'Miner Alert',
-      imgurl : '/images/alert/computer.png',
-      opened : alert.opened,
-      message : alert.getAlert().message,
-      submessage : alert.getAlert().submessage
-    })
-  };
-
   const MAIN_NET = 4689;
   const TEST_NET = 4690;
-  
-  const renderNetworkAlert = () => {
-    console.log('chainId', god.currentChain.chainId, 'visible', alert.visible);
-    if (god.currentChain.chainId == TEST_NET || alert.visible == false) {
-      return <></>
+
+  useEffect(() => {
+    if (god.currentChain.chainId == TEST_NET) {
+      alert.removeAlert('network')
     } else {
-      console.log('tries to render');
-      return renderAlertNode({
+      alert.addAlert({
+        type : 'network',
         color : 'rgb(149, 159, 1)',
         caption : 'Network Alert',
         imgurl : 'https://logo.chainbit.xyz/iotx',
-        opened : alert.opened,
+        opened : true,
         message : 'You are not in the IoTex testnet.',
-        submessage : undefined
-      })
+        submessage : undefined,
+        link : ''
+      }, true);
     }
-  };
+  }, [god.currentChain.chainId]);
 
-  console.log('called again');
+  if (alert.getAlert() == null) {
+    return <></>
+  }
 
   return (
     <div className={classes.group_root}>
-      {renderMinerAlert()}
-      {renderNetworkAlert()}
+      {alert.getAlert().map((item, index) => renderAlertNode(item, index))}
     </div>
   );
 });
