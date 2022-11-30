@@ -87,9 +87,11 @@ export class AlertStore {
     async refresh() {
         const { god, auth, nft } = this.rootStore;
 
+        console.log('alert refresh', 'in');
         try {
             let data = await nft.getNFTLists()
             let info: any = data;
+            
 
             let response = await auth.$().post(`${BACKEND_URL}/api/alert/get`, {
                 address : god.currentNetwork.account
@@ -109,28 +111,30 @@ export class AlertStore {
                     link : ''
                 }, false);
             }
-
-            console.log('email alert', auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT'));
-
-            if (auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT') == 'loaded') {
-                this.load_email_alert = true;
-            }
-
-            if (this.load_email_alert == true) {
-                this.removeAlert('profile_update');
-            } else {
-                this.addAlert({
-                    type : 'profile_update',
-                    color : 'rgb(76, 175, 80)',
-                    caption : 'Profile Alert',
-                    imgurl : '/images/alert/email.png',
-                    opened : true,
-                    message : 'Email alerts are now available for optimal rewards.',
-                    submessage : '',
-                    link : '/profile'
-                }, true)
-            }
         } catch (err) {
+
+        }
+
+        console.log('email alert', auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT'));
+
+        if (auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT') == 'loaded') {
+            this.load_email_alert = true;
+        }
+
+        if (this.load_email_alert == true) {
+            this.removeAlert('profile_update');
+        } else {
+            this.addAlert({
+                type : 'profile_update',
+                color : 'rgb(76, 175, 80)',
+                caption : 'Profile Alert',
+                imgurl : '/images/alert/email.png',
+                opened : true,
+                message : 'Email alerts are now available for optimal rewards.',
+                submessage : '',
+                link : '/profile'
+            }, true);
+            this.visible = true;
         }
     }
 

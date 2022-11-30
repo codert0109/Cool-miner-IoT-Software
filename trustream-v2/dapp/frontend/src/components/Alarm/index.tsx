@@ -122,6 +122,7 @@ export default observer((props: Props) => {
   // };
 
   useEffect(() => {
+    console.log('alert refresh called');
     alert.refresh();
   }, [god.currentNetwork.account]);
 
@@ -188,9 +189,10 @@ export default observer((props: Props) => {
         imgurl : 'https://logo.chainbit.xyz/iotx',
         opened : true,
         message : 'You are not in the IoTex testnet.',
-        submessage : undefined,
+        submessage : 'Please switch the networks',
         link : ''
       }, true);
+      alert.visible = true;
     }
   }, [god.currentChain.chainId]);
 
