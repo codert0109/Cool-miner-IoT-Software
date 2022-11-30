@@ -131,7 +131,7 @@ export class AlertStore {
                 imgurl : '/images/alert/email.jpg',
                 opened : true,
                 message : 'Mining alerts are now available.',
-                submessage : `Click Alert Settings to get started.`,
+                submessage : `Click here to get started.`,
                 link : '/profile'
             }, true);
             this.visible = true;
