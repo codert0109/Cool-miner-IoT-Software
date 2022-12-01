@@ -52,16 +52,16 @@ export default observer((props: Props) => {
   const { god, auth, profile } = useStore();
 
   useEffect(() => {
-    auth.check_auth(() => {
-      profile.refresh();
-    }, () => {
-      auth.login(() => {
-        console.log('auth login success');
-        profile.refresh();
-      }, () => {
-        console.log('auth login failed');
-      });
-    });
+    // auth.check_auth(() => {
+    //   profile.refresh();
+    // }, () => {
+    //   auth.login(() => {
+    //     console.log('auth login success');
+    //     profile.refresh();
+    //   }, () => {
+    //     console.log('auth login failed');
+    //   });
+    // });
   }, [god.currentNetwork.account]);
 
   useEffect(() => {

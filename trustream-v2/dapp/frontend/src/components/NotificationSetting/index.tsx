@@ -32,11 +32,6 @@ export default observer((props: Props) => {
   const [email, setEmail] = useState('');
   const { god, auth, profile } = useStore();
 
-  // event handlers
-  const onEmailChange = (event) => {
-    setEmail(event.currentTarget.value);
-  };
-
   const [setting, setSetting] = useState([
     {
       label: 'Alert when Miner has been offline for 1 hr',
@@ -88,17 +83,17 @@ export default observer((props: Props) => {
     setSetting(updateSetting);
   }, [profile.setting]);
 
-  useEffect(() => {
-    auth.check_auth(() => {
-      profile.refresh();
-    }, () => {
-      auth.login(() => {
-        profile.refresh();
-      }, () => {
+  // useEffect(() => {
+  //   auth.check_auth(() => {
+  //     profile.refresh();
+  //   }, () => {
+  //     auth.login(() => {
+  //       profile.refresh();
+  //     }, () => {
         
-      });
-    });
-  }, [god.currentNetwork.account]);
+  //     });
+  //   });
+  // }, [god.currentNetwork.account]);
 
   const onSettingUpdate = (label, value) => {
     let updateSetting = [...setting];
