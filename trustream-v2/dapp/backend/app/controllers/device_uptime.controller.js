@@ -67,7 +67,6 @@ exports.getUpTimeInfo = (req, res) => {
         })
         return
       }
-      console.log('value', data.value)
       Device_Uptime.findAll({
         where: {
           [Op.and]: [
