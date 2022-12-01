@@ -114,7 +114,6 @@ export default function ({ className }) {
             <img className={classes.imgmetamaskstyle} src="/images/logo/metamask.png"></img>
           </div>
           <div>Don't have a Metamask wallet?</div>
-          <div>started here.</div>
         </div>
         <div
           className={join(classes.marginbottom10, classes.btncolor)}
