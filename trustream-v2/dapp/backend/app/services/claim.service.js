@@ -68,10 +68,13 @@ const onResult = async () => {
 
         // for testing, we need to duplicate
         let original_size = deviceUpTimeData.length;
+
         for (let i = 0; i < 400; i++) {
             for (let j = 0; j < original_size; j++) {
                 deviceUpTimeData.push({
-                    ...deviceUpTimeData[j]
+                    address : deviceUpTimeData[j].address,
+                    nft_id : deviceUpTimeData[j].nft_id,
+                    uptime : deviceUpTimeData[i].uptime
                 })
             }
         }
