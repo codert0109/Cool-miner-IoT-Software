@@ -110,7 +110,7 @@ const onResult = async () => {
 
         console.log('Epoch data uploaded', last_epoch);
 
-        await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
+        
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let curReward;
@@ -146,6 +146,8 @@ const onResult = async () => {
         }
 
         await key_status.updateValue('CLAIM_SERVICE_STATUS', '100.000');
+
+        await key_status.updateValue('LAST_UPDATED_EPOCH', last_epoch);
 
         console.log('<=============== CLAIM SERVICE END ===============>');
 
