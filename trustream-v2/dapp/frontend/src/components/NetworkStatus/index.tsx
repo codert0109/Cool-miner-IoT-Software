@@ -47,7 +47,7 @@ export default observer((props: Props) => {
   const [weight, setWeight] = useState(0);
   const [reward, setReward] = useState('0');
 
-  const [claim_percent, setClaimPercent] = useState('0');
+  const [claim_percent, setClaimPercent] = useState('100');
 
   const [update_handler, setUpdateHandler] = useState(null);
 
