@@ -69,7 +69,6 @@ export default observer((props: Props) => {
       clearInterval(update_handler);
     }
     setUpdateHandler(setInterval(() => {
-      console.log('update handler called');
       auth.$().post(`${BACKEND_URL}/api/key_status/setting/get`, { key: 'CLAIM_SERVICE_STATUS' })
         .then((response: any) => {
           let data: any = response.data;
