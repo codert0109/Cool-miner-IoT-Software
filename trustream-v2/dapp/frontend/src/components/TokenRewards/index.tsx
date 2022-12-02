@@ -92,7 +92,7 @@ export default observer((props: Props) => {
   };
 
   return (
-    <Box label="Token Rewards">
+    <Box label="Reward Status">
       <Grid className={join(classes.w100)}>
         <Grid.Col sm={12} md={4} className={classes.padding_left0}>
           <Grid>
