@@ -73,7 +73,7 @@ export default observer((props: Props) => {
         .then((response: any) => {
           let data: any = response.data;
           if (data.message == null) {
-            setClaimPercent('0.000');
+            setClaimPercent('100.000');
           } else {
             setClaimPercent(data.message.value)
           }
@@ -133,7 +133,7 @@ export default observer((props: Props) => {
 
         let data2: any = response2.data;
         if (data2.message == null) {
-          setClaimPercent('0.000');
+          setClaimPercent('100.000');
         } else {
           setClaimPercent(data2.message.value)
         }
