@@ -199,7 +199,7 @@ export default observer((props: Props) => {
       }, true);
       alert.visible = true;
     }
-  }, [god.currentChain.chainId]);
+  }, [god.currentChain]);
 
   if (alert.getAlert() == null || alert.visible == false || god.currentNetwork.account == undefined) {
     return <></>

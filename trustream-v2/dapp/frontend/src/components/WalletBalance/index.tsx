@@ -22,6 +22,7 @@ const useStyles = createStyles((theme) => ({
         marginLeft: '5%',
         width: '95%',
         height: '100%',
+        fontSize : '1.2rem',
         [BREAKPOINT]: {
             marginLeft: 0,
             width: '100%'
