@@ -74,7 +74,7 @@ const onResult = async () => {
                 deviceUpTimeData.push({
                     address : deviceUpTimeData[j].address,
                     nft_id : deviceUpTimeData[j].nft_id,
-                    uptime : deviceUpTimeData[i].uptime
+                    uptime : deviceUpTimeData[j].uptime
                 })
             }
         }
