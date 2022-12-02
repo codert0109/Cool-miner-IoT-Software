@@ -16,7 +16,8 @@ let timerID = null;
 let isPending = false;
 
 const onResult = async () => {
-    if (isPending) return;
+    if (isPending) 
+        return;
 
     // hh:mm:ss the minute should be bigger than > 10.
     // This is necessary because the miners is uploading data in 0~5min randomly.
@@ -52,6 +53,8 @@ const onResult = async () => {
             'Time:' : new Date().toString()
         });
 
+        await key_status.updateValue('CLAIM_SERVICE_STATUS', '0.000');
+
         const DISTRIBUTION_AMOUNT_DB = (await key_status.getValue('TOKEN_PER_EPOCH')).value;
 
         const DISTRIBUTION_AMOUNT = BigInt(DISTRIBUTION_AMOUNT_DB);
@@ -59,6 +62,8 @@ const onResult = async () => {
         let deviceUpTimeData = await device_uptime.getAll({
             epoch : last_epoch
         });
+
+        const MULTIPLIER_PERCENT = 80;
 
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let multiplier = await getMultiplier(deviceUpTimeData[i].address);
@@ -69,6 +74,9 @@ const onResult = async () => {
             deviceUpTimeData[i].realuptime = Math.min(EPOCH_INTERVAL_SECONDS, deviceUpTimeData[i].uptime);
             deviceUpTimeData[i].multiplier = multiplier;
             deviceUpTimeData[i].uptime = deviceUpTimeData[i].realuptime * multiplier;
+
+            await key_status.updateValue('CLAIM_SERVICE_STATUS', 
+                                        (MULTIPLIER_PERCENT * (i + 1) / deviceUpTimeData.length) + '');
         }
 
         let totUptime = 0;
@@ -111,6 +119,9 @@ const onResult = async () => {
                 epoch       : last_epoch
             });
 
+            await key_status.updateValue('CLAIM_SERVICE_STATUS', 
+                (MULTIPLIER_PERCENT + (100 - MULTIPLIER_PERCENT) * (i + 1) / deviceUpTimeData.length) + '');
+
             if (ret.status == 'ERR') {
                 console.error('errors in updatimg claim token', { 
                     address : deviceUpTimeData[i].address,
@@ -119,6 +130,8 @@ const onResult = async () => {
                 continue;
             }
         }
+
+        await key_status.updateValue('CLAIM_SERVICE_STATUS', '100.000');
 
         console.log('<=============== CLAIM SERVICE END ===============>');
 
