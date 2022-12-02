@@ -5,6 +5,7 @@ module.exports = (app) => {
   require('./claim_token.routes')(app)
   require('./server_status.routes')(app)
   require('./server_update.routes')(app)
+  require('./key_status.routes')(app)
   require('./nft_auth.routes')(app)
   require('./staking.routes')(app)
   require('./camera.routes')(app)

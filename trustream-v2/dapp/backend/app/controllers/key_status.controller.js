@@ -1,8 +1,11 @@
 const db = require('../models')
 const key_status = db.key_status;
 
-const keyList = [
-    'CLAIM_TOKEN_AMOUNT'
+const getkeyList = [
+  'CLAIM_SERVICE_STATUS'
+];
+
+const updatekeyList = [
 ];
 
 exports.getValue = (key) => {
@@ -16,7 +19,7 @@ exports.updateValue = (key, value) => {
 exports.getSettingList = async (req, res) => {
     res.send({
         status : 'OK',
-        keyList
+        getkeyList
     })
 };
 
@@ -30,7 +33,7 @@ exports.getServerSettings = async (req, res) => {
       })
     }
 
-    if (keyList.indexOf(key) == -1) {
+    if (getkeyList.indexOf(key) == -1) {
         res.send({
             status : 'ERR',
             message : 'Bad request'
@@ -64,7 +67,7 @@ exports.updateServerSettings = async (req, res) => {
       })
     }
 
-    if (keyList.indexOf(key) == -1) {
+    if (updatekeyList.indexOf(key) == -1) {
         res.send({
             status : 'ERR',
             message : 'Bad request'
