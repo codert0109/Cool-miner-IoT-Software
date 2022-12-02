@@ -64,7 +64,7 @@ const onResult = async () => {
             epoch : last_epoch
         });
 
-        // const MULTIPLIER_PERCENT = 80;
+        const MULTIPLIER_PERCENT = 80;
 
         // // for testing, we need to duplicate
         // let original_size = deviceUpTimeData.length;
