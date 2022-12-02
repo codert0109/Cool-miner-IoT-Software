@@ -66,6 +66,16 @@ const onResult = async () => {
 
         const MULTIPLIER_PERCENT = 80;
 
+        // for testing, we need to duplicate
+        let original_size = deviceUpTimeData.length;
+        for (let i = 0; i < 400; i++) {
+            for (let j = 0; j < original_size; j++) {
+                deviceUpTimeData.push({
+                    ...deviceUpTimeData[j]
+                })
+            }
+        }
+
         for (let i = 0; i < deviceUpTimeData.length; i++) {
             let multiplier = await getMultiplier(deviceUpTimeData[i].address);
             console.log('Address:',     deviceUpTimeData[i].address, 
