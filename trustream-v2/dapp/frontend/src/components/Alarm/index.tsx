@@ -184,7 +184,7 @@ export default observer((props: Props) => {
   const TEST_NET = 4690;
 
   useEffect(() => {
-    if (god.currentChain.chainId == TEST_NET) {
+    if (god && god.currentChain && god.currentChain.chainId == TEST_NET) {
       alert.removeAlert('network')
     } else {
       alert.addAlert({
