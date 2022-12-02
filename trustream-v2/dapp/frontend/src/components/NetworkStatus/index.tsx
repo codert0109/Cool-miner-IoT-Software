@@ -168,7 +168,7 @@ export default observer((props: Props) => {
           </tr>}
           {!isComplete() && <tr>
             <td colSpan={4} className={classes.center}>
-              Calculation is in progress {parseFloat(claim_percent).toFixed(3)}%
+              New Epoch Calculation Progress {parseFloat(claim_percent).toFixed(3)}%
             </td>
           </tr>}
         </tbody>
