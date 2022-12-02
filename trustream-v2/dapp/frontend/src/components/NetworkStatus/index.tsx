@@ -55,7 +55,7 @@ export default observer((props: Props) => {
     return Math.abs(parseFloat(claim_percent) - 100.0) < 1e-8;
   };
 
-  const UPDATE_INTERVAL = 1000;
+  const UPDATE_INTERVAL = 5000;
 
   const clearUpdateHandler = () => {
     if (update_handler != null) {
