@@ -46,7 +46,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
       textAlign: 'center',
       backgroundColor: 'white',
       color: 'black',
-      fontFamily: 'Timew New Roman',
+      // fontFamily: 'Timew New Roman',
       padding: 5
     },
     red: {
@@ -189,7 +189,7 @@ export default observer((props: Props) => {
     } else {
       alert.addAlert({
         type : 'network',
-        color : 'rgb(149, 159, 1)',
+        color : 'rgb(0, 212, 213)',
         caption : 'Network Alert',
         imgurl : 'https://logo.chainbit.xyz/iotx',
         opened : true,
