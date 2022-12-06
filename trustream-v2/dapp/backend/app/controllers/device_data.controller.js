@@ -3,8 +3,20 @@ const Device_Data = db.device_datas;
 const Op = db.Sequelize.Op;
 const MINER_CONFIG = require('../config/miner.config');
 const env = require('../config/env');
+const { sequelize } = require('../models')
 
 // Core API Functions for Device_Data
+exports.getTotalEvents = async () => {
+  return await Device_Data.findAll({
+    attributes: [
+      [sequelize.fn('sum', sequelize.col('cars')),        'total_cars'],
+      [sequelize.fn('sum', sequelize.col('buses')),       'total_buses'],
+      [sequelize.fn('sum', sequelize.col('trucks')),      'total_trucks'],
+      [sequelize.fn('sum', sequelize.col('pedestrians')), 'total_pedestrians'],
+      [sequelize.fn('sum', sequelize.col('total')),       'total_events'],
+    ],
+  });
+};
 
 exports.checkActive = ({address, nft_id, callback}) => {
   Device_Data.findOne({ where : { address, nft_id }, order: [['upload_time', 'DESC']]})

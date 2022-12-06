@@ -1,12 +1,32 @@
 const db = require('../models')
+const device_data = require('./device_data.controller');
 const key_status = db.key_status;
 
 const getkeyList = [
-  'CLAIM_SERVICE_STATUS'
+  'CLAIM_SERVICE_STATUS',
+  'TOTAL_CARS',
+  'TOTAL_TRUCKS',
+  'TOTAL_PEDESTRIANS',
+  'TOTAL_BUSES',
+  'TOTAL_EVENTS'
 ];
 
 const updatekeyList = [
 ];
+
+exports.syncValue = () => {
+  device_data.getTotalEvents()
+    .then((data) => {
+      exports.updateValue('TOTAL_CARS',        data[0].dataValues.total_cars);
+      exports.updateValue('TOTAL_TRUCKS',      data[0].dataValues.total_trucks);
+      exports.updateValue('TOTAL_PEDESTRIANS', data[0].dataValues.total_pedestrians);
+      exports.updateValue('TOTAL_BUSES',       data[0].dataValues.total_buses);
+      exports.updateValue('TOTAL_EVENTS',      data[0].dataValues.total_events);
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+};
 
 exports.getValue = (key) => {
     return key_status.findOne({ where : { key }});
@@ -23,6 +43,67 @@ exports.getSettingList = async (req, res) => {
     })
 };
 
+exports.getServerSettingList = async (req, res) => {
+  let { keyList } = req.body;
+
+  if (keyList == undefined) {
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+    return;
+  }
+
+  let values = {};
+
+  let promiseList = [];
+
+  try {
+    keyList = JSON.parse(keyList);
+  } catch (err) {
+    console.error(err);
+
+    res.send({
+      status : 'ERR',
+      message : 'Bad request'
+    })
+
+    return;
+  }
+
+  console.log('keyList', keyList, keyList.length);
+
+  for (let i = 0; i < keyList.length; i++) {
+    let key = keyList[i];
+    if (getkeyList.indexOf(key) == -1) {
+      console.log('bad request', key);
+      res.send({
+          status : 'ERR',
+          message : 'Bad request'
+      })
+      return;
+    }
+    promiseList.push(exports.getValue(key));
+  }
+
+  Promise.all(promiseList)
+    .then((data) => {
+      for (let i = 0; i < data.length; i++) 
+        values[keyList[i]] = data[i];
+      res.send({
+        status : 'OK',
+        message : values
+      })
+    })
+    .catch((err) => {
+      console.error(err);
+      res.send({
+        status : 'ERR',
+        message : 'Internal Server Error'
+      })
+    });
+};
+
 exports.getServerSettings = async (req, res) => {
     const { key } = req.body;
   
@@ -31,13 +112,15 @@ exports.getServerSettings = async (req, res) => {
         status : 'ERR',
         message : 'Bad request'
       })
+      return;
     }
 
     if (getkeyList.indexOf(key) == -1) {
-        res.send({
-            status : 'ERR',
-            message : 'Bad request'
-        })
+      res.send({
+          status : 'ERR',
+          message : 'Bad request'
+      })
+      return;
     }
   
     exports.getValue(key)

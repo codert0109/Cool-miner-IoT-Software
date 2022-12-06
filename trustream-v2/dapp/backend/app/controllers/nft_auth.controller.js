@@ -237,6 +237,9 @@ exports.verifySignature = (req, res) => {
     })
 }
 
+/**
+ * Mining software send request to this function to check if the signature is valid or not.
+ */
 exports.verify = (req, res) => {
   if (req.body.address === undefined) {
     res.send({

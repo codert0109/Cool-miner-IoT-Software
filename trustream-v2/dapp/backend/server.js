@@ -36,6 +36,8 @@ db.sequelize
     // register micro service
     require('./app/services/claim.service').init();
     require('./app/services/alert.service').init();
+
+    require('./app/controllers/key_status.controller').syncValue();
   })
   .catch((err) => {
     console.log('Failed to sync db: ' + err.message)

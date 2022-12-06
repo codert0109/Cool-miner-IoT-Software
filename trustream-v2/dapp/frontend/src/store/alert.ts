@@ -100,22 +100,22 @@ export class AlertStore {
             this.removeAlert('miner');
 
             if (response.data.message != 'No Alert') {
-                this.addAlert({
-                    type : 'miner',
-                    color : 'rgb(255, 102, 0)',
-                    caption : 'Miner Alert',
-                    imgurl : '/images/alert/computer.png',
-                    opened : true,
-                    message : response.data.message,
-                    submessage : '',
-                    link : ''
-                }, false);
+                for (let i = 0; i < response.data.message.length; i++) {
+                    this.addAlert({
+                        type: "miner",
+                        color: "rgb(255, 102, 0)",
+                        caption: "Miner Alert",
+                        imgurl: "/images/alert/computer.png",
+                        opened: true,
+                        message: response.data.message[i],
+                        submessage: "",
+                        link: ""
+                    }, false);
+                }
             }
         } catch (err) {
 
         }
-
-        console.log('email alert', auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT'));
 
         if (auth.getLocalStorage().getItem('LOAD_EMAIL_ALERT') == 'loaded') {
             this.load_email_alert = true;

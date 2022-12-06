@@ -3,9 +3,7 @@ const Device_Uptime = db.device_uptimes
 const Op = db.Sequelize.Op;
 const { getValue } = require('./key_status.controller')
 const MINER_CONFIG = require('../config/miner.config')
-const { sequelize, Sequelize } = require('../models')
-// const Device_Data = db.device_datas;
-// const Op = db.Sequelize.Op;
+
 
 // Core APIs
 exports.getAll = (query) => {
