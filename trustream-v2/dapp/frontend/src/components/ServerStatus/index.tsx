@@ -87,13 +87,13 @@ export default function() {
 
         $.post(`${BACKEND_URL}/api/key_status/setting/getvaluelist`, { keyList })
             .then((data : any) => {
-                if (data.status != 'OK')
+                if (data.data.status != 'OK')
                     return;
-                setTotalCars(data.message.TOTAL_CARS.value);
-                setTotalTrucks(data.message.TOTAL_TRUCKS.value);
-                setTotalPedestrians(data.message.TOTAL_PEDESTRIANS.value);
-                setTotalBuses(data.message.TOTAL_BUSES.value);
-                setTotalEvents(data.message.TOTAL_EVENTS.value);
+                setTotalCars(data.data.message.TOTAL_CARS.value);
+                setTotalTrucks(data.data.message.TOTAL_TRUCKS.value);
+                setTotalPedestrians(data.data.message.TOTAL_PEDESTRIANS.value);
+                setTotalBuses(data.data.message.TOTAL_BUSES.value);
+                setTotalEvents(data.data.message.TOTAL_EVENTS.value);
             })
             .catch((err) => {
                 return;
@@ -236,7 +236,7 @@ export default function() {
                     <div className={classes.expand} style={{ flexGrow : '1' }}>
                         {label}
                     </div>
-                    <div style={{width : 32, textAlign : 'center'}}>
+                    <div style={{textAlign : 'right'}}>
                         <span>{value}</span>
                     </div>
                 </div>

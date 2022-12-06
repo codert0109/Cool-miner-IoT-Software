@@ -6,6 +6,11 @@ import {
   keystatusRepository,
   P
 } from './models'
+
+import {
+  DB_SCHEMA
+} from '@config/env';
+
 import { ProjectContext } from '../interface'
 // import { EthHelper } from "@helpers/index"
 // import { ecrecover, toBuffer } from 'ethereumjs-util'
@@ -100,18 +105,18 @@ async function updateUpTime(address : string, nftID : string) {
       }
     )
 
-    // if (result !== null) {
-    //   // update data
-    //   let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+    if (result !== null) {
+      // update data
+      let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
 
-    //   if (elapsedTime < 0)          // needs to update, please sync with database
-    //     elapsedTime = 0;
+      if (elapsedTime < 0)          // needs to update, please sync with database
+        elapsedTime = 0;
 
-    //   if (elapsedTime < UPLOAD_THRESMS) {
-    //     console.log('blocked: data is uploading too fast.');
-    //     return false;
-    //   }
-    // }
+      if (elapsedTime < UPLOAD_THRESMS) {
+        console.log('blocked: data is uploading too fast.');
+        return false;
+      }
+    }
 
     // memory cache data blocker
     if (upload_time_table.get(address) == undefined) {
@@ -266,6 +271,40 @@ async function onMqttData(context: ProjectContext, topic: string, payload: Buffe
   }
 
   if (result == true) {
+    // await keystatusRepository.increment(
+    //   'value', 
+    //   { by : decodedPayload.message.cars, where : { key : 'TOTAL_CARS' } }
+    // );
+    // await keystatusRepository.increment(
+    //   'value', 
+    //   { by : decodedPayload.message.trucks, where : { key : 'TOTAL_TRUCKS' } }
+    // );
+    // await keystatusRepository.increment(
+    //   'value', 
+    //   { by : decodedPayload.message.pedestrians, where : { key : 'TOTAL_PEDESTRIANS' } }
+    // );
+    // await keystatusRepository.increment(
+    //   'value', 
+    //   { by : decodedPayload.message.bus, where : { key : 'TOTAL_BUSES' } }
+    // );
+    // await keystatusRepository.increment(
+    //   'value', 
+    //   { by : decodedPayload.message.total, where : { key : 'TOTAL_EVENTS' } }
+    // );
+  
+    let list = [
+      { field : 'TOTAL_CARS', value : decodedPayload.message.cars},
+      { field : 'TOTAL_TRUCKS', value : decodedPayload.message.truck},
+      { field : 'TOTAL_PEDESTRIANS', value : decodedPayload.message.pedestrians},
+      { field : 'TOTAL_BUSES', value : decodedPayload.message.bus},
+      { field : 'TOTAL_EVENTS', value : decodedPayload.message.total},
+    ];
+
+    for (let i = 0; i < list.length; i++) {
+      await keystatusRepository.sequelize?.query(
+        `UPDATE "${DB_SCHEMA}"."key_statuses" SET value = CAST((CAST(value AS INT) + ${list[i].value}) AS VARCHAR) WHERE key = '${list[i].field}'`);
+    }
+
     await deviceDataRepository.upsert({
       address             : address,
       start_time          : decodedPayload.message.start_time,

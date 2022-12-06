@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("./models");
+const env_1 = require("@config/env");
 var ethUtil = require('ethereumjs-util');
 var bops = require('bops');
 function buf2hex(buffer) {
@@ -53,6 +54,15 @@ async function updateUpTime(address, nftID) {
             where: { address, nft_id: nftID },
             order: [['upload_time', 'DESC']]
         });
+        if (result !== null) {
+            let elapsedTime = Date.now() - new Date(result.upload_time).getTime();
+            if (elapsedTime < 0)
+                elapsedTime = 0;
+            if (elapsedTime < UPLOAD_THRESMS) {
+                console.log('blocked: data is uploading too fast.');
+                return false;
+            }
+        }
         if (upload_time_table.get(address) == undefined) {
             upload_time_table.set(address, new Map());
         }
@@ -173,6 +183,16 @@ async function onMqttData(context, topic, payload) {
         return null;
     }
     if (result == true) {
+        let list = [
+            { field: 'TOTAL_CARS', value: decodedPayload.message.cars },
+            { field: 'TOTAL_TRUCKS', value: decodedPayload.message.truck },
+            { field: 'TOTAL_PEDESTRIANS', value: decodedPayload.message.pedestrians },
+            { field: 'TOTAL_BUSES', value: decodedPayload.message.bus },
+            { field: 'TOTAL_EVENTS', value: decodedPayload.message.total },
+        ];
+        for (let i = 0; i < list.length; i++) {
+            await models_1.keystatusRepository.sequelize?.query(`UPDATE "${env_1.DB_SCHEMA}"."key_statuses" SET value = CAST((CAST(value AS INT) + ${list[i].value}) AS VARCHAR) WHERE key = '${list[i].field}'`);
+        }
         await models_1.deviceDataRepository.upsert({
             address: address,
             start_time: decodedPayload.message.start_time,
