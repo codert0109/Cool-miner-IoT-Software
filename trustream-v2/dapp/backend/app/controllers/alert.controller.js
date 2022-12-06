@@ -48,28 +48,28 @@ exports.getAlert = async (req, res) => {
     return -1;
   };
 
+  let messageList = [];
   for (let i = 0; i < uploadTimes.length; i++) {
     let nft_id = nftLists[i];
     let level = getAlertLevel(uploadTimes[i]);
     if (level == -1) continue;
     if (uploadTimes[i] == 0) {
-      res.send({
-        status : 'OK',
-        message : `Your NFT ${nft_id} did not start mining yet.`
-      });
-      return;
+      messageList.push(`Your NFT ${nft_id} did not start mining yet.`);
     } else {
       let levelCaption = ['1 hour', '1 day', '1 week']
-      res.send({
-        status : 'OK',
-        message : `Your NFT ${nft_id} has been offline for ${levelCaption[level]}.`,
-      })
-      return;
+      messageList.push(`Your NFT ${nft_id} has been offline for ${levelCaption[level]}.`);
     }
   }
 
-  res.send({
-    status : 'OK',
-    message : 'No Alert'
-  });
+  if (messageList.length == 0) {
+    res.send({
+      status : 'OK',
+      message : 'No Alert'
+    });
+  } else {
+    res.send({
+      status : 'OK',
+      message : messageList
+    });
+  }
 };
