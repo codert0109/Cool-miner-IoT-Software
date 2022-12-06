@@ -58,21 +58,6 @@ exports.getServerSettingList = async (req, res) => {
 
   let promiseList = [];
 
-  try {
-    keyList = JSON.parse(keyList);
-  } catch (err) {
-    console.error(err);
-
-    res.send({
-      status : 'ERR',
-      message : 'Bad request'
-    })
-
-    return;
-  }
-
-  console.log('keyList', keyList, keyList.length);
-
   for (let i = 0; i < keyList.length; i++) {
     let key = keyList[i];
     if (getkeyList.indexOf(key) == -1) {

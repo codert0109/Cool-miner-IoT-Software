@@ -74,8 +74,30 @@ export default function() {
 
     const [totMinerCnt, setTotMinerCnt] = useState(0);
 
+    const [totalCars,           setTotalCars]        = useState(0);
+    const [totalTrucks,         setTotalTrucks]      = useState(0);
+    const [totalPedestrians,    setTotalPedestrians] = useState(0);
+    const [totalBuses,          setTotalBuses]       = useState(0);
+    const [totalEvents,         setTotalEvents]      = useState(0);
+
     const updateStatus = () => {
         setLoading(true);
+
+        let keyList = ["TOTAL_CARS","TOTAL_TRUCKS","TOTAL_PEDESTRIANS","TOTAL_BUSES","TOTAL_EVENTS"];
+
+        $.post(`${BACKEND_URL}/api/key_status/setting/getvaluelist`, { keyList })
+            .then((data : any) => {
+                if (data.status != 'OK')
+                    return;
+                setTotalCars(data.message.TOTAL_CARS.value);
+                setTotalTrucks(data.message.TOTAL_TRUCKS.value);
+                setTotalPedestrians(data.message.TOTAL_PEDESTRIANS.value);
+                setTotalBuses(data.message.TOTAL_BUSES.value);
+                setTotalEvents(data.message.TOTAL_EVENTS.value);
+            })
+            .catch((err) => {
+                return;
+            });
         
         nft.callContract('getTotalNFT', [])
             .then((data) => {
@@ -199,6 +221,38 @@ export default function() {
         )
     };
 
+    const renderEventCntElement = () => {
+        let list = [
+            { label : 'Total Cars',         value : totalCars }, 
+            { label : 'Total Trucks',       value : totalTrucks }, 
+            { label : 'Total Pedestrians',  value : totalPedestrians }, 
+            { label : 'Total Buses',        value : totalBuses }, 
+            { label : 'Total Events',       value : totalEvents }, 
+        ];
+
+        const renderBody = ({label, value}) => {
+            return (
+                <div className={classes.w100}>
+                    <div className={classes.expand} style={{ flexGrow : '1' }}>
+                        {label}
+                    </div>
+                    <div style={{width : 32, textAlign : 'center'}}>
+                        <span>{value}</span>
+                    </div>
+                </div>
+            );
+        };
+
+        return (
+            list.map(item => {
+                return (
+                    <WhiteLabel label={renderBody(item)} className={classes.split} />
+                )
+            })
+
+        )
+    };
+
     return (
         <Box label={renderHeader()} headerClass={classes.headerClass} bodyClass={classes.bodyClass}>
             {
@@ -206,6 +260,9 @@ export default function() {
             }
             {
                 renderMinerCntElement()
+            }
+            {
+                renderEventCntElement()
             }
         </Box>
     );
