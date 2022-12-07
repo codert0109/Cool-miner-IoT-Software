@@ -2,14 +2,20 @@ const email_config = require('../config/email.config.js');
 const nodemailer = require('nodemailer');
 const db = require('../models')
 const Email_Auth = db.email_auth;
+const ses = require('nodemailer-ses-transport');
 
-const transporter = nodemailer.createTransport({
-  service : email_config.service,
-  auth : {
-    user : email_config.user,
-    pass : email_config.pass
-  }
-});
+const transporter = nodemailer.createTransport(ses({
+    accessKeyId : email_config.aws.accessKeyId,
+    secretAccessKey : email_config.aws.secretAccessKey
+}));
+  
+// const transporter = nodemailer.createTransport({
+//   service : email_config.service,
+//   auth : {
+//     user : email_config.user,
+//     pass : email_config.pass
+//   }
+// });
 
 transporter.verify().then(console.log).catch(console.error);
 

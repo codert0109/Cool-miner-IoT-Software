@@ -8,10 +8,12 @@ const getkeyList = [
   'TOTAL_TRUCKS',
   'TOTAL_PEDESTRIANS',
   'TOTAL_BUSES',
-  'TOTAL_EVENTS'
+  'TOTAL_EVENTS',
+  'CLAIMAMOUNT_FREE'
 ];
 
 const updatekeyList = [
+  'CLAIMAMOUNT_FREE'
 ];
 
 exports.syncValue = () => {
@@ -22,6 +24,7 @@ exports.syncValue = () => {
       exports.updateValue('TOTAL_PEDESTRIANS', data[0].dataValues.total_pedestrians);
       exports.updateValue('TOTAL_BUSES',       data[0].dataValues.total_buses);
       exports.updateValue('TOTAL_EVENTS',      data[0].dataValues.total_events);
+      exports.createValueIfNotExist('CLAIMAMOUNT_FREE', BigInt(Math.pow(10, 19))); // 10 IoTex
     })
     .catch((err) => {
       console.error(err);
@@ -34,6 +37,13 @@ exports.getValue = (key) => {
 
 exports.updateValue = (key, value) => {
     return key_status.upsert({ key, value }, { where : { key }});
+};
+
+exports.createValueIfNotExist = (key, value) => {
+  if (exports.getValue(key) == null) {
+    return exports.updateValue(key, value);
+  }
+  return null;
 };
 
 exports.getSettingList = async (req, res) => {
