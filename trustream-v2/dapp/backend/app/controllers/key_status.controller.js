@@ -40,10 +40,14 @@ exports.updateValue = (key, value) => {
 };
 
 exports.createValueIfNotExist = (key, value) => {
-  if (exports.getValue(key) == null) {
-    return exports.updateValue(key, value);
-  }
-  return null;
+  exports.getValue(key)
+    .then((data) => {
+      if (data == null)
+        exports.updateValue(key, value);
+    })
+    .catch((err) => {
+      console.error(err);      
+    });
 };
 
 exports.getSettingList = async (req, res) => {

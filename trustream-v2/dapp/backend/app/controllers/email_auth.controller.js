@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport(ses({
 //   }
 // });
 
-transporter.verify().then(console.log).catch(console.error);
+// transporter.verify().then(console.log).catch(console.error);
 
 const sendMail = ({receiver, subject, content}) => {
     return transporter.sendMail({
