@@ -291,12 +291,20 @@ exports.get = async (req, res) => {
     web3.eth
       .sendSignedTransaction(createTransaction.rawTransaction)
       .on('receipt', function (receipt) {
-        res.send(`success`)
+        res.json({
+          status : 'OK',
+          message : 'Success',
+          amount : claim_value
+        })
         console.log(`Sending success! 10 IoTex coins to ${receiver}.`);
       })
       .on('error', function (e) {
         console.log(e)
-        res.send(`error`)
+        res.json({
+          status : 'ERR',
+          message : 'Failed',
+          amount : claim_value
+        })
       });
   }
 }
