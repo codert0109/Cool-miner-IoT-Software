@@ -9,6 +9,7 @@ import Camera from "@/components/Admin/Camera";
 import NFTConfig from "@/components/Admin/NFTConfig";
 import { useEffect } from "react";
 import TokenConfig from "@/components/Admin/TokenConfig";
+import ClaimConfig from "@/components/Admin/ClaimConfig";
 
 const useStyles = createStyles((theme) => ({
 }));
@@ -44,6 +45,9 @@ export default function TableReviews() {
                     {/* <Tabs.Tab label="Token" value="nft">
                         <TokenConfig/>
                     </Tabs.Tab> */}
+                    <Tabs.Tab label="Claim" value="claim">
+                        <ClaimConfig/>
+                    </Tabs.Tab>
                 </Tabs>
             </ScrollArea>
         </Layout>

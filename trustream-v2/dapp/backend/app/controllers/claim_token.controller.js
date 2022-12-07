@@ -274,7 +274,7 @@ exports.get = async (req, res) => {
       // so we set it explicitely.
       gasPrice: '1000000000000',
       gas: '85000',
-      value: web3.utils.toWei('10', 'ether'), // Sending 0.01 IOTX
+      value: web3.utils.toWei('20', 'ether'), // Sending IoTx
       // IoTeX also has a different Chain Id than the Etehreum networks
       // that's why queried it above
       chainId,
