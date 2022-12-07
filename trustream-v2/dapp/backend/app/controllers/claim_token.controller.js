@@ -264,7 +264,7 @@ exports.get = async (req, res) => {
   } else {
     const receiver = req.body.account
 
-    const info = await key_status.getValue('CLAIMAMOUNT_FREE');
+    const info = await getValue('CLAIMAMOUNT_FREE');
     const claim_value = info.value;
 
     const chainId = await web3.eth.net.getId()
