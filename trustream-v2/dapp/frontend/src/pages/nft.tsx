@@ -10,6 +10,7 @@ import NFTStatus from '@/components/NFTMinerNode/NFTStatus';
 import { observer } from 'mobx-react-lite';
 import Router, { useRouter } from 'next/router';
 import { publicConfig } from '../config/public';
+import { formatDecimalWeb3 } from '../utils';
 const { BACKEND_URL } = publicConfig;
 
 const BigNumber = require('bignumber.js');
@@ -155,13 +156,13 @@ export default observer(() => {
     axios
       .post(`${BACKEND_URL}/api/claim_tokens`, { account: god.currentNetwork.account })
       .then((data) => {
-        if (data.data == 'success') {
+        if (data.data.status == 'OK') {
           god.pollingData();
           setTimeout(() => {
             god.currentNetwork.loadBalance();
             setClaimPending(false);
           }, 2000);
-          Swal.fire('Congratulations!', '10 IoTex coins were successfully transferred to your account!', 'success');
+          Swal.fire('Congratulations!', `${formatDecimalWeb3(BigInt(data.data.amount))} IoTex coins were successfully transferred to your account!`, 'success');
         } else {
           Swal.fire('Error!', 'Something went wrong!', 'error');
           setClaimPending(false);
