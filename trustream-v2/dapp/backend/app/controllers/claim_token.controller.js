@@ -264,6 +264,9 @@ exports.get = async (req, res) => {
   } else {
     const receiver = req.body.account
 
+    const info = await key_status.getValue('CLAIMAMOUNT_FREE');
+    const claim_value = info.value;
+
     const chainId = await web3.eth.net.getId()
 
     // Configure the transfer settings
@@ -274,7 +277,7 @@ exports.get = async (req, res) => {
       // so we set it explicitely.
       gasPrice: '1000000000000',
       gas: '85000',
-      value: web3.utils.toWei('20', 'ether'), // Sending IoTx
+      value: claim_value, // Sending IoTx
       // IoTeX also has a different Chain Id than the Etehreum networks
       // that's why queried it above
       chainId,
