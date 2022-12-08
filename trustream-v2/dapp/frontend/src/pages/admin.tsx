@@ -42,11 +42,13 @@ export default function TableReviews() {
                     <Tabs.Tab label="NFT" value="nft">
                         <NFTConfig/>
                     </Tabs.Tab>
-                    {/* <Tabs.Tab label="Token" value="nft">
-                        <TokenConfig/>
-                    </Tabs.Tab> */}
+                    
                     <Tabs.Tab label="Claim" value="claim">
                         <ClaimConfig/>
+                    </Tabs.Tab>
+
+                    <Tabs.Tab label="Token" value="nft">
+                        <TokenConfig/>
                     </Tabs.Tab>
                 </Tabs>
             </ScrollArea>

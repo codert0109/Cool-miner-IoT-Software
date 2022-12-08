@@ -197,8 +197,12 @@ export const NavbarSimple = observer(() => {
           </Modal>
         </Navbar.Section>
 
+        <Navbar.Section className={classes.footer}>
+          <User />
+        </Navbar.Section>
+
         <Navbar.Section>
-          <ServerStatus />
+          <MinerStatus />
         </Navbar.Section>
 
         <Navbar.Section>
@@ -206,12 +210,9 @@ export const NavbarSimple = observer(() => {
         </Navbar.Section>
 
         <Navbar.Section>
-          <MinerStatus />
+          <ServerStatus />
         </Navbar.Section>
 
-        <Navbar.Section className={classes.footer}>
-          <User />
-        </Navbar.Section>
         <WalletInfo />
       </ScrollArea>
     </Navbar>
