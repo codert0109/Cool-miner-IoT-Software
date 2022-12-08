@@ -11,6 +11,21 @@ export function formatDecimalWeb3(x : bigint) {
     return parseInt((x / (TOKEN_UNIT / BigInt(10000))).toString()) / 10000;
 }
 
+export function formatNumber(x) {
+    let a = [];
+    while (x > 0) {
+        let y = x % 1000;
+        a.push(y);
+        x = (x - y) / 1000;
+    }
+    let ret = '';
+    for (let i = a.length - 1; i >= 0; i--) {
+        if (i != a.length - 1) ret += ',';
+        ret += a[i];
+    }
+    return ret;
+}
+
 export function formatUpTime(x : number) {
     let a = new Date(x * 3600 * 1000);
     let b = new Date((x + 1) * 3600 * 1000);

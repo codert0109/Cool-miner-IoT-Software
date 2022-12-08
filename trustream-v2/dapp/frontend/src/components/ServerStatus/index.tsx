@@ -8,6 +8,7 @@ import { Loader } from '@mantine/core';
 import { Refresh } from 'tabler-icons-react';
 import { publicConfig } from "../../config/public";
 import { useStore } from "@/store/index";
+import { formatNumber } from "@/utils/index";
 const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
@@ -210,7 +211,7 @@ export default function() {
                         Total Miners
                     </div>
                     <div style={{width : 32, textAlign : 'center'}}>
-                        <span>{totMinerCnt}</span>
+                        <span>{formatNumber(totMinerCnt)}</span>
                     </div>
                 </div>
             );
@@ -223,11 +224,11 @@ export default function() {
 
     const renderEventCntElement = () => {
         let list = [
-            { label : 'Total Cars',         value : totalCars }, 
-            { label : 'Total Trucks',       value : totalTrucks }, 
-            { label : 'Total Pedestrians',  value : totalPedestrians }, 
-            { label : 'Total Buses',        value : totalBuses }, 
-            { label : 'Total Events',       value : totalEvents }, 
+            { label : 'Total Cars',         value : formatNumber(totalCars) }, 
+            { label : 'Total Trucks',       value : formatNumber(totalTrucks) }, 
+            { label : 'Total Pedestrians',  value : formatNumber(totalPedestrians) }, 
+            { label : 'Total Buses',        value : formatNumber(totalBuses) }, 
+            { label : 'Total Events',       value : formatNumber(totalEvents) }, 
         ];
 
         const renderBody = ({label, value}) => {
