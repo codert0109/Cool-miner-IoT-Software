@@ -76,8 +76,11 @@ async function updateUpTime(address, nftID) {
                 return false;
             }
         }
+        console.log({ cache_upload_time });
+        upload_time_table.get(address).set(nftID, Date.now());
         let current_epoch = getCurrentEpoch();
         let upload_record = await models_1.deviceUptimeRepository.findOne({ where: { address, epoch: current_epoch, nft_id: nftID } });
+        console.log('upload_record', upload_record);
         if (upload_record === null) {
             await models_1.deviceUptimeRepository.create({
                 address,
@@ -87,7 +90,6 @@ async function updateUpTime(address, nftID) {
                 multiplier: 0,
                 reward: '0'
             });
-            upload_time_table.get(address).set(nftID, Date.now());
         }
         else {
             await models_1.deviceUptimeRepository.update({
@@ -98,12 +100,11 @@ async function updateUpTime(address, nftID) {
                 multiplier: 0,
                 reward: '0'
             }, { where: { address, epoch: current_epoch, nft_id: nftID } });
-            upload_time_table.get(address).set(nftID, Date.now());
         }
         return true;
     }
     catch (err) {
-        console.log(`errors occured in updateUpTime ${err}`);
+        console.log(err);
         return false;
     }
 }

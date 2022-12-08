@@ -137,6 +137,8 @@ async function updateUpTime(address : string, nftID : string) {
       }
     }
         
+    upload_time_table.get(address).set(nftID, Date.now());
+
     let current_epoch = getCurrentEpoch();
     let upload_record = await deviceUptimeRepository.findOne({ where : { address, epoch : current_epoch, nft_id : nftID }});
     if (upload_record === null) {
@@ -148,7 +150,6 @@ async function updateUpTime(address : string, nftID : string) {
         multiplier : 0,
         reward : '0'
       });
-      upload_time_table.get(address).set(nftID, Date.now());
     } else {
       await deviceUptimeRepository.update(
         { 
@@ -160,11 +161,10 @@ async function updateUpTime(address : string, nftID : string) {
           reward : '0'
         },
         { where : { address, epoch : current_epoch, nft_id : nftID }});
-      upload_time_table.get(address).set(nftID, Date.now());
     }
     return true;
   } catch (err) {
-    console.log(`errors occured in updateUpTime ${err}`);
+    console.log(err);
     return false;
   }
 }
