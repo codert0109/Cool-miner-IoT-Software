@@ -9,11 +9,13 @@ const getkeyList = [
   'TOTAL_PEDESTRIANS',
   'TOTAL_BUSES',
   'TOTAL_EVENTS',
-  'CLAIMAMOUNT_FREE'
+  'CLAIMAMOUNT_FREE',
+  'TOKEN_PER_EPOCH'
 ];
 
 const updatekeyList = [
-  'CLAIMAMOUNT_FREE'
+  'CLAIMAMOUNT_FREE',
+  'TOKEN_PER_EPOCH'
 ];
 
 exports.syncValue = () => {
@@ -25,6 +27,7 @@ exports.syncValue = () => {
       exports.updateValue('TOTAL_BUSES',       data[0].dataValues.total_buses);
       exports.updateValue('TOTAL_EVENTS',      data[0].dataValues.total_events);
       exports.createValueIfNotExist('CLAIMAMOUNT_FREE', BigInt(Math.pow(10, 19))); // 10 IoTex
+      exports.createValueIfNotExist('TOKEN_PER_EPOCH',  '1000000000000000000000'); // 1000 IoTex
     })
     .catch((err) => {
       console.error(err);
