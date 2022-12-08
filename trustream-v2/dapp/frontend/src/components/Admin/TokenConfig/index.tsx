@@ -5,6 +5,7 @@ import { useLocalObservable, observer } from 'mobx-react-lite';
 import { useStore } from "@/store/index";
 import Swal from "sweetalert2";
 import { publicConfig } from "../../../config/public";
+import { formatDecimalWeb3 } from "@/utils/index";
 const { BACKEND_URL } = publicConfig;
 
 const useStyles = createStyles((theme) => ({
@@ -71,7 +72,7 @@ export default observer((props: Props) => {
             onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
             <Grid>
                 <Grid.Col sm={12} md={4}>
-                    Distribute Token Per Epoch
+                    Distribute Token Per Epoch ({formatDecimalWeb3(BigInt(tokenPerEpoch))} IoTex)
                 </Grid.Col>
                 <Grid.Col sm={12} md={4}>
                     {nft.loading && <Loader size="sm" />}
