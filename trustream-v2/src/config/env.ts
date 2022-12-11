@@ -22,6 +22,7 @@ export const DB_PORT = getNumber('DB_PORT', 5432);
 export const DB_USERNAME = get('DB_USERNAME', 'postgres');
 export const DB_PASSWORD = get('DB_PASSWORD', 'admin');
 export const DB_NAME = get('DB_NAME', "datalayerdb");
+export const DB_SCHEMA = get('DB_SCHEMA', "app");
 
 export const SYSLOG_HOST = get('SYSLOGD_HOST');
 export const SYSLOG_PORT = getNumber('SYSLOGD_PORT', 514);

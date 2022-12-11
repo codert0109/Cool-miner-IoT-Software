@@ -12,6 +12,44 @@ export class UserStore {
     key: 'theme',
     default: 'light'
   });
+  // colors = [
+  //   '#ffffff',
+  //   '#acaebf',
+  //   '#8c8fa3',
+  //   '#666980',
+  //   '#4d4f66',
+  //   '#34354a',
+  //   '#2b2c3d',
+  //   '#000000',
+  //   '#00000030',
+  //   '#01010a',
+  // ];
+  colors = {
+    dark: [
+      '#ffffff',
+      '#acaebf',
+      '#8c8fa3',
+      '#666980',
+      '#4d4f66',
+      '#34354a',
+      '#2b2c3d',
+      '#000000',
+      '#00000030',
+      '#01010a',
+    ],
+    light: [
+      '#d5d7e0',
+      '#acaebf',
+      '#8c8fa3',
+      '#666980',
+      '#4d4f66',
+      '#34354a',
+      '#2b2c3d',
+      '#1d1e30',
+      '#00000030',
+      '#01010a',
+    ],
+  };
   layout = {
     sidebarOpen: new BooleanState()
   };

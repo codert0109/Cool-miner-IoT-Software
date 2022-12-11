@@ -1,0 +1,98 @@
+import Layout from "@/components/EntireLayout";
+import { createStyles, Button, ScrollArea, Grid, TextInput, Loader } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
+import { useLocalObservable, observer } from 'mobx-react-lite';
+import { useStore } from "@/store/index";
+import Swal from "sweetalert2";
+import { publicConfig } from "../../../config/public";
+import { formatDecimalWeb3 } from "@/utils/index";
+const { BACKEND_URL } = publicConfig;
+
+const useStyles = createStyles((theme) => ({
+    progressBar: {
+        '&:not(:first-of-type)': {
+            borderLeft: `3px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white}`,
+        },
+    },
+}));
+
+interface Props { }
+
+export default observer((props: Props) => {
+    const { nft, auth } = useStore();
+    const [scrolled, setScrolled] = useState(false);
+    const [pending, isPending] = useState(false);
+    const [claimAmount, setClaimAmount] = useState('0');
+
+    // event handlers
+    const onClaimAmountChange = (event) => {
+        setClaimAmount(event.currentTarget.value);
+    };
+
+    const onSubmit = async () => {
+        isPending(true);
+        const performAction = () => {
+            auth.$().post(`${BACKEND_URL}/api/key_status/setting/update`, {
+                key : 'CLAIMAMOUNT_FREE',
+                value : claimAmount
+            })
+            .then((data) => {
+                Swal.fire(
+                    'Success',
+                    `<p>Updating Free Claim Amount Success!</p>`,
+                    'success'
+                );
+                isPending(false)
+            }).catch((err) => {
+                Swal.fire(
+                    'Error',
+                    `<p>Updating Free Claim Amount Failed!</p>`,
+                    'error'
+                );
+                console.error(err);
+                isPending(false)
+            })
+        };
+
+        auth.actionWithAuth(performAction);
+    };
+
+    useEffect(() => {
+        auth.$().post(`${BACKEND_URL}/api/key_status/setting/get`, {
+            key : 'CLAIMAMOUNT_FREE'
+        })
+        .then((data) => {
+            setClaimAmount(data.data.message.value);
+        }).catch((err) => {
+            console.error(err);
+        });
+    }, []);
+
+    return (
+        <ScrollArea
+            sx={{ height: 'calc(100vh - 200px)' }}
+            onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+            <Grid>
+                <Grid.Col sm={12} md={4}>
+                    Claim Token Amount({formatDecimalWeb3(BigInt(claimAmount))} IoTex)
+                </Grid.Col>
+                <Grid.Col sm={12} md={4}>
+                    {nft.loading && <Loader size="sm" />}
+                    {!nft.loading &&
+                        <TextInput
+                            type="number"
+                            value={claimAmount}
+                            onChange={onClaimAmountChange}>
+                        </TextInput>}
+                </Grid.Col>
+                <Grid.Col sm={12} md={4}>
+                    <Button 
+                        disabled={pending}
+                        onClick={() => onSubmit()}>
+                        {pending && <Loader size="xs" style={{ marginRight : 10 }}/>}Update
+                    </Button>
+                </Grid.Col>
+            </Grid>
+        </ScrollArea>
+    );
+});

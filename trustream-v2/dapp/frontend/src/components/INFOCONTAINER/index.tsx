@@ -9,11 +9,11 @@ const useStyles = createStyles((theme) => ({
         flexGrow : 1,
         width : 0,
 
-        border: '5px',
-        borderStyle: 'solid',
-        borderColor: 'rgb(100, 117, 124)',
+        border: '0px',
+        // borderStyle: 'solid',
+        // borderColor: 'rgb(100, 117, 124)',
         
-        borderRadius : 20
+        // borderRadius : 20
     }
 }));
 

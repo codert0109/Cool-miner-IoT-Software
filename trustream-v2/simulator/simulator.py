@@ -21,17 +21,29 @@ class Account:
         data = DataFrame(msg, self.privKey)
 
         # Verify signature
-        message = encode_defunct(text=json.dumps(msg, default=vars, separators=(',', ':')))
-        signature =  base64.b64decode(data.signature)
-        recovered = w3.eth.account.recover_message(message, signature=signature.hex())
-        assert(recovered == self.ethAddress)
+        # message = encode_defunct(text=json.dumps(msg, default=vars, separators=(',', ':')))
+        # signature =  base64.b64decode(data.signature)
+        # recovered = w3.eth.account.recover_message(message, signature=signature.hex())
+        # assert(recovered == self.ethAddress)
 
         return data
         
 class Message:
     def __init__(self, address: string, heartRate: int):
-      self.heartRate = heartRate    
-      self.timestamp = int(time.time())
+      self.address = os.getenv('PUBLIC_KEY')
+      self.pedestrians = random.randint(0, 5)
+      self.cars = random.randint(0, 5)
+      self.bus = random.randint(0, 5)
+      self.truck = random.randint(0, 5)
+      self.total = self.pedestrians + self.cars + self.bus + self.truck
+      self.link = 'testing'
+      self.start_time = int(time.time())
+      self.end_time = self.start_time + 2
+    #   self.miner = 'testminer'
+      self.version = '2.2.0'
+      self.nftID = '6'
+      self.location_id = 'P11'
+
 
 class Signature:
     def __init__(self, message: Message, privKey: bytes):
@@ -44,10 +56,14 @@ class Signature:
 
         self.hex = base64.b64encode(signed_message.signature).decode("utf-8")
 
+        self.hex = "folxowtufzphkadrrmlcfoofmubytekctfbneitm"
+
 class DataFrame:
     def __init__(self, message: Message, privKey : bytes):
         self.message = message
         self.signature = Signature(message, privKey).hex
+
+        print (self.signature)
 
 def connect_to_broker():
     def on_connect(client, userdata, flags, rc):
@@ -91,7 +107,7 @@ if __name__ == '__main__':
     client.loop_start()
 
     # Set up the topic with the eth address
-    topic = topic = "/device/" + account.ethAddress + '/data'
+    topic = topic = "/device/" + os.getenv('PUBLIC_KEY') + '/data'
 
     # Loop and send data
     while True:

@@ -1,84 +1,70 @@
-import React from 'react';
-import { createStyles, Table, Progress, Anchor, Text, Group, ScrollArea } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
+import { createStyles, Table, Button, Progress, Anchor, Text, Group, ScrollArea, Box, ListItem } from '@mantine/core';
+import WhiteLabel from "@/components/WhiteLabel";
+import { useLocalObservable, observer } from 'mobx-react-lite';
+import { useStore } from '@/store/index';
+import StakeNode from './StakeNode';
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
     '&:not(:first-of-type)': {
       borderLeft: `3px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white}`,
     },
-  },
+  }
 }));
 
-interface TableReviewsProps {
-  data: {
-    Pool : string,
-    Amount : number,
-    AvailableRewards : number,
-    TimeRemaining : number,
-    TotalTime : number
-  }[];
+interface STAKE_INFO {
+  type_id: number,
+  startTime: number,
+  expireTime: number,
+  amount: number
 }
 
-export default function TableReviews({ data }: TableReviewsProps) {
-  const { classes, theme } = useStyles();
+interface Props { }
 
-  const rows = data.map((row, index) => {
-    const timeTotal = row.TotalTime;
-    const timePast = row.TotalTime - row.TimeRemaining;
-    const timeLeft = timeTotal - timePast;
+export default observer((props: Props) => {
+  const { stake } = useStore();
 
-    const timePastP = timePast * 100 / timeTotal;
-    const timeLeftP = 100 - timePastP;
+  const renderBody = () => {
+    if (stake.stakedInfo.amount == BigInt(0)) {
+      return (
+        <tr>
+          <td colSpan={7}>
+            <div style={{ textAlign : 'center'}}>
+              There is no staking
+            </div>
+          </td>
+        </tr>
+      );
+    }
 
+    return <StakeNode/>
+  };
+
+  const tableView = () => {
     return (
-      <tr key={index}>
-        <td>
-          <Anchor<'a'> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.Pool}
-          </Anchor>
-        </td>
-        <td>{row.Amount}</td>
-        <td>{Intl.NumberFormat().format(row.AvailableRewards)}</td>
-        <td>
-          <Group position="apart">
-            <Text size="xs" color="teal" weight={700}>
-              {timePast.toFixed(0)}s passed
-            </Text>
-            <Text size="xs" color="red" weight={700}>
-              {timeLeft.toFixed(0)}s left
-            </Text>
-          </Group>
-          <Progress
-            classNames={{ bar: classes.progressBar }}
-            sections={[
-              {
-                value: timePastP,
-                color: theme.colorScheme === 'dark' ? theme.colors.teal[9] : theme.colors.teal[6],
-              },
-              {
-                value: timeLeftP,
-                color: theme.colorScheme === 'dark' ? theme.colors.red[9] : theme.colors.red[6],
-              },
-            ]}
-          />
-        </td>
-      </tr>
+      <ScrollArea style={{ width: '100%' }}>
+        <Table sx={{ minWidth: 600, maxWidth: '100%', color: 'black' }} verticalSpacing="xs">
+          <thead>
+            <tr>
+              <th style={{ color: 'black' }} >Date</th>
+              <th style={{ color: 'black', textAlign: 'center' }} >Staked Amount</th>
+              <th style={{ color: 'black' }} >Staking Period</th>
+              <th style={{ color: 'black' }} >Active Miner(s)</th>
+              <th style={{ color: 'black' }} >Current Multiplier</th>
+              <th style={{ color: 'black' }} >Level</th>
+              <th style={{ color: 'black' }} >Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {renderBody()}
+          </tbody>
+        </Table>
+      </ScrollArea>
     );
-  });
+  };
 
   return (
-    <ScrollArea>
-      <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
-        <thead>
-          <tr>
-            <th>Pool</th>
-            <th>Amount</th>
-            <th>Available Rewards</th>
-            <th>Time Remaining</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </ScrollArea>
+    <WhiteLabel label={tableView()} className='' />
   );
-}
+});

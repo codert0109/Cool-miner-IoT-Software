@@ -1,5 +1,5 @@
 apps:
   - script: './dist/projects/app/main.js'
-    name: 'app'
+    name: 'web3stream'
     exec_mode: 'fork'
     instances: 1

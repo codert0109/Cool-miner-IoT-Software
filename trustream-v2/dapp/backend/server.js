@@ -1,45 +1,71 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express')
+const cors = require('cors')
 
-const app = express();
+const app = express()
+const http = require('http')
+const https = require('https')
+const fs = require('fs')
+const cookieParser = require('cookie-parser');
 
-var corsOptions = {
-  origin: "http://localhost:8081"
-};
+function ensureSecure(req, res, next) {
+  // return next() // for testing purpose
 
+  if (req.secure) {
+    // OK, continue
+    return next()
+  }
+
+  // handle port numbers if you need non defaults
+  // res.redirect('https://' + req.host + req.url); // express 3.x
+  res.redirect('https://' + 'miner.elumicate.com' + req.url) // express 4.x
+}
+
+app.all('*', ensureSecure)
 app.use(express.static('public'))
+app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser());
 
-app.use(cors(corsOptions));
+const db = require('./app/models')
 
-// parse requests of content-type - application/json
-app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-
-const db = require("./app/models");
-db.sequelize.sync()
+db.sequelize
+  .sync()
   .then(() => {
-    console.log("Synced db.");
+    console.log('Synced db.')
+    // register micro service
+    require('./app/services/claim.service').init();
+    require('./app/services/alert.service').init();
+
+    require('./app/controllers/key_status.controller').syncValue();
   })
   .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
-  });
+    console.log('Failed to sync db: ' + err.message)
+  })
 
 // // drop the table if it already exists
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
 
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Elumicate dApp application." });
-});
+// register routes
+require('./app/routes')(app)
 
-require("./app/routes/device_data.routes")(app);
 
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+
+https
+  .createServer(
+    {
+      ca: fs.readFileSync('cert/ca.crt'),
+      key: fs.readFileSync('cert/privatekey.pem'),
+      cert: fs.readFileSync('cert/server.crt'),
+    },
+    app,
+  )
+  .listen(3333, function () {
+    console.log(
+      'HTTPS Server is running on port 3333! Go to https://localhost:3333/',
+    )
+  })
+
+http.createServer(app).listen(3334)

@@ -7,6 +7,13 @@ import RewardView from './RewardView';
 const useStyles = createStyles((theme) => ({
     selected : {
         fontWeight : 'bold'
+    },
+    divColor : {
+        backgroundColor : theme.colorScheme === 'dark' ? 'transparent' : 'transparent',
+        padding : '20px',
+        paddingTop : '10px',
+        borderRadius : '10px',
+        border: '3px solid #DBDBDB'
     }
 }));
 
@@ -17,7 +24,7 @@ export default function () {
     const { classes } = useStyles();
 
     return (
-        <>
+        <div className={classes.divColor}>
             <Group position="center" my="xl">
                 <SegmentedControl
                     value={'colorScheme'}
@@ -44,9 +51,8 @@ export default function () {
                     ]}
                 />
             </Group>
-            {tab == 'Staked' && <StakedView data={StackMockData.data} />}
             {tab == 'Reward' && <RewardView data={RewardMockData.data}/>}
-        </>
+        </div>
     );
 }
 
@@ -109,48 +115,47 @@ const RewardMockData = {
     ]
 };
 
-// Pool : number,
-// Amount : number,
-// AvailableRewards : number,
-// TimeRemaining : number,
-// TotalTime : number
-
 const StackMockData = {
     "data": [
         {
-            "Pool": "Pool #1",
-            "Amount": 400000,
-            "AvailableRewards": 30000,
-            "TimeRemaining" : 3600,
-            "TotalTime" : 10800
+            "Date" : "2022.09.19",
+            "Amount": 800,
+            "NFT" : 1545,
+            "Multiplier" : "X 1.4",
+            "TimeRemaining" : 44,
+            "TotalTime" : 45
         },
         {
-            "Pool": "Pool #1",
-            "Amount": 30000,
-            "AvailableRewards": 20000,
-            "TimeRemaining" : 180,
-            "TotalTime" : 3600
+            "Date" : "2022.08.15",
+            "Amount": 700,
+            "NFT" : 8975,
+            "Multiplier" : "X 1.7",
+            "TimeRemaining" : 54,
+            "TotalTime" : 90
         },
         {
-            "Pool": "Pool #2",
-            "Amount": 10000,
-            "AvailableRewards": 15000,
-            "TimeRemaining" : 100,
-            "TotalTime" : 200
+            "Date" : "2022.07.12",
+            "Amount": 350,
+            "NFT" : 6541,
+            "Multiplier" : "X 1.7",
+            "TimeRemaining" : 20,
+            "TotalTime" : 90
         },
         {
-            "Pool": "Pool #3",
-            "Amount": 12000,
-            "AvailableRewards": 4000,
-            "TimeRemaining" : 500,
-            "TotalTime" : 3000
+            "Date" : "2022.07.05",
+            "Amount": 250,
+            "NFT" : 2541,
+            "Multiplier" : "X 2",
+            "TimeRemaining" : 283,
+            "TotalTime" : 360
         },
         {
-            "Pool": "Pool #4",
-            "Amount": 790,
-            "AvailableRewards": 90,
-            "TimeRemaining" : 100,
-            "TotalTime" : 200
+            "Date" : "2022.06.06",
+            "Amount": 400,
+            "NFT" : 8745,
+            "Multiplier" : "X 2",
+            "TimeRemaining" : 254,
+            "TotalTime" : 360
         }
     ]
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, useLocalObservable, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useStore } from '../../store/index';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from '../../lib/web3-react';
@@ -15,9 +15,11 @@ export const WalletSelecter = observer(() => {
 
   const store = useLocalObservable(() => ({
     network: new StringState<'mainnet' | 'testnet'>({ value: 'mainnet' }),
+    
     get visible() {
       return god.eth.connector.showConnector;
     },
+
     get networks() {
       return god.currentNetwork.chain.set.filter((i) => i.type == store.network.value);
     },
@@ -25,6 +27,7 @@ export const WalletSelecter = observer(() => {
     close() {
       god.eth.connector.showConnector = false;
     },
+
     async setChain(val) {
       const chain = god.currentNetwork.chain.map[val];
       try {
@@ -104,22 +107,34 @@ export const WalletSelecter = observer(() => {
       icon: '/images/imtoken.svg'
     }
   ];
+
   const names = config.map((item) => item.title).join(', ');
+
   return (
     <Modal opened={store.visible} overlayOpacity={0.45} centered onClose={store.close} title={lang.t(god.isConnect ? 'switch-network' : 'connect-to-wallet')}>
-      <SegmentedControl data={['Mainnet', 'Testnet']} fullWidth onChange={(v) => store.network.setValue(v.toLowerCase() as any)} />
+      <SegmentedControl 
+        defaultValue={store.network.getValue()}
+        data={['Mainnet', 'Testnet']} 
+        fullWidth 
+        onChange={(v) => store.network.setValue(v.toLowerCase() as any)} />
+
       <Box mt="xl">
-        <Group position="apart" p="md">
-          {store.networks.map((i) => (
+        <Group position="apart" p="md" style={{'justifyContent' : 'space-around'}}>
+          {store.networks.filter((i) => i.explorerName === "IoTeXScan").map((i) => (
             <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} key={i.chainId}>
               <Box style={{ position: 'relative' }}>
                 <Avatar
                   src={`//logo.chainbit.xyz/${i.Coin.symbol.toLowerCase()}`}
                   size={45}
                   style={{ cursor: 'pointer', background: 'transparent' }}
-                  onClick={() => store.setChain(i.chainId)}
+                  onClick={() => {
+                    if (i.chainId === god.currentChain.chainId)
+                      store.connectInejct();
+                    else
+                      store.setChain(i.chainId);
+                  }}
                 ></Avatar>
-                {god.currentChain.chainId == i.chainId && <Badge style={{ border: '2px solid white', position: 'absolute', right: -4, bottom: -4 }} size="xs" color="green" variant="filled" />}
+                {god.currentChain?.chainId == i.chainId && <Badge style={{ border: '2px solid white', position: 'absolute', right: -4, bottom: -4 }} size="xs" color="green" variant="filled" />}
               </Box>
               <Text size="xs" mt={1}>
                 {i.name}
